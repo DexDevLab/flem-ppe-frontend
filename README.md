@@ -11,7 +11,7 @@
 <a href="">[![Contributors](https://img.shields.io/github/contributors/frtechdev/flem-ppe-frontend)](https://github.com/frtechdev/flem-ppe-frontend/graphs/contributors)</a><br>
 <a href="">![Last Commit](https://img.shields.io/github/last-commit/frtechdev/flem-ppe-frontend)</a>
 <a href="">[![Fork](https://img.shields.io/github/forks/frtechdev/flem-ppe-frontend)](https://github.com/frtechdev/flem-ppe-frontend/fork) </a>
-<a href="">![Version](https://img.shields.io/badge/version-0.0.33-005bff) </a>
+<a href="">![Version](https://img.shields.io/badge/version-1.0.0-005bff) </a>
 <a href="">[![license](https://img.shields.io/github/license/frtechdev/flem-ppe-frontend)](https://github.com/frtechdev/flem-ppe-frontend/LICENSE)</a>
 
 <br>
@@ -208,6 +208,25 @@ Para usar a aplicação, crie um arquivo .env com as seguintes variáveis de amb
 ## Notas de versão
 
 </a>
+
+<br>
+
+### v1.0.0-221208
+
+- Atualização da Documentação;
+- Update do NextAuth para resolução de segurança;
+
+<br>
+
+### v0.0.34-221208
+
+- Remoção do CHANGELOG e inclusão das suas informações no README
+- Atualização do prisma schema;
+- Atualização da documentação;
+- Reorganização dos serviços de API e centralização com um arquivo index;
+- Remoção de componentes de teste dentro da estrutura do projeto;
+- Transcrição das rotas de API Backend para uma função de aquisição dinâmica de rota;
+- Remoção de utilitário duplicado;
 
 <br>
 
