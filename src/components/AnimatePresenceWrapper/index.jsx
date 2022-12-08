@@ -18,7 +18,7 @@ import { variants } from "styles/transitions";
  * @returns componente com animação dependendo do estado do componente-alvo
  *
  */
-export function AnimatePresenceWrapper({ children, isLoaded, router }) {
+export function AnimatePresenceWrapper({ children, isLoaded, router, p = 5 }) {
   return (
     <>
       {!isLoaded ? (
@@ -44,7 +44,7 @@ export function AnimatePresenceWrapper({ children, isLoaded, router }) {
             exit="pageExit"
             variants={variants}
           >
-            <Box p={5}>{children}</Box>
+            <Box p={p}>{children}</Box>
           </motion.div>
         </ScaleFade>
       )}

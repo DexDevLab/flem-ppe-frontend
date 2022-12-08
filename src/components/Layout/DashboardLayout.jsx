@@ -27,7 +27,7 @@ export function DashboardLayout({ appName, children, ...props }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const entities = [
     { value: "ba", label: "Bahia", defaultValue: true },
-    { value: "to", label: "Tocantins", defaultValue: false },
+    // { value: "to", label: "Tocantins", defaultValue: false },
   ];
   const router = useRouter();
   const linkPath = router.asPath.split("/");

@@ -1,4 +1,4 @@
-import { prisma } from "services/prisma/prismaClient";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -66,7 +66,6 @@ const getEscritoriosRegionais = async (req, res) => {
         municipios: true,
       },
     });
-    console.log(query);
     return res.status(200).json(query);
   } catch (error) {
     console.log(error);

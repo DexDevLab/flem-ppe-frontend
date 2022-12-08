@@ -12,11 +12,12 @@ module.exports = (phase) => {
         },
         {
           source: "/",
-          destination: "/ba/dashboard",
+          destination: "/ba",
           permanent: false,
         },
       ];
     },
-    reactStrictMode: false
+    reactStrictMode: false,
+    output: "standalone",
   };
 };

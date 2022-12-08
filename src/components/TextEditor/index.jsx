@@ -17,17 +17,18 @@ import "quill/dist/quill.snow.css";
 import "@deevotechvn/quill-mention/dist/quill.mention.min.css";
 import { useEffect } from "react";
 import { Logo } from "components/Logo";
+import _ from "lodash";
 
 export function TextEditor({
-  setContent,
-  id,
-  label,
   formControl: {
     trigger,
     formState: { errors },
     register,
     setValue,
   },
+  setContent,
+  id,
+  label,
   type = "text",
   placeholder,
   required = "Obrigatório",
@@ -36,51 +37,12 @@ export function TextEditor({
   onChange,
   value,
   loadOnEditor,
+  parametros,
   ...props
 }) {
-  const atValues = [
-    {
-      id: "nome_beneficiario",
-      value: "Nome do Beneficiário",
-    },
-    {
-      id: "codigo_oficio",
-      value: "Codigo do Oficio",
-    },
-    {
-      id: "unidade_lotacao",
-      value: "Unidade de Lotação",
-    },
-    {
-      id: "logr_unidade_lotacao",
-      value: "Logradouro da Unidade de Lotação",
-    },
-    {
-      id: "bairr_unidade_lotacao",
-      value: "Bairro da Unidade de Lotação",
-    },
-    {
-      id: "munic_vaga",
-      value: "Município da Vaga",
-    },
-    {
-      id: "ponto_focal_unidade",
-      value: "Ponto Focal da Unidade",
-    },
-    {
-      id: "sigl_demandante",
-      value: "Sigla do Demandante",
-    },
-    {
-      id: "form_beneficiario",
-      value: "Formação do Beneficiário",
-    },
-  ];
-
   async function suggestPeople(searchTerm) {
-    return atValues.filter((person) => {
-      console.log(searchTerm.toLowerCase());
-      return person.value
+    return parametros.filter((parametro) => {
+      return parametro.value
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
@@ -118,8 +80,10 @@ export function TextEditor({
         mentionDenotationChars: ["@"],
         attributes: { bold: true },
         source: async function (searchTerm, renderList) {
-          const matchedPeople = await suggestPeople(searchTerm);
-          renderList(matchedPeople);
+          if (_.isArray(parametros)) {
+            const matchedPeople = await suggestPeople(searchTerm);
+            renderList(matchedPeople);
+          }
         },
       },
     },
@@ -142,7 +106,7 @@ export function TextEditor({
     if (quill && loadOnEditor) {
       quill.setContents(JSON.parse(loadOnEditor));
     }
-  }, [quill, loadOnEditor]);
+  }, [quill, quillRef, loadOnEditor]);
 
   return (
     // <Input
@@ -164,7 +128,7 @@ export function TextEditor({
     // />
 
     // <Box>
-    <Box>
+    <>
       <FormControl id={id} isInvalid={errors[id]} w="100%" h="100%">
         <FormLabel>{label}</FormLabel>
         <Flex justifyContent="center">
@@ -186,35 +150,32 @@ export function TextEditor({
                 w="100%"
                 px={1}
               >
-                <Logo h={30} my={10} />
+                <Logo h={30} my={12} />
                 <Image
-                  src="http://www.itororoja.com.br/wp-content/uploads/2018/04/30657010_2085363125039982_1581435021703512064_n.jpg"
-                  h={90}
+                  src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
+                  h={50}
                 />
               </Flex>
-              <Skeleton isLoaded={isLoaded} fadeDuration={0.5} w="100%" h="90%">
-                <Input
-                  as={Box}
-                  type={type}
-                  placeholder={placeholder}
-                  {...register(id, {
-                    validate: (e) =>
-                      quill.getLength() > 2 || "Digite um template válido",
-                  })}
-                  {...props}
-                  className="page"
-                  ref={quillRef}
-                  w="100%"
-                  h="91%"
-                  fontSize={14}
-                  p={0}
-                  shadow="none"
-                  sx={{
-                    border:
-                      "2px dashed var(--chakra-colors-gray-200) !important",
-                  }}
-                />
-              </Skeleton>
+              <Input
+                as={Box}
+                type={type}
+                placeholder={placeholder}
+                {...register(id, {
+                  validate: (e) =>
+                    quill.getLength() > 2 || "Digite um template válido",
+                })}
+                {...props}
+                className="page"
+                ref={quillRef}
+                w="100%"
+                h="91%"
+                fontSize={14}
+                p={0}
+                shadow="none"
+                sx={{
+                  border: "2px dashed var(--chakra-colors-gray-200) !important",
+                }}
+              />
               <FormErrorMessage pb={2} fontWeight="bold" alignSelf="flex-start">
                 {errors[id]?.message}
               </FormErrorMessage>
@@ -235,6 +196,6 @@ export function TextEditor({
           </Box>
         </Flex>
       </FormControl>
-    </Box>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import {
   Skeleton,
   InputGroup,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 /**
  * Cria uma Inpux Box multiuso.
@@ -50,14 +51,22 @@ export function MaskedInputBox({
   validate,
   isLoaded = true,
   onChange,
-  value,
+  defaultValue,
   setMask,
   shadow = "md",
   inputrightelement,
   colorScheme = "brand1",
   ...props
 }) {
-  // setValue ? setValue(id, value) : null;
+
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(id, defaultValue);
+      trigger(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValue]);
+  
   return (
     <Box px={0.5}>
       <FormControl id={id} isInvalid={errors[id]}>

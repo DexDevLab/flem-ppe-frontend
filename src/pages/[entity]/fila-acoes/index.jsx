@@ -1,44 +1,44 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  Divider,
-  ModalBody,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
   IconButton,
-  Center,
+  Modal,
+  ModalBody,
+  ModalContent,
   ModalFooter,
-  Tag,
-  TagLabel,
-  Spinner,
-  ScaleFade,
+  ModalHeader,
+  ModalOverlay,
   Progress,
   ProgressLabel,
+  ScaleFade,
+  Spinner,
+  Stack,
+  Tag,
+  TagLabel,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { CheckboxInput } from "components/Inputs/CheckboxInput";
+import { InputTextBox } from "components/Inputs/InputTextBox";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiCheck, FiMenu, FiMinusCircle, FiPhoneCall } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
 import { useForm, useFormState } from "react-hook-form";
-import { axios } from "services/apiService";
-import { InputTextBox } from "components/Inputs/InputTextBox";
-import { maskCapitalize } from "utils/maskCapitalize";
-import { CheckboxInput } from "components/Inputs/CheckboxInput";
+import { FiCheck, FiMenu, FiMinusCircle, FiPhoneCall } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
 
 export default function FilaAcoesCR({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -146,7 +146,7 @@ export default function FilaAcoesCR({ entity, ...props }) {
                 isAnimated={status !== 100}
                 hasStripe={status !== 100}
                 colorScheme={status !== 100 ? "brand1" : "green"}
-                value={status}
+                value={status >=0 ? status : 0}
                 shadow="inner"
                 rounded="md"
                 h={6}
@@ -157,7 +157,7 @@ export default function FilaAcoesCR({ entity, ...props }) {
                     (status < 40 && "gray.400") || (status <= 100 && "gray.100")
                   }
                 >
-                  {status}%
+                  {status >=0 ? status : 0}%
                 </ProgressLabel>
               </Progress>
             </Box>
@@ -269,67 +269,70 @@ export default function FilaAcoesCR({ entity, ...props }) {
 
     if (contatoAcao) {
       formData.contatoAcao = contatoAcao;
-      return axios
-        .put(`/api/${entity}/fila-acoes`, formData)
-        .then((res) => {
-          if (res.status === 200) {
-            contatoAcaoFormSubmit.onClose();
-            setSelectedBenef(null);
-            formContatoAcao.reset({});
-            toast({
-              title: "Ação aualizada com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            contatoAcaoFormSubmit.onClose();
-            toast({
-              title: "Ação já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/fila-acoes`, formData)
+          .put(getBackendRoute(entity, "fila-acoes"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              contatoAcaoFormSubmit.onClose();
+              setSelectedBenef(null);
+              formContatoAcao.reset({});
+              toast({
+                title: "Ação aualizada com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 409) {
+              contatoAcaoFormSubmit.onClose();
+              toast({
+                title: "Ação já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
-      .post(`/api/${entity}/fila-acoes`, formData)
+      //.post(`/api/${entity}/fila-acoes`, formData)
+      .post(getBackendRoute(entity, "fila-acoes"), formData)
       .then((res) => {
         if (res.status === 200) {
           contatoAcaoFormSubmit.onClose();
           setSelectedBenef(null);
           formContatoAcao.reset({});
           toast({
-            title: "Demandante adicionado com sucesso",
+            title: "Informação inserida com sucesso",
             status: "success",
             duration: 5000,
             isClosable: false,
             position,
           });
         }
-        console.log(res.data);
         contatoAcaoFormSubmit.onClose();
       })
       .catch((error) => {
         if (error.response.status === 409) {
           contatoAcaoFormSubmit.onClose();
           toast({
-            title: "Demandante já existe",
+            title: "Informação já existe",
             status: "error",
             duration: 5000,
             isClosable: false,
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -346,13 +349,17 @@ export default function FilaAcoesCR({ entity, ...props }) {
   useEffect(() => {
     fetchTableData.onOpen();
     axios
-      .get(`/api/${entity}/acoes-cr`)
+      //.get(`/api/${entity}/acoes-cr`)
+      .get(getBackendRoute(entity, "acoes-cr"))
       .then((res) => {
         if (res.status === 200) {
           setAcoesCRFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addAcao.isOpen, excluir.isOpen]);
@@ -361,13 +368,21 @@ export default function FilaAcoesCR({ entity, ...props }) {
     if (selectedRow) {
       getAcaoDetails.onOpen();
       axios
-        .get(`/api/${entity}/acoes-cr`, { params: { id: selectedRow.id } })
+        //.get(`/api/${entity}/acoes-cr`, { params: { id: selectedRow.id } })
+        .get(getBackendRoute(entity, "acoes-cr"), {
+          params: {
+            id: selectedRow.id,
+          },
+        })
         .then((res) => {
           if (res.status === 200) {
-            setSelectedAcaoFromBd(res.data.benefAssoc);
+            setSelectedAcaoFromBd(res.data[0].benefAssoc);
           }
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error.response.data);
+          throw new Error(error.response.data);
+        })
         .finally(getAcaoDetails.onClose);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -411,7 +426,7 @@ export default function FilaAcoesCR({ entity, ...props }) {
           }
         }}
         isOpen={addAcao.isOpen}
-        header={selectedRow ? "Editar Ação" : "Adicionar Ação"}
+        header="Detalhes da Ação"
         closeButton
         size="xl"
       >
@@ -596,5 +611,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-FilaAcoesCR.auth = false;
+FilaAcoesCR.auth = true;
 FilaAcoesCR.dashboard = true;

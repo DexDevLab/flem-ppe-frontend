@@ -1,4 +1,5 @@
 import {
+  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -28,9 +29,21 @@ export function MenuIconButton({ icon, menuItems, ...props }) {
             ))} */}
           {menuItems &&
             menuItems.map((menuGroup, idx) => (
-              <MenuGroup key={menuGroup.menuGroupLabel + idx} title={menuGroup.menuGroupLabel} textAlign="left">
+              <MenuGroup
+                key={menuGroup.menuGroupLabel + idx}
+                title={menuGroup.menuGroupLabel}
+                textAlign="left"
+              >
                 {menuGroup.menuGroupButtons.map((menuButton, idx) => (
-                  <MenuItem key={menuButton.text + idx} icon={menuButton.icon} onClick={menuButton.onClick} isDisabled={menuButton.disabled}>{menuButton.text}</MenuItem>
+                  <MenuItem
+                  key={menuButton.text + idx}
+                  onClick={menuButton.onClick}
+                  isDisabled={menuButton.disabled}
+                  icon={icon}
+                  {...menuButton}
+                  >
+                    {menuButton.text}
+                  </MenuItem>
                 ))}
               </MenuGroup>
             ))}

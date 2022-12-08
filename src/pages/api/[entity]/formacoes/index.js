@@ -1,4 +1,4 @@
-import { prisma } from "services/prisma/prismaClient";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -99,7 +99,7 @@ const addFormacao = async (req, res) => {
         res.status(500).json({ error: error });
         break;
     }
-  }
+  } 
 };
 
 const modifyFormacao = async (req, res) => {

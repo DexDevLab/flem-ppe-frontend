@@ -3,10 +3,9 @@
  * @module Cards
  */
 
-import { Flex, Heading } from "@chakra-ui/react";
+import { Flex, Heading, Spinner } from "@chakra-ui/react";
 import IconBox from "components/Icons/IconBox";
 import { Component } from "react";
-
 
 /*************** WIP ******************/
 /**
@@ -18,7 +17,7 @@ import { Component } from "react";
  * @returns componente de card.
  *
  */
-export function Card({ icon, children, ...props }) {
+export function Card({ icon, children, label, value, isLoading, ...props }) {
   return (
     <Flex
       {...props}
@@ -37,16 +36,26 @@ export function Card({ icon, children, ...props }) {
         justifyContent="center"
         flex="1 1 0%"
       >
-        <Heading as="h3" color="gray.400" size="sm" pb={1}>
-          Todays Money
-        </Heading>
+        {label && (
+          <Heading as="h3" color="gray.400" size="sm" pb={1}>
+            {label}
+          </Heading>
+        )}
         <Flex alignItems="center">
-          <Heading as="h3" color="gray.700" size="md">
-            $53,000
-          </Heading>
-          <Heading as="h3" color="green.400" size="sm">
+          {isLoading && <Spinner 
+              color="brand1.500"
+              thickness="4px"
+              speed=".5s"
+              emptyColor="gray.200"
+          />}
+          {!isLoading && value && (
+            <Heading as="h3" color="gray.700" size="md">
+              {value}
+            </Heading>
+          )}
+          {/* <Heading as="h3" color="green.400" size="sm">
             +55%
-          </Heading>
+          </Heading> */}
         </Flex>
         {children && (
           <Flex pt={2} pe={2} maxW="80%">
@@ -58,7 +67,7 @@ export function Card({ icon, children, ...props }) {
         h={children ? "100%" : "45px"}
         w={children ? "70%" : "45px"}
         fontSize="2xl"
-        bg="brand1.400"
+        bg="brand1.500"
         color="white"
       >
         {icon}

@@ -13,43 +13,32 @@ import {
   Heading,
   HStack,
   Icon,
-  IconButton,
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   ScaleFade,
   Spinner,
   Stack,
-  Tag,
-  TagLabel,
   Text,
+  useBreakpointValue,
   useDisclosure,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
-import { signIn, signOut, getSession, useSession } from "next-auth/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import {
-  FiCheck,
-  FiEdit,
-  FiMoreHorizontal,
-  FiPlus,
-  FiTrash2,
-  FiUnlock,
-  FiX,
-} from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
 import { InputBox } from "components/Inputs/InputBox";
-import { SelectInputBox } from "components/Inputs/SelectInputBox";
-import { useForm, useFormState } from "react-hook-form";
 import { InputTextBox } from "components/Inputs/InputTextBox";
 import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 /**
  * Renderiza o cadastro de materiais
@@ -64,23 +53,19 @@ export default function Cadastro({ entity, ...props }) {
   const { asPath } = router;
   const session = useSession();
   const [selectedRow, setSelectedRow] = useState(null);
-  const {
-    isOpen: addMaterialIsOpen,
-    onOpen: addMaterialOnOpen,
-    onClose: addMaterialOnClose,
-  } = useDisclosure();
-  const {
-    isOpen: excluirMaterialIsOpen,
-    onOpen: excluirMaterialOnOpen,
-    onClose: excluirMaterialOnClose,
-  } = useDisclosure();
+  const [materiaisFromBd, setMateriaisFromBd] = useState([]);
+  const addMaterial = useDisclosure();
+  const excluirMaterial = useDisclosure();
   const formSubmit = useDisclosure();
+  const fetchTableData = useDisclosure();
+  const toast = useToast();
+  const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
 
   const columns = useMemo(
     () => [
       {
         Header: "Material",
-        accessor: "nome_material",
+        accessor: "nome",
         Cell: ({ value }) => <Box minW={200}>{value}</Box>,
         Footer: false,
       },
@@ -110,12 +95,7 @@ export default function Cadastro({ entity, ...props }) {
                     icon: <FiEdit />,
                     onClick: () => {
                       setSelectedRow(props.row.original);
-                      setValue(
-                        "nome_material",
-                        props.row.original.nome_material
-                      );
-                      setValue("descricao", props.row.original.descricao);
-                      addMaterialOnOpen();
+                      addMaterial.onOpen();
                     },
                   },
                   {
@@ -123,7 +103,7 @@ export default function Cadastro({ entity, ...props }) {
                     icon: <FiTrash2 />,
                     onClick: () => {
                       setSelectedRow(props.row.original);
-                      excluirMaterialOnOpen();
+                      excluirMaterial.onOpen();
                     },
                   },
                 ],
@@ -135,47 +115,11 @@ export default function Cadastro({ entity, ...props }) {
         Footer: false,
       },
     ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
-  const data = useMemo(
-    () => [
-      {
-        nome_material: "Camisa Polo",
-        descricao:
-          "A camisa foi confecionada no modelo camisa polo em malha piquet PA, 60% poliéster e 40% algodão, na cor branca, com serigrafia (processo de impressão aplicável em tecido, frente, costas e mangas): marca da Carteira de Trabalho do lado esquerdo do peito, marca do governo da Bahia na manga do lado esquerdo e da Fundação Luís Eduardo Magalhães na maga do lado direito. Na parte de trás, centralizado horizontalmente e na parte superior: MAIS FORÇA PARA A JUVENTUDE VENCER",
-      },
-      {
-        nome_material: "Jaleco",
-        descricao: null,
-      },
-      {
-        nome_material: "Avental",
-        descricao: null,
-      },
-      {
-        nome_material: "Crachá",
-        descricao: null,
-      },
-      {
-        nome_material: "Vale Alimentação",
-        descricao: null,
-      },
-      {
-        nome_material: "Vale Refeição",
-        descricao: null,
-      },
-      {
-        nome_material: "Vale Transporte",
-        descricao: null,
-      },
-      {
-        nome_material: "Máscara COVID 19",
-        descricao: "Máscara a ser utilizada na prevenção do COVID19",
-      },
-    ],
-    []
-  );
+  const data = useMemo(() => materiaisFromBd, [materiaisFromBd]);
 
   const formAddMaterial = useForm({
     mode: "onChange",
@@ -185,8 +129,113 @@ export default function Cadastro({ entity, ...props }) {
     control: formAddMaterial.control,
   });
 
-  const onSubmit = (formData) => {
-    console.log(formData);
+  const onSubmitMaterial = (formData, e) => {
+    formSubmit.onOpen();
+    e.preventDefault();
+    if (selectedRow) {
+      formData.id = selectedRow.id;
+      return (
+        axios
+          //.put(`/api/${entity}/materiais`, formData)
+          .put(getBackendRoute(entity, "materiais"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              formSubmit.onClose();
+              addMaterial.onClose();
+              setSelectedRow(null);
+              formAddMaterial.reset({});
+              toast({
+                title: "Material atualizado com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            if (error.response.status === 409) {
+              formSubmit.onClose();
+              toast({
+                title: "Material já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
+    }
+    axios
+      //.post(`/api/${entity}/materiais`, formData)
+      .post(getBackendRoute(entity, "materiais"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          formSubmit.onClose();
+          addMaterial.onClose();
+          setSelectedRow(null);
+          formAddMaterial.reset({});
+          toast({
+            title: "Material adicionado com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.response.status === 409) {
+          formSubmit.onClose();
+          toast({
+            title: "Material já existe",
+            status: "error",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        } else {
+          throw new Error(error.response.data);
+        }
+      });
+  };
+
+  const deleteMaterial = (formData) => {
+    formSubmit.onOpen();
+    axios
+      // .delete(`/api/${entity}/materiais`, {
+      //   params: {
+      //     id: formData.id,
+      //   },
+      // })
+      .delete(getBackendRoute(entity, "materiais"), {
+        params: {
+          id: formData.id,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          excluirMaterial.onClose();
+          formSubmit.onClose();
+          setSelectedRow(null);
+          toast({
+            title: "Material excluído com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -198,15 +247,33 @@ export default function Cadastro({ entity, ...props }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
+  useEffect(() => {
+    fetchTableData.onOpen();
+    axios
+      //.get(`/api/${entity}/materiais`)
+      .get(getBackendRoute(entity, "materiais"))
+      .then((res) => {
+        if (res.status === 200) {
+          setMateriaisFromBd(res.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
+      .finally(fetchTableData.onClose);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addMaterial.isOpen, excluirMaterial.isOpen]);
+
   return (
     <AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
       <Flex justifyContent="space-between" alignItems="center" pb={5}>
-        <Heading size="md">Materiais</Heading>
+        <Heading fontSize="1.4rem">Materiais</Heading>
         <Button
           colorScheme="brand1"
           shadow="md"
           leftIcon={<FiPlus />}
-          onClick={addMaterialOnOpen}
+          onClick={addMaterial.onOpen}
         >
           Adicionar
         </Button>
@@ -225,30 +292,34 @@ export default function Cadastro({ entity, ...props }) {
       <ScaleFade in={!fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
         <Table data={data} columns={columns} />
       </ScaleFade>
+
+      {/* Adicionar/editar material Overlay  */}
       <Overlay
         onClose={() => {
-          addMaterialOnClose();
+          addMaterial.onClose();
           if (selectedRow) {
-            formAddMaterial.reset({});
             setSelectedRow(null);
           }
+          formAddMaterial.reset({});
         }}
-        isOpen={addMaterialIsOpen}
+        isOpen={addMaterial.isOpen}
         header={selectedRow ? "Editar Material" : "Adicionar Material"}
         closeButton
       >
-        <chakra.form onSubmit={formAddMaterial.handleSubmit(onSubmit)}>
+        <chakra.form onSubmit={formAddMaterial.handleSubmit(onSubmitMaterial)}>
           <Stack spacing={4}>
             <InputBox
-              id="nome_material"
+              id="nome"
               label="Nome do Material"
               formControl={formAddMaterial}
+              defaultValue={selectedRow?.nome}
             />
             <InputTextBox
               id="descricao"
               label="Descrição"
               formControl={formAddMaterial}
               required={false}
+              defaultValue={selectedRow?.descricao}
             />
           </Stack>
           <HStack py={6} justifyContent="flex-end">
@@ -265,6 +336,71 @@ export default function Cadastro({ entity, ...props }) {
           </HStack>
         </chakra.form>
       </Overlay>
+
+      {/* Excluir material Modal  */}
+      <Modal
+        closeOnOverlayClick={false}
+        closeOnEsc={false}
+        isOpen={excluirMaterial.isOpen}
+        isCentered
+        size="lg"
+        trapFocus={false}
+        onClose={excluirMaterial.onClose}
+        onCloseComplete={() => setSelectedRow(null)}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box>Excluir Formação</Box>{" "}
+            <Icon
+              as={FiTrash2}
+              color="white"
+              bg="red.500"
+              rounded="lg"
+              shadow="lg"
+              boxSize={10}
+              p={2}
+            />
+          </ModalHeader>
+          <Divider />
+          <ModalBody pb={6}>
+            <VStack my={3} spacing={6}>
+              <Heading size="md">Deseja excluir o seguinte template?</Heading>
+              <Text fontSize="xl" align="center">
+                {selectedRow?.nome}
+              </Text>
+              <HStack>
+                <Button
+                  colorScheme="red"
+                  variant="outline"
+                  onClick={() => {
+                    deleteMaterial(selectedRow);
+                    setSelectedRow(null);
+                  }}
+                  isLoading={formSubmit.isOpen}
+                  loadingText="Aguarde"
+                >
+                  Excluir
+                </Button>
+                <Button
+                  colorScheme="brand1"
+                  variant="outline"
+                  onClick={() => {
+                    excluirMaterial.onClose();
+                    setSelectedRow(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </HStack>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </AnimatePresenceWrapper>
   );
 }
@@ -297,5 +433,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-Cadastro.auth = false;
+Cadastro.auth = true;
 Cadastro.dashboard = true;

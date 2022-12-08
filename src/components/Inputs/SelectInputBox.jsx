@@ -4,7 +4,8 @@ import {
   FormLabel,
   FormErrorMessage,
   Skeleton,
-  // Select
+  InputRightElement,
+  InputGroup,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useEffect } from "react";
@@ -54,6 +55,7 @@ export function SelectInputBox({
   colorScheme = "brand1",
   bg,
   defaultValue,
+  inputRightElement,
   ...props
 }) {
   const chakraStyles = {
@@ -61,6 +63,7 @@ export function SelectInputBox({
       ...provided,
       shadow: state.isFocused ? "inner" : shadow,
       bg: bg,
+      w: "full",
       _focus: {
         boxShadow: state.isFocused
           ? `0 0 0 1px var(--chakra-colors-${colorScheme}-500)`
@@ -74,10 +77,15 @@ export function SelectInputBox({
           : "gray.200",
       },
     }),
+    container: (provided) => ({
+      ...provided,
+      w: "100%",
+    }),
   };
   useEffect(() => {
     if (Array.isArray(defaultValue))
       setValue(id, isMulti ? defaultValue : defaultValue[0]?.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -85,31 +93,38 @@ export function SelectInputBox({
       <FormControl id={id} isInvalid={errors[id]}>
         {label && <FormLabel>{label}</FormLabel>}
         <Skeleton isLoaded={isLoaded} fadeDuration={0.5}>
-          <Select
-            placeholder={placeholder}
-            {...register(id, {
-              required: required,
-              validate: (value) => {
-                if (required === false) {
-                  return true;
-                } else {
-                  return value?.length >= 1 || "Obrigatório";
-                }
-              },
-            })}
-            defaultValue={defaultValue}
-            {...props}
-            shadow={shadow}
-            options={options}
-            onChange={(e) => {
-              setValue(id, isMulti ? e : e.value);
-              trigger(id);
-            }}
-            isMulti={isMulti}
-            noOptionsMessage={() => "Sem opções"}
-            closeMenuOnSelect={!isMulti}
-            chakraStyles={chakraStyles}
-          ></Select>
+          <InputGroup>
+            <Select
+              placeholder={placeholder}
+              {...register(id, {
+                required: required,
+                validate: (value) => {
+                  if (required === false) {
+                    return true;
+                  } else {
+                    return value?.length >= 1 || "Obrigatório";
+                  }
+                },
+              })}
+              defaultValue={defaultValue}
+              {...props}
+              shadow={shadow}
+              options={options}
+              onChange={(e) => {
+                setValue(id, isMulti ? e : e.value);
+                trigger(id);
+              }}
+              isMulti={isMulti}
+              noOptionsMessage={() => "Sem opções"}
+              closeMenuOnSelect={!isMulti}
+              chakraStyles={chakraStyles}
+              
+            />
+
+            {inputRightElement && (
+              <InputRightElement me={14}>{inputRightElement}</InputRightElement>
+            )}
+          </InputGroup>
         </Skeleton>
         <FormErrorMessage>{errors[id]?.message}</FormErrorMessage>
       </FormControl>

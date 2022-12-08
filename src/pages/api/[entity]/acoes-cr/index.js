@@ -103,10 +103,14 @@ const getAcoesCr = async (req, res) => {
 
 const addAcaoCr = async (req, res) => {
   const { entity } = req.query;
-  const { nome, tipo, descricao, benefAssoc } = req.body;
+  const { nome, tipo, descricao, benefAssoc, colabAcaoCR } = req.body;
 
-  const benefMatriculas = benefAssoc.map((benef) => parseInt(benef.value));
-  const benefCPFs = benefAssoc.map((benef) => benef.value.toString());
+  const benefMatriculas = benefAssoc
+    .filter(({ value }) => value)
+    .map((benef) => parseInt(benef.value));
+  const benefCPFs = benefAssoc
+    .filter(({ value }) => value)
+    .map((benef) => benef.value.toString());
 
   try {
     const table = `${entity}_Acoes_Cr`;
@@ -137,6 +141,31 @@ const addAcaoCr = async (req, res) => {
         benefAssoc: {
           connect: benefToConnectAcao.map(({ id }) => ({ id })),
         },
+        colabCr: {
+          connect: colabAcaoCR.map(({ value }) => ({ id: value })),
+        },
+      },
+    });
+
+    await prisma.ba_Historico.create({
+      data: {
+        // categoria: "Ação CR",
+        descricao: `Criação da ação: ${query.nome}`,
+        beneficiario: {
+          connect: query.benefAssoc.map(({ id }) => ({ id })),
+        },
+        acoesCr: {
+          connect: {
+            id: query.id,
+          },
+        },
+        tipoHistorico_Id: (
+          await prisma.ba_Historico_Tipo.findFirst({
+            where: {
+              nome: "Ação CR",
+            },
+          })
+        ).id,
       },
     });
 
@@ -157,9 +186,12 @@ const addAcaoCr = async (req, res) => {
 const modifyAcaoCr = async (req, res) => {
   const { entity } = req.query;
   const { id, nome, tipo, descricao, benefAssoc, colabAcaoCR } = req.body;
-  const benefMatriculas = benefAssoc.map((benef) => parseInt(benef.value));
-  const benefCPFs = benefAssoc.map((benef) => benef.value.toString());
-  const colabMatriculas = colabAcaoCR.map((colab) => parseInt(colab.value));
+  const benefMatriculas = benefAssoc
+    .filter(({ value }) => value)
+    .map((benef) => parseInt(benef.value));
+  const benefCPFs = benefAssoc
+    .filter(({ value }) => value)
+    .map((benef) => benef.value.toString());
 
   try {
     const table = `${entity}_Acoes_Cr`;
@@ -191,7 +223,7 @@ const modifyAcaoCr = async (req, res) => {
           set: benefToConnectAcao.map(({ id }) => ({ id })),
         },
         colabCr: {
-          set: colabMatriculas.map((value) => ({ matriculaFlem: value })),
+          set: colabAcaoCR.map(({ value }) => ({ id: value })),
         },
       },
       include: {
@@ -199,6 +231,28 @@ const modifyAcaoCr = async (req, res) => {
       },
       where: {
         id,
+      },
+    });
+
+    await prisma.ba_Historico.create({
+      data: {
+        // categoria: "Ação CR",
+        descricao: `Modificação da ação: ${query.nome}`,
+        beneficiario: {
+          connect: query.benefAssoc.map(({ id }) => ({ id })),
+        },
+        acoesCr: {
+          connect: {
+            id: query.id,
+          },
+        },
+        tipoHistorico_Id: (
+          await prisma.ba_Historico_Tipo.findFirst({
+            where: {
+              nome: "Ação CR",
+            },
+          })
+        ).id,
       },
     });
 
@@ -229,6 +283,29 @@ const deleteAcaoCr = async (req, res) => {
         id,
       },
     });
+
+    await prisma.ba_Historico.create({
+      data: {
+        // categoria: "Ação CR",
+        descricao: `Exclusão da ação: ${query.nome}`,
+        beneficiario: {
+          connect: query.benefAssoc.map(({ id }) => ({ id })),
+        },
+        acoesCr: {
+          connect: {
+            id: query.id,
+          },
+        },
+        tipoHistorico_Id: (
+          await prisma.ba_Historico_Tipo.findFirst({
+            where: {
+              nome: "Ação CR",
+            },
+          })
+        ).id,
+      },
+    });
+
     return res.status(200).json(query);
   } catch (error) {
     return res.status(500).json({ error: error });

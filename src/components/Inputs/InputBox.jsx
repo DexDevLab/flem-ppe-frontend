@@ -6,6 +6,7 @@ import {
   FormErrorMessage,
   Skeleton,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 
 /**
  * Cria uma Inpux Box multiuso.
@@ -49,12 +50,19 @@ export function InputBox({
   validate,
   isLoaded = true,
   onChange,
-  value,
+  defaultValue,
   shadow = "md",
   colorScheme = "brand1",
   ...props
 }) {
-  value ? setValue(id, value) : null;
+  useEffect(() => {
+    if (defaultValue) {
+      setValue(id, defaultValue);
+      trigger(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValue]);
+
   return (
     <Box px={0.5}>
       <FormControl id={id} isInvalid={errors[id]}>

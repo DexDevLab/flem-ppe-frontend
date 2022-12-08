@@ -1,4 +1,3 @@
-import { popperCSSVars } from "@chakra-ui/react";
 import { prisma } from "services/prisma/prismaClient";
 
 const allowCors = (fn) => async (req, res) => {

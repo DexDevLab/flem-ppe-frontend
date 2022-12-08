@@ -37,50 +37,12 @@ export function EmailEditor({
   isLoaded = true,
   loadOnEditor,
   colorScheme = "brand1",
+  parametros,
   ...props
 }) {
-  const atValues = [
-    {
-      id: "nome_beneficiario",
-      value: "Nome do Beneficiário",
-    },
-    {
-      id: "codigo_oficio",
-      value: "Codigo do Oficio",
-    },
-    {
-      id: "unidade_lotacao",
-      value: "Unidade de Lotação",
-    },
-    {
-      id: "logr_unidade_lotacao",
-      value: "Logradouro da Unidade de Lotação",
-    },
-    {
-      id: "bairr_unidade_lotacao",
-      value: "Bairro da Unidade de Lotação",
-    },
-    {
-      id: "munic_vaga",
-      value: "Município da Vaga",
-    },
-    {
-      id: "ponto_focal_unidade",
-      value: "Ponto Focal da Unidade",
-    },
-    {
-      id: "sigl_demandante",
-      value: "Sigla do Demandante",
-    },
-    {
-      id: "form_beneficiario",
-      value: "Formação do Beneficiário",
-    },
-  ];
-
   async function suggestPeople(searchTerm) {
-    return atValues.filter((person) => {
-      return person.value
+    return parametros.filter((parametro) => {
+      return parametro.value
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
@@ -116,8 +78,10 @@ export function EmailEditor({
         mentionDenotationChars: ["@"],
         attributes: { bold: true },
         source: async function (searchTerm, renderList) {
-          const matchedPeople = await suggestPeople(searchTerm);
-          renderList(matchedPeople);
+          if (_.isArray(parametros)) {
+            const matchedPeople = await suggestPeople(searchTerm);
+            renderList(matchedPeople);
+          }
         },
       },
     },
@@ -163,7 +127,7 @@ export function EmailEditor({
 
     // <Box>
     <>
-      <Box p={2} h="full">
+      <Box p={0.5} h="full">
         <FormControl id={id} isInvalid={errors[id]} w="100%" h="100%">
           <Flex
             justifyContent="space-between"

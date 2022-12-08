@@ -130,6 +130,13 @@ export default forwardRef(function ChakraTagInput(
     trigger(id);
   }, [tags]);
 
+  useEffect(() => {
+    if (defaultValues) {
+      setValue(id, tags);
+      trigger(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <Box>
       <FormControl id={id} isInvalid={errors[id]}>

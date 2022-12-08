@@ -1,39 +1,39 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  VStack,
-  Divider,
+  Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
+  ModalOverlay,
   ScaleFade,
-  Center,
   Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
 import { InputBox } from "components/Inputs/InputBox";
 import { SelectInputBox } from "components/Inputs/SelectInputBox";
-import { useForm, useFormState } from "react-hook-form";
-import { axios } from "services/apiService";
 import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 export default function Formacoes({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -126,40 +126,44 @@ export default function Formacoes({ entity, ...props }) {
     e.preventDefault();
     if (selectedRow) {
       formData.id = selectedRow.id;
-      return axios
-        .put(`/api/${entity}/formacoes`, formData)
-        .then((res) => {
-          if (res.status === 200) {
-            formSubmit.onClose();
-            addFormacao.onClose();
-            setSelectedRow(null);
-            formAddFormacao.reset({});
-            toast({
-              title: "Formação atualizada com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            formSubmit.onClose();
-            toast({
-              title: "Formação já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/formacoes`, formData)
+          .put(getBackendRoute(entity, "formacoes"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              formSubmit.onClose();
+              addFormacao.onClose();
+              setSelectedRow(null);
+              formAddFormacao.reset({});
+              toast({
+                title: "Formação atualizada com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 409) {
+              formSubmit.onClose();
+              toast({
+                title: "Formação já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
-      .post(`/api/${entity}/formacoes`, formData)
+      //.post(`/api/${entity}/formacoes`, formData)
+      .post(getBackendRoute(entity, "formacoes"), formData)
       .then((res) => {
         if (res.status === 200) {
           formSubmit.onClose();
@@ -186,7 +190,7 @@ export default function Formacoes({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -195,7 +199,8 @@ export default function Formacoes({ entity, ...props }) {
     e.preventDefault();
     eixoFormacaoFormSubmit.onOpen();
     axios
-      .post(`/api/${entity}/formacoes/eixos`, formData)
+      //.post(`/api/${entity}/formacoes/eixos`, formData)
+      .post(getBackendRoute(entity, "formacoes/eixos"), formData)
       .then((res) => {
         if (res.status === 200) {
           eixoFormacaoFormSubmit.onClose();
@@ -222,7 +227,7 @@ export default function Formacoes({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -230,7 +235,12 @@ export default function Formacoes({ entity, ...props }) {
   const deleteFormacao = (formData) => {
     formSubmit.onOpen();
     axios
-      .delete(`/api/${entity}/formacoes`, {
+      // .delete(`/api/${entity}/formacoes`, {
+      //   params: {
+      //     id: formData.id,
+      //   },
+      // })
+      .delete(getBackendRoute(entity, "formacoes"), {
         params: {
           id: formData.id,
         },
@@ -249,7 +259,10 @@ export default function Formacoes({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -264,20 +277,25 @@ export default function Formacoes({ entity, ...props }) {
   useEffect(() => {
     fetchTableData.onOpen();
     axios
-      .get(`/api/${entity}/formacoes`)
+      //.get(`/api/${entity}/formacoes`)
+      .get(getBackendRoute(entity, "formacoes"))
       .then((res) => {
         if (res.status === 200) {
           setFormacoesFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addFormacao.isOpen, addFormacao.isOpen, excluirFormacao.isOpen]);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/formacoes/eixos`)
+      //.get(`/api/${entity}/formacoes/eixos`)
+      .get(getBackendRoute(entity, "formacoes/eixos"))
       .then((res) => {
         if (res.status === 200) {
           setEixosFromBd(
@@ -289,7 +307,10 @@ export default function Formacoes({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addFormacao.isOpen, addEixoFormacao.isOpen]);
 
@@ -297,7 +318,7 @@ export default function Formacoes({ entity, ...props }) {
     <>
       <AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
         <Flex justifyContent="space-between" alignItems="center" pb={5}>
-          <Heading size="md">Formações</Heading>
+          <Heading fontSize="1.4rem">Formações</Heading>
           <Button
             colorScheme="brand1"
             shadow="md"
@@ -462,7 +483,7 @@ export default function Formacoes({ entity, ...props }) {
           <Divider />
           <ModalBody pb={6}>
             <VStack my={3} spacing={6}>
-              <Heading size="md">Deseja excluir o seguinte template?</Heading>
+              <Heading size="md">Deseja excluir a seguinte formação?</Heading>
               <Text fontSize="xl" align="center">
                 {selectedRow?.nome}
               </Text>
@@ -521,5 +542,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-Formacoes.auth = false;
+Formacoes.auth = true;
 Formacoes.dashboard = true;

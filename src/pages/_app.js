@@ -2,22 +2,20 @@
  * Inicialização da aplicação.
  */
 
-import { ChakraProvider, extendTheme, CSSReset } from "@chakra-ui/react";
+import { ChakraProvider, CSSReset } from "@chakra-ui/react";
 import { SessionProvider, useSession } from "next-auth/react";
-import { StateMachineProvider, createStore } from "little-state-machine";
 import { Global, css } from "@emotion/react";
 import Head from "next/head";
 import theme from "styles/theme";
 import { DashboardLayout } from "components/Layout/DashboardLayout";
-import "styles/editor.css"
-import "styles/pagePrint.css"
-
-const myTheme = extendTheme(theme);
+import "styles/editor.css";
+import "styles/pagePrint.css";
+import { useRouter } from "next/router";
 
 /**
  * Aplica estilo global sobre as páginas.
- * @param {Component} 
- * @returns 
+ * @param {Component}
+ * @returns
  */
 const GlobalStyle = ({ children }) => (
   <>
@@ -41,7 +39,6 @@ const GlobalStyle = ({ children }) => (
   </>
 );
 
-createStore({});
 const appName = "Portal PPE";
 
 /**
@@ -51,57 +48,46 @@ const appName = "Portal PPE";
  * @returns Renderização da página e da aplicação
  */
 function MyApp({ Component, pageProps: { session, ...pageProps }, router }) {
-  console.log(Component.dashboard);
   return (
-    <ChakraProvider theme={myTheme}>
-      {/* <AnimatePresence>
-        <motion.div
-          key={router.route}
-          initial="pageInitial"
-          animate="pageAnimate"
-          exit="pageExit"
-          variants={variants}
-        > */}
+    <ChakraProvider theme={theme}>
       <GlobalStyle />
       <SessionProvider session={session}>
-        <StateMachineProvider>
-          {Component.auth && (
-            <Auth>
-              {Component.dashboard ? (
-                <DashboardLayout appName={appName} {...pageProps}>
-                  <Component {...pageProps} />
-                </DashboardLayout>
-              ) : (
+        {Component.auth && (
+          <Auth>
+            {Component.dashboard ? (
+              <DashboardLayout appName={appName} {...pageProps}>
                 <Component {...pageProps} />
-              )}
-            </Auth>
-          )}
-          {!Component.auth && Component.dashboard ? (
-            <DashboardLayout appName={appName} {...pageProps}>
+              </DashboardLayout>
+            ) : (
               <Component {...pageProps} />
-            </DashboardLayout>
-          ) : (
+            )}
+          </Auth>
+        )}
+        {!Component.auth && Component.dashboard && (
+          <DashboardLayout appName={appName} {...pageProps} {...pageProps}>
             <Component {...pageProps} />
-          )}
-        </StateMachineProvider>
+          </DashboardLayout>
+        )}
+        {!Component.auth && !Component.dashboard && (
+          <Component {...pageProps} />
+        )}
       </SessionProvider>
-      {/* </motion.div>
-      </AnimatePresence> */}
     </ChakraProvider>
   );
 }
 
 function Auth({ children }) {
-  const { data: session, status } = useSession({ required: true });
+  const env = process.env.NODE_ENV;
+  const { data: session, status } = useSession({ required: env  === "production" });
   const isUser = !!session?.user;
-
-  if (isUser) {
+  
+  if (isUser || env  === "development") {
     return children;
   }
 
   // Session is being fetched, or no user.
   // If no user, useEffect() will redirect.
-  return <div>Carregando essa página....</div>;
+  return <div></div>;
 }
 
 export default MyApp;

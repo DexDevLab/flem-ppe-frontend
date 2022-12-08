@@ -3,6 +3,8 @@ import {
   FiCalendar,
   FiFileText,
   FiHome,
+  FiList,
+  FiMapPin,
   FiPackage,
   FiUsers,
 } from "react-icons/fi";
@@ -11,7 +13,11 @@ import {
   HiOutlineOfficeBuilding,
   HiOutlineUserGroup,
 } from "react-icons/hi";
-import { TbBuildingCommunity, TbPerspective } from "react-icons/tb";
+import {
+  TbBrandTelegram,
+  TbBuildingCommunity,
+  TbPerspective,
+} from "react-icons/tb";
 import { MdWorkOutline } from "react-icons/md";
 import { BiBuildings } from "react-icons/bi";
 
@@ -51,19 +57,29 @@ export const sidebarData = [
       //   ]
       // },
       {
+        title: "Unidades de Lotação",
+        icon: FiMapPin,
+        href: "/unidade-lotacao",
+      },
+      {
         title: "Escritórios Regionais",
         icon: HiOutlineOfficeBuilding,
         href: "/escritorios-regionais",
       },
-      {
-        title: "Monitores",
-        icon: HiOutlineUserGroup,
-        href: "/monitores",
-      },
+      // {
+      //   title: "Monitores",
+      //   icon: HiOutlineUserGroup,
+      //   href: "/monitores",
+      // },
       {
         title: "Materiais",
         icon: FiPackage,
         href: "/materiais",
+      },
+      {
+        title: "Tipos de Histórico",
+        icon: FiList,
+        href: "/tipo-historico",
       },
       {
         title: "Formações",
@@ -71,21 +87,9 @@ export const sidebarData = [
         href: "/formacoes",
       },
       {
-        title: "Ofícios",
+        title: "Templates de Ofícios",
         icon: FiFileText,
-        href: "/oficios",
-        subItems: [
-          {
-            title: "Templates",
-            icon: FiFileText,
-            href: "/templates",
-          },
-          {
-            title: "Parâmetros",
-            icon: FiFileText,
-            href: "/parametros",
-          },
-        ],
+        href: "/templates-oficios",
       },
       {
         title: "Situações de Vaga",
@@ -96,6 +100,11 @@ export const sidebarData = [
         title: "Eventos",
         icon: FiCalendar,
         href: "/eventos",
+      },
+      {
+        title: "Colaboradores CR",
+        icon: FiUsers,
+        href: "/colaboradores-cr",
       },
       {
         title: "Ações CR",
@@ -119,6 +128,11 @@ export const sidebarData = [
       //     },
       //   ]
       // },
+      {
+        title: "Comunicados",
+        icon: TbBrandTelegram,
+        href: "/comunicados",
+      },
       {
         title: "Envio de Ofícios",
         icon: FiFileText,

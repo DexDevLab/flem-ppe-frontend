@@ -1,21 +1,17 @@
 import {
   Badge,
   Box,
-  Button,
-  Center,
   Flex,
+  FormLabel,
   IconButton,
-  Portal,
   Progress,
-  Stack,
   Tag,
   TagLabel,
   Text,
 } from "@chakra-ui/react";
-import { axios } from "services/apiService";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FiTrash } from "react-icons/fi";
+import { FiDownload, FiTrash } from "react-icons/fi";
 
 const getColor = (props) => {
   if (props.isDragAccept) {
@@ -36,12 +32,26 @@ export function Dropzone({
   onUploadProgress,
   setUploadProgress,
   uploadController,
+  label,
+  id,
+  defaultValue = [],
+  formControl: {
+    trigger,
+    formState: { errors },
+    register,
+    setValue,
+  },
+  validate = (v) => true,
+  maxFiles = 4,
+  multiple = false,
+  ...rest
 }) {
   const [myFiles, setMyFiles] = useState([]);
 
   const onDrop = useCallback(
     (acceptedFiles) => {
       setMyFiles([...myFiles, ...acceptedFiles]);
+      trigger(id);
     },
     [myFiles]
   );
@@ -56,6 +66,8 @@ export function Dropzone({
   } = useDropzone({
     onDrop,
     noClick: true,
+    maxFiles,
+    multiple,
   });
 
   const removeFile = (file) => () => {
@@ -70,10 +82,18 @@ export function Dropzone({
   };
 
   useEffect(() => {
+    if (defaultValue) {
+      setMyFiles(defaultValue);
+    }
     return () => {
       removeAll();
     };
   }, []);
+
+  useEffect(() => {
+    setValue(id, myFiles);
+    trigger(id);
+  }, [myFiles]);
 
   const files = myFiles.map((file) => (
     <Tag
@@ -87,15 +107,25 @@ export function Dropzone({
     >
       <TagLabel display="flex" alignItems="center" ms={1}>
         {file.name}{" "}
+        {defaultValue.find((def) => def.name === file.name) && (
+          <IconButton
+            colorScheme={colorScheme}
+            icon={<FiDownload />}
+            onClick={removeFile(file)}
+            variant="ghost"
+            rounded="full"
+            size="sm"
+            ms={1}
+            _focus={{ bg: "transparent" }}
+          />
+        )}
         <IconButton
           colorScheme={colorScheme}
           icon={<FiTrash />}
           onClick={removeFile(file)}
           variant="ghost"
           rounded="full"
-          size="xs"
-          p={1}
-          ms={1}
+          size="sm"
           _focus={{ bg: "transparent" }}
         />
       </TagLabel>
@@ -103,6 +133,7 @@ export function Dropzone({
   ));
   return (
     <>
+      {label && <FormLabel>{label}</FormLabel>}
       <Box
         p={4}
         alignItems="center"
@@ -115,15 +146,28 @@ export function Dropzone({
         transition="all .24s ease-in-out"
         {...getRootProps()}
         onClick={() => (myFiles.length > 0 ? null : open())}
+        {...rest}
       >
         <Flex flexDir="column" alignItems="center">
-          <input {...getInputProps()} />
+          <input
+            {...getInputProps()}
+            {...register(id, {
+              validate,
+            })}
+          />
           {files.length === 0 && (
             <Text align="center">
               Arraste e solte os arquivos aqui, ou clique para selecionar
             </Text>
           )}
-          {files.length > 0 && <Text>Arquivos para Upload</Text>}
+          {files.length > 0 &&
+            (myFiles.filter((file) =>
+              defaultValue.find((def) => def.name === file.name)
+            ).length === 0 ? (
+              <Text>Arquivos para Upload</Text>
+            ) : (
+              <Text>Arquivos Anexados</Text>
+            ))}
           <Box>{files.length > 0 && <>{files}</>}</Box>
         </Flex>
         {onUploadProgress && (
@@ -170,23 +214,6 @@ export function Dropzone({
           </Progress>
         )}
       </Box>
-      {files.length > 0 && onUploadProgress < 100 && (
-        <Flex justifyContent="flex-end" pt={4}>
-          <Button
-            colorScheme={onUploadProgress ? "red" : "brand1"}
-            variant="outline"
-            onClick={() => {
-              if (onUploadProgress) {
-                uploadController.abort("cancelled");
-              } else {
-                onSubmit(myFiles);
-              }
-            }}
-          >
-            {!onUploadProgress ? "Upload" : "Cancelar"}
-          </Button>
-        </Flex>
-      )}
     </>
   );
 }
