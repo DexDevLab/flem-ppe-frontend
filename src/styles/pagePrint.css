@@ -2,7 +2,7 @@
 
 .page-header,
 .page-header-space {
-  height: 100px;
+  height: 50px;
   /* margin-bottom: 0.5rem; */
 }
 
@@ -16,16 +16,15 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  border-top: 1px solid black; /* for demo */
-  background: yellow; /* for demo */
+  margin-bottom: 2.5rem;
+  padding-top: 1rem;
+  height: 60px;
 }
 
 .page-header {
   position: fixed;
   top: 0mm;
   width: 100%;
-  border-bottom: 1px solid black; /* for demo */
-  background: yellow; /* for demo */
 }
 
 .page {
@@ -48,7 +47,7 @@
   height: 90%;
 }
 
-div.ql-container.ql-snow[aria-invalid='true'] {
+div.ql-container.ql-snow[aria-invalid="true"] {
   box-shadow: 0 0 0 0;
   border-color: var(--chakra-colors-red-400) !important;
 }
@@ -61,11 +60,19 @@ div.ql-container.ql-snow[aria-invalid='true'] {
   background-color: var(--chakra-colors-gray-200);
   border-radius: 8px;
   margin-bottom: 8px;
-  
+}
+
+[size="A4"] {
+  max-width: 21cm;
+  max-height: 29.7cm;
+}
+[size="A4-Landscape"] {
+  max-width: 29.7cm;
+  max-height: 21cm;
 }
 
 @page {
-  margin: 20mm;
+  margin: 12mm;
 }
 
 @media print {
@@ -82,6 +89,7 @@ div.ql-container.ql-snow[aria-invalid='true'] {
 
   body {
     margin: 0;
+    background: #fff !important;
   }
 
   .ql-container.ql-snow {

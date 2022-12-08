@@ -5,13 +5,19 @@ export function CellInput({
   value: initialValue,
   row: { index },
   column: { id },
+  mask,
+  required,
   updateMyData, // This is a custom function that we supplied to our table instance
 }) {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
 
   const onChange = (e) => {
-    setValue(e.target.value);
+    if (mask) {
+      setValue(mask(e.target.value));
+    } else {
+      setValue(e.target.value);
+    }
   };
 
   // We'll only update the external data when the input is blurred
@@ -26,14 +32,19 @@ export function CellInput({
 
   return (
     <Input
-      value={value.replace("*", "")}
+      value={value.toString().length ? value.toString().replace("*", "") : ""}
       onChange={onChange}
       onBlur={onBlur}
       variant="flushed"
       w="36"
       rounded="md"
-      bgColor={(value.includes("*") || value === "") && "red.200"}
-      isInvalid={value.includes("*") || value === ""}
+      bgColor={
+        ((value.length && value.includes("*")) || (required && value === "")) &&
+        "red.200"
+      }
+      isInvalid={
+        (value.length && value.includes("*")) || (required && value === "")
+      }
     />
   );
 }

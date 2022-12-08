@@ -1,4 +1,4 @@
-import { prisma } from "services/prisma/prismaClient";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -39,12 +39,12 @@ const modifyMunicipiosMonitoresEscrReg = async (req, res) => {
   const { id, municipios = [], monitores = [] } = req.body;
 
   const tableEscritorios = `${entity}_Escritorio_Regional`;
-
+  
   try {
     const query = await prisma[tableEscritorios].update({
       data: {
         municipios: {
-          set: municipios.map((municipio) => ({ idIBGE: municipio.value })),
+          set: municipios.map((municipio) => ({ id: municipio.value })),
         },
         monitores: {
           set: monitores.map((monitor) => ({ id: monitor.value })),

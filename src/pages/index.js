@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 export default function Home() {
-  // const router = useRouter();
-  // useEffect(() => {
-  //   router.push("/dashboard");
-  // }, []);
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/ba");
+  }, []);
   return <>Aguarde...</>;
 }

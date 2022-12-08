@@ -1,14 +1,21 @@
 {
   "name": "portal_ppe_flem",
   "private": true,
-  "version": "0.0.17-220727dx",
-  "license": "MIT",
+  "version": "v0.0.33-220916",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
-    "docs": "jsdoc --readme README.md -c jsdoc-config.json"
+    "docs": "jsdoc --readme README.md -c jsdoc-config.json",
+    "db-push:dev": "dotenv -e .env.development -- yarn prisma db push",
+    "db-seed:dev": "dotenv -e .env.development -- yarn prisma db seed",
+    "studio:dev": "dotenv -e .env.development -- yarn prisma studio",
+    "docker:build:qa": "docker build . -t ghcr.io/frtechdev/flem-ppe-frontend:qa",
+    "docker:push:qa": "docker push ghcr.io/frtechdev/flem-ppe-frontend:qa"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@chakra-ui/icons": "1.1.1",
@@ -16,18 +23,24 @@
     "@deevotechvn/quill-mention": "^3.1.3",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11",
-    "@prisma/client": "^4.1.0",
+    "@googlemaps/google-maps-services-js": "^3.3.16",
+    "@prisma/client": "^4.3.1",
     "activedirectory": "0.7.2",
     "apexcharts": "^3.33.1",
     "axios": "^0.26.0",
     "chakra-react-select": "^4.1.3",
+    "downloadjs": "^1.4.7",
+    "eslint-plugin-react-hooks": "^4.7.0-next-3d443cad7-20220823",
     "framer-motion": "^6",
     "google-libphonenumber": "^3.2.27",
-    "little-state-machine": "4.2.1",
     "luxon": "^2.3.1",
     "masks-br": "^1.0.1",
     "next": "latest",
     "next-auth": "4.3.4",
+    "next-connect": "^0.12.2",
+    "prisma-dbml-generator": "^0.9.1",
+    "node-quill-converter": "^0.3.3",
+    "puppeteer": "^16.1.1",
     "quill": "^1.3.7",
     "react": "18.1.0",
     "react-apexcharts": "^1.3.9",
@@ -41,18 +54,17 @@
     "react-icons": "^4.3.1",
     "react-no-ssr": "^1.1.0",
     "react-quilljs": "^1.2.17",
+    "react-spinners": "^0.13.4",
     "react-table": "^7.7.0",
-    "react-to-print": "^2.14.7"
+    "react-to-print": "^2.14.7",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "clean-jsdoc-theme": "^3.3.3",
+    "dotenv-cli": "^6.0.0",
     "eslint": "8.8.0",
     "eslint-config-next": "12.0.10",
     "jsdoc": "^3.6.10",
-    "multer": "^1.4.4",
-    "multiparty": "^4.2.3",
-    "next-connect": "^0.12.2",
-    "prisma": "^4.1.0",
-    "xlsx": "^0.18.5"
+    "prisma": "^4.3.1"
   }
 }

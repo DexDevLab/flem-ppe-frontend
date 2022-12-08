@@ -1,38 +1,38 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  VStack,
-  Divider,
+  Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
+  ModalOverlay,
   ScaleFade,
-  Center,
   Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { InputBox } from "components/Inputs/InputBox";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { InputBox } from "components/Inputs/InputBox";
 import { useForm, useFormState } from "react-hook-form";
-import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios } from "services/apiService";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 export default function Demandantes({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -115,7 +115,7 @@ export default function Demandantes({ entity, ...props }) {
     if (selectedRow) {
       formData.id = selectedRow.id;
       return axios
-        .put(`/api/${entity}/demandantes`, formData)
+        .put(getBackendRoute(entity, "demandantes"), formData)
         .then((res) => {
           if (res.status === 200) {
             demandanteFormSubmit.onClose();
@@ -132,6 +132,7 @@ export default function Demandantes({ entity, ...props }) {
           }
         })
         .catch((error) => {
+          console.log("ERROR:", error.response.data);
           if (error.response.status === 409) {
             demandanteFormSubmit.onClose();
             toast({
@@ -142,12 +143,12 @@ export default function Demandantes({ entity, ...props }) {
               position,
             });
           } else {
-            throw new Error(error);
+            throw new Error(error.response.data);
           }
         });
     }
     axios
-      .post(`/api/${entity}/demandantes`, formData)
+      .post(getBackendRoute(entity, "demandantes"), formData)
       .then((res) => {
         if (res.status === 200) {
           demandanteFormSubmit.onClose();
@@ -164,6 +165,7 @@ export default function Demandantes({ entity, ...props }) {
         }
       })
       .catch((error) => {
+        console.log("ERROR:", error.response.data);
         if (error.response.status === 409) {
           demandanteFormSubmit.onClose();
           toast({
@@ -174,7 +176,7 @@ export default function Demandantes({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -182,7 +184,7 @@ export default function Demandantes({ entity, ...props }) {
   const deleteDemandante = (formData) => {
     demandanteFormSubmit.onOpen();
     axios
-      .delete(`/api/${entity}/demandantes`, {
+      .delete(getBackendRoute(entity, "demandantes"), {
         params: {
           id: formData.id,
         },
@@ -201,7 +203,10 @@ export default function Demandantes({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -216,13 +221,16 @@ export default function Demandantes({ entity, ...props }) {
   useEffect(() => {
     fetchTableData.onOpen();
     axios
-      .get(`/api/${entity}/demandantes`)
+      .get(getBackendRoute(entity, "demandantes"))
       .then((res) => {
         if (res.status === 200) {
           setDemandantesFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addDemandante.isOpen, excluir.isOpen]);
@@ -231,7 +239,7 @@ export default function Demandantes({ entity, ...props }) {
     <>
       <AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
         <Flex justifyContent="space-between" alignItems="center" pb={5}>
-          <Heading size="md">Demandantes</Heading>
+          <Heading fontSize="1.4rem">Demandantes</Heading>
           <Button
             colorScheme="brand1"
             shadow="md"
@@ -279,7 +287,7 @@ export default function Demandantes({ entity, ...props }) {
               id="sigla"
               label="Sigla"
               formControl={formDemandante}
-              defaultValue={selectedRow?.nome}
+              defaultValue={selectedRow?.sigla}
             />
             <InputBox
               id="nome"
@@ -393,5 +401,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-Demandantes.auth = false;
+Demandantes.auth = true;
 Demandantes.dashboard = true;

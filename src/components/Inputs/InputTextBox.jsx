@@ -30,12 +30,11 @@ export function InputTextBox({
 }) {
   value ? setValue(id, value) : null;
   return (
-    <Box px={0.5}>
+    <Box px={0.5} >
       <FormControl id={id} isInvalid={errors[id]}>
         <FormLabel>{label}</FormLabel>
         <Skeleton isLoaded={isLoaded} fadeDuration={0.5}>
-          <Input
-            as={Textarea}
+          <Textarea
             type={type}
             placeholder={placeholder}
             {...register(id, {
@@ -46,6 +45,7 @@ export function InputTextBox({
             colorScheme={colorScheme}
             shadow={shadow}
             {...props}
+           rows="6"
           />
         </Skeleton>
         <FormErrorMessage>{errors[id]?.message}</FormErrorMessage>

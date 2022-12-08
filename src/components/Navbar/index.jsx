@@ -3,7 +3,6 @@
  *  @module Navbar
  */
 
-
 import {
   Avatar,
   Box,
@@ -32,21 +31,20 @@ import { Component, useEffect } from "react";
 import { Logo } from "components/Logo";
 import { EditIcon } from "@chakra-ui/icons";
 import { IconBox } from "components/Icons/IconBox";
-import { getSession, signOut } from "next-auth/react";
-
+import { useSession, signOut } from "next-auth/react";
 
 /**
-   * Monta a Navbar.
-   * @method Navbar
-   * @memberof module:Navbar
-   * @param {Object} appName nome de exibição na Navbar
-   * @param {Object} entities valor da "entity", que define a
-   * localização do projeto (BA ou TO)
-   * @param {Object} onclick definição de ação após o clique
-   * @param {Component} children estruturas filho da composição
-   * @returns {Component} componente estilizado.
-   * 
-   */
+ * Monta a Navbar.
+ * @method Navbar
+ * @memberof module:Navbar
+ * @param {Object} appName nome de exibição na Navbar
+ * @param {Object} entities valor da "entity", que define a
+ * localização do projeto (BA ou TO)
+ * @param {Object} onclick definição de ação após o clique
+ * @param {Component} children estruturas filho da composição
+ * @returns {Component} componente estilizado.
+ *
+ */
 export function Navbar({
   appName = "[App Name]",
   entities,
@@ -65,11 +63,12 @@ export function Navbar({
         entities.find((entity) => entity.value === defaultPath)?.value) ||
       "",
   });
+  const { data: session } = useSession();
 
   const [icon, setIcon] = useControllableState({ defaultValue: <FiLogOut /> });
   const signOutSession = () => {
     setIcon(<Icon as={Spinner} color="black" mt={1} />);
-    signOut()
+    signOut();
   };
 
   useEffect(() => {
@@ -122,7 +121,7 @@ export function Navbar({
             alignItems="center"
             justifyContent="flex-end"
           >
-            <Logo alt="logo" me={[0, 1]} h={[4, 30]} />
+            <Logo alt="logo_flem" me={[0, 1]} h={[4, 30]} />
             <Divider
               orientation="vertical"
               mx={[2, 4]}
@@ -138,30 +137,30 @@ export function Navbar({
                     display={["none", "flex"]}
                   >
                     <Heading as="h3" size="sm">
-                      Rodrigo Lima
+                      {session ? session.user.name : "Development"}
                     </Heading>
-                    <Text color="brand1">Admin</Text>
+                    {/* <Text color="brand1">Admin</Text> */}
                   </Flex>
-                  <Avatar size="md" src="https://github.com/rodsl.png" mr={1} />
-                  <FiChevronDown />
+                  <Avatar size="md" mr={1} />
+                  {session && <FiChevronDown />}
                 </Flex>
               </MenuButton>
-              <MenuList>
-                <MenuGroup title="Profile">
-                  <MenuItem>My Account</MenuItem>
+              <MenuList hidden={!session}>
+                <MenuGroup title="Opções">
+                  {/* <MenuItem>My Account</MenuItem> */}
                   <MenuItem
                     icon={icon}
                     closeOnSelect={false}
                     onClick={signOutSession}
                   >
-                    Sair{" "}
+                    Sair
                   </MenuItem>
                 </MenuGroup>
-                <MenuDivider />
+                {/* <MenuDivider />
                 <MenuGroup title="Help">
                   <MenuItem>Docs</MenuItem>
                   <MenuItem>FAQ</MenuItem>
-                </MenuGroup>
+                </MenuGroup> */}
               </MenuList>
             </Menu>
           </GridItem>

@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { prisma } from "services/prisma/prismaClient";
 
 const allowCors = (fn) => async (req, res) => {
@@ -27,9 +28,7 @@ const handler = async (req, res) => {
       break;
 
     default:
-      res
-        .status(405)
-        .send({ message: "Only GET requests allowed" });
+      res.status(405).send({ message: "Only GET requests allowed" });
       break;
   }
 };
@@ -37,7 +36,8 @@ const handler = async (req, res) => {
 export default allowCors(handler);
 
 const getMunicipios = async (req, res) => {
-  const { entity } = req.query;
+  const { entity, escritorioRegional_Id } = req.query;
+
   try {
     const table = `${entity}_Municipios`;
     const query = await prisma[table].findMany({
@@ -50,10 +50,20 @@ const getMunicipios = async (req, res) => {
         excluido: {
           equals: false,
         },
+        escritorio_RegionalId: _.isUndefined(escritorioRegional_Id)
+          ? {}
+          : {
+              in: JSON.parse(escritorioRegional_Id),
+            },
+      },
+      include: {
+        territorioIdentidade: true,
+        escritorioRegional: true,
       },
     });
     return res.status(200).json(query);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error });
   }
 };

@@ -9,6 +9,7 @@ export function SelectCellInput({
   placeholder,
   isInvalid,
   children,
+  defaultValue
 }) {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);

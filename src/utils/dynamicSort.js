@@ -1,3 +1,9 @@
+/**
+ * Máscara de CPF. Converte String no formato "12345678900" para o CPF
+ * nacional ("123.456.789-00").
+ * @param {String} cpf String contendo o CPF ou um array de CPFs
+ * @returns CPF ou array de CPFs devidamente formatado.
+ */
 export function dynamicSort(property) {
   var sortOrder = 1;
   if (property[0] === "-") {

@@ -33,3 +33,11 @@ yarn-error.log*
 # vercel
 .vercel
 yarn.lock
+src/controllers/authController/authDb.js
+.env.development
+.env.production
+.env
+
+src\services\auth\authDb.js
+src\services\auth\authDb.js
+src/services/auth/authDb.js

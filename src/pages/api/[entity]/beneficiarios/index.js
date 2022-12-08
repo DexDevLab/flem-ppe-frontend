@@ -1,5 +1,4 @@
-import axios from "axios";
-import { prisma } from "services/prisma/prismaClient";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -26,11 +25,12 @@ const handler = async (req, res) => {
     case "GET":
       await getBeneficiarios(req, res);
       break;
+    case "PATCH":
+      await patchBeneficiarios(req, res);
+      break;
 
     default:
-      res
-        .status(405)
-        .send({ message: "Only GET requests allowed" });
+      res.status(405).send({ message: "Only GET or PATCH requests allowed" });
       break;
   }
 };
@@ -41,15 +41,62 @@ const getBeneficiarios = async (req, res) => {
   const { entity } = req.query;
   try {
     const table = `${entity}_Beneficiarios`;
-    const query = await prisma[table].findMany({
+    const query = await prisma.ba_Beneficiarios.findMany({
+      // const query = await prisma[table].findMany({
       where: {
         excluido: false,
+      },
+      include: {
+        vaga: {
+          include: {
+            demandante: true,
+            municipio: {
+              include: {
+                escritorioRegional: true,
+              },
+            },
+            situacaoVaga: {
+              include: {
+                tipoSituacao: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
       orderBy: [
         {
           nome: "asc",
         },
       ],
+    });
+    return res.status(200).json(query);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: error });
+  }
+};
+
+const patchBeneficiarios = async (req, res) => {
+  const { entity } = req.query;
+  const { where, select } = req.body;
+
+  try {
+    const table = `${entity}_Beneficiarios`;
+    const query = await prisma.ba_Beneficiarios.findMany({
+      // const query = await prisma[table].findMany({
+      where: {
+        AND: [{ excluido: false }],
+        ...where,
+      },
+      select,
+      // orderBy: [
+      //   {
+      //     nome: "asc",
+      //   },
+      // ],
     });
     return res.status(200).json(query);
   } catch (error) {

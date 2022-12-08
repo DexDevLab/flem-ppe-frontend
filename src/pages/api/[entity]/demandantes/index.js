@@ -1,4 +1,5 @@
-import { prisma } from "services/prisma/prismaClient";
+import _ from "lodash";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -46,23 +47,44 @@ const handler = async (req, res) => {
 export default allowCors(handler);
 
 const getDemandantes = async (req, res) => {
-  const { entity } = req.query;
+  const { entity, municipio_Id, escritorioRegional_Id } = req.query;
+
   try {
     const table = `${entity}_Demandantes`;
     const query = await prisma[table].findMany({
       orderBy: [
         {
-          nome: "asc",
+          sigla: "asc",
         },
       ],
       where: {
         excluido: {
           equals: false,
         },
+        vagas:
+          _.isUndefined(municipio_Id) && _.isUndefined(escritorioRegional_Id)
+            ? {}
+            : {
+                some: {
+                  municipio_Id: _.isUndefined(municipio_Id)
+                    ? {}
+                    : {
+                        in: JSON.parse(municipio_Id),
+                      },
+                  municipio: _.isUndefined(escritorioRegional_Id)
+                    ? {}
+                    : {
+                        escritorio_RegionalId: {
+                          in: JSON.parse(escritorioRegional_Id),
+                        },
+                      },
+                },
+              },
       },
     });
     return res.status(200).json(query);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error });
   }
 };

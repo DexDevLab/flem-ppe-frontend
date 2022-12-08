@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Adding favicon -->
+    
+
+    <!-- Adding meta -->
+    
+    
+    <meta name="author" content="https://github.com/DexDevLab" />
+    
+    <meta name="author" content="https://github.com/rodsl" />
+    
+    <meta name="description" content="Aplicação FrontEnd para o Portal Projeto Primeiro Emprego, da FLEM" />
+    
+    
+
+    <!-- Adding external script-->
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous" ></script>
+    
+    
+
+    <!-- Adding external style-->
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous" />
+    
+    
+
+    <!-- Adding scripts-->
+    
+
+    <!-- Adding style-->
+    
+
+    <!-- Adding overlay script-->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.0/js/OverlayScrollbars.min.js"
+      integrity="sha512-5R3ngaUdvyhXkQkIqTf/k+Noq3phjmrqlUQyQYbgfI34Mzcx7vLIIYTy/K1VMHkL33T709kfh5y6R9Xy/Cbt7Q=="
+      crossorigin="anonymous"></script>
+    
+
+    <!-- Adding overlay style-->
+    
+
+
+    <title>
+      components/Table/index.jsx
+    </title>
+
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/third-party/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/third-party/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/reset.css">
+    <link type="text/css" rel="stylesheet" href="styles/clean-jsdoc-theme-base.css">
+    <link type="text/css" rel="stylesheet" href="styles/clean-jsdoc-theme-light.css">
+    
+    <style>
+      nav{background: yellow}
+    </style>
+    
+    <svg aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    style="display:none">
+    <defs>
+        <symbol id="copy-icon" viewbox="0 0 488.3 488.3">
+            <g>
+                <path
+                    d="M314.25,85.4h-227c-21.3,0-38.6,17.3-38.6,38.6v325.7c0,21.3,17.3,38.6,38.6,38.6h227c21.3,0,38.6-17.3,38.6-38.6V124    C352.75,102.7,335.45,85.4,314.25,85.4z M325.75,449.6c0,6.4-5.2,11.6-11.6,11.6h-227c-6.4,0-11.6-5.2-11.6-11.6V124    c0-6.4,5.2-11.6,11.6-11.6h227c6.4,0,11.6,5.2,11.6,11.6V449.6z" />
+                <path
+                    d="M401.05,0h-227c-21.3,0-38.6,17.3-38.6,38.6c0,7.5,6,13.5,13.5,13.5s13.5-6,13.5-13.5c0-6.4,5.2-11.6,11.6-11.6h227    c6.4,0,11.6,5.2,11.6,11.6v325.7c0,6.4-5.2,11.6-11.6,11.6c-7.5,0-13.5,6-13.5,13.5s6,13.5,13.5,13.5c21.3,0,38.6-17.3,38.6-38.6    V38.6C439.65,17.3,422.35,0,401.05,0z" />
+            </g>
+        </symbol>
+        <symbol id='search-icon' viewBox="0 0 512 512">
+            <g>
+                <g>
+                    <path
+                        d="M225.474,0C101.151,0,0,101.151,0,225.474c0,124.33,101.151,225.474,225.474,225.474    c124.33,0,225.474-101.144,225.474-225.474C450.948,101.151,349.804,0,225.474,0z M225.474,409.323    c-101.373,0-183.848-82.475-183.848-183.848S124.101,41.626,225.474,41.626s183.848,82.475,183.848,183.848    S326.847,409.323,225.474,409.323z" />
+                </g>
+            </g>
+            <g>
+                <g>
+                    <path
+                        d="M505.902,476.472L386.574,357.144c-8.131-8.131-21.299-8.131-29.43,0c-8.131,8.124-8.131,21.306,0,29.43l119.328,119.328    c4.065,4.065,9.387,6.098,14.715,6.098c5.321,0,10.649-2.033,14.715-6.098C514.033,497.778,514.033,484.596,505.902,476.472z" />
+                </g>
+            </g>
+        </symbol>
+        <symbol id="down-icon" viewBox="0 0 16 16">
+            <path 
+                fill-rule="evenodd" 
+                clip-rule="evenodd" 
+                d="M12.7803 6.21967C13.0732 6.51256 13.0732 6.98744 12.7803 7.28033L8.53033 11.5303C8.23744 11.8232 7.76256 11.8232 7.46967 11.5303L3.21967 7.28033C2.92678 6.98744 2.92678 6.51256 3.21967 6.21967C3.51256 5.92678 3.98744 5.92678 4.28033 6.21967L8 9.93934L11.7197 6.21967C12.0126 5.92678 12.4874 5.92678 12.7803 6.21967Z"
+            >
+            </path>
+        </symbol>
+    </defs>
+</svg>
+  </head>
+
+  <body>
+
+    <nav class="navbar" id="navbar">
+      <div class="navbar-heading" id="navbar-heading"><a href="index.html"><h2 class="navbar-heading-text">FLEM PPE Frontend - Documentação</h2></a></div><div class="search-box" id="search-box"><div class="search-box-input-container"><input class="search-box-input" type="text" placeholder="Search..." id="search-box-input" /><svg class="search-icon" alt="search-icon"><use xlink:href="#search-icon"></use></svg></div><div class="search-item-container" id="search-item-container"><ul class="search-item-ul" id="search-item-ul"></ul></div></div><div class="sidebar-main-content" id="sidebar-main-content"><ul><li class="menu-li"><a href='https://frtechnologies.com.br' class='some-class menu-link' id='some-id' target='_blank'>Website</a></li><li class="menu-li"><a href='https://github.com/frtechdev/flem-ppe-frontend/' class='some-class menu-link' id='some-id' target='_blank'>Github</a></li></ul><div class="accordion collapsed" id="3600790" > <h3 class="accordion-heading">Modules<svg><use xlink:href="#down-icon"></use></svg></h3><ul class="accordion-content"><li class="accordion collapsed child" id=755758><div class="accordion-heading child"><a href="module-AnimatePresenceWrapper.html">AnimatePresenceWrapper</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-AnimatePresenceWrapper.html#.AnimatePresenceWrapper">AnimatePresenceWrapper</a></li></ul></li><li class="accordion-list" id=""><a href="module-api.html">api</a></li><li class="accordion-list" id=""><a href="module-auth.html">auth</a></li><li class="accordion collapsed child" id=4846431><div class="accordion-heading child"><a href="module-Breadcrumb.html">Breadcrumb</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Breadcrumb.html#.BreadcrumbBar">BreadcrumbBar</a></li><li data-type='method'><a href="module-Breadcrumb.html#.BreadcrumbItem">BreadcrumbItem</a></li></ul></li><li class="accordion collapsed child" id=6735094><div class="accordion-heading child"><a href="module-Cards.html">Cards</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Cards.html#.Card">Card</a></li></ul></li><li class="accordion collapsed child" id=3064000><div class="accordion-heading child"><a href="module-Charts.html">Charts</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Charts.html#.LineChart">LineChart</a></li></ul></li><li class="accordion collapsed child" id=4732273><div class="accordion-heading child"><a href="module-dashboard.html">dashboard</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-dashboard.html#.Dashboard">Dashboard</a></li></ul></li><li class="accordion collapsed child" id=2369561><div class="accordion-heading child"><a href="module-Icons.html">Icons</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Icons.html#.IconBox">IconBox</a></li></ul></li><li class="accordion collapsed child" id=7448639><div class="accordion-heading child"><a href="module-Inputs.html">Inputs</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Inputs.html#.ChakraCurrencyInput">ChakraCurrencyInput</a></li><li data-type='method'><a href="module-Inputs.html#.CurrencyInputBox">CurrencyInputBox</a></li><li data-type='method'><a href="module-Inputs.html#.InputBox">InputBox</a></li><li data-type='method'><a href="module-Inputs.html#.InputBox">InputBox</a></li><li data-type='method'><a href="module-Inputs.html#.MultipleSelectInput">MultipleSelectInput</a></li><li data-type='method'><a href="module-Inputs.html#.PasswordInputBox">PasswordInputBox</a></li><li data-type='method'><a href="module-Inputs.html#.SelectInputBox">SelectInputBox</a></li></ul></li><li class="accordion collapsed child" id=8846314><div class="accordion-heading child"><a href="module-Layout.html">Layout</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Layout.html#.DashboardLayout">DashboardLayout</a></li></ul></li><li class="accordion collapsed child" id=9087139><div class="accordion-heading child"><a href="module-LDAPService.html">LDAPService</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-LDAPService.html#.authUser">authUser</a></li></ul></li><li class="accordion collapsed child" id=7533898><div class="accordion-heading child"><a href="module-Logo.html">Logo</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Logo.html#.BrandBg">BrandBg</a></li><li data-type='method'><a href="module-Logo.html#.Logo">Logo</a></li></ul></li><li class="accordion collapsed child" id=9589592><div class="accordion-heading child"><a href="module-materiais.html">materiais</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-materiais.html#.Cadastro">Cadastro</a></li><li data-type='method'><a href="module-materiais.html#~getServerSideProps">getServerSideProps</a></li></ul></li><li class="accordion collapsed child" id=6967985><div class="accordion-heading child"><a href="module-Navbar.html">Navbar</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Navbar.html#.EntitiesChange">EntitiesChange</a></li><li data-type='method'><a href="module-Navbar.html#.Navbar">Navbar</a></li></ul></li><li class="accordion collapsed child" id=4256231><div class="accordion-heading child"><a href="module-Overlay.html">Overlay</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Overlay.html#.Overlay">Overlay</a></li></ul></li><li class="accordion collapsed child" id=9938299><div class="accordion-heading child"><a href="module-Sidebar.html">Sidebar</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Sidebar.html#.Sidebar">Sidebar</a></li><li data-type='method'><a href="module-Sidebar.html#.SidebarItem">SidebarItem</a></li></ul></li><li class="accordion collapsed child" id=2018559><div class="accordion-heading child"><a href="module-Table.html">Table</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-Table.html#.Table">Table</a></li></ul></li><li class="accordion collapsed child" id=7772353><div class="accordion-heading child"><a href="module-tipos-historico.html">tipos-historico</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-tipos-historico.html#~getServerSideProps">getServerSideProps</a></li></ul></li><li class="accordion collapsed child" id=4249426><div class="accordion-heading child"><a href="module-unidades-lotacao.html">unidades-lotacao</a><svg><use xlink:href="#down-icon"></use></svg></div><ul class='methods accordion-content'><li data-type='method'><a href="module-unidades-lotacao.html#.UnidadeLotacao">UnidadeLotacao</a></li><li data-type='method'><a href="module-unidades-lotacao.html#~getServerSideProps">getServerSideProps</a></li></ul></li></ul> </div><div class="accordion collapsed" id="7273599" > <h3 class="accordion-heading">Global<svg><use xlink:href="#down-icon"></use></svg></h3><ul class="accordion-content"><li class="accordion-list" id=""><a href="global.html#allowCors">allowCors</a></li><li class="accordion-list" id=""><a href="global.html#benefLookupTeste">benefLookupTeste</a></li><li class="accordion-list" id=""><a href="global.html#benefValidateTeste">benefValidateTeste</a></li><li class="accordion-list" id=""><a href="global.html#Button">Button</a></li><li class="accordion-list" id=""><a href="global.html#camelCase">camelCase</a></li><li class="accordion-list" id=""><a href="global.html#FilterInput">FilterInput</a></li><li class="accordion-list" id=""><a href="global.html#formatCPF">formatCPF</a></li><li class="accordion-list" id=""><a href="global.html#GlobalStyle">GlobalStyle</a></li><li class="accordion-list" id=""><a href="global.html#maskCapitalize">maskCapitalize</a></li><li class="accordion-list" id=""><a href="global.html#maskCPF">maskCPF</a></li><li class="accordion-list" id=""><a href="global.html#maskDate">maskDate</a></li><li class="accordion-list" id=""><a href="global.html#MyApp">MyApp</a></li><li class="accordion-list" id=""><a href="global.html#replaceKeys">replaceKeys</a></li><li class="accordion-list" id=""><a href="global.html#toastData">toastData</a></li><li class="accordion-list" id=""><a href="global.html#unmaskCPF">unmaskCPF</a></li><li class="accordion-list" id=""><a href="global.html#variants">variants</a></li></ul> </div>
+      
+        <div class="navbar-resize" id="navbar-resize">
+          <div class="resize-dots-container">
+            <div class="dots"></div>
+            <div class="dots"></div>
+            <div class="dots"></div>
+          </div> 
+        </div>
+      
+
+    </nav>
+    <div class="navbar-ham" id="navbar-ham">
+      <div>
+        <div class="first"></div>
+        <div class="second"></div>
+        <div class="third"></div>
+      </div>
+    </div>
+
+    <div id="main" class="main-content">
+      
+      <h1 id='page-title' class="page-title">
+        components/Table/index.jsx
+      </h1>
+      
+
+      
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ *  Componentes de tabela.
+ *  @module Table
+ */
+
+import { useMemo } from "react";
+import {
+  Flex,
+  Table as ChakraTable,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  Tfoot,
+  Box,
+} from "@chakra-ui/react";
+import { useTable, useFilters } from "react-table";
+import { FilterInput } from "components/Table/FilterInput";
+
+/**
+   * Monta uma exibição de tabela.
+   * @method Table
+   * @memberof module:Table
+   * @param {Object} columns colunas da tabela
+   * @param {Object} data células e seus valores
+   * @returns {Component} componente estilizado.
+   * 
+   */
+export function Table({ columns, data, updateMyData, setState }) {
+  const defaultColumn = useMemo(
+    () => ({
+      Filter: DefaultColumnFilter,
+    }),
+    []
+  );
+  /**
+   * Monta o filtro da tabela. Um filtro que pode ser
+   * usado em cada coluna para classificar ou buscar
+   * informações
+   * @see FilterInput
+   * @param {Object} filterValue valor de pesquisa do filtro
+   * @param {Object} header nome do filtro
+   * @param {Object} preFilteredRows define a quantidade de linhas
+   * para exibir a quantidade de registros encontrados
+   * @param {Object} setFilter define dinamicamente a busca
+   * @returns {Component} componente de filtro
+   */
+  function DefaultColumnFilter({
+    column: { filterValue, Header, preFilteredRows, setFilter, ...rest },
+  }) {
+    const count = preFilteredRows.length;
+    return (
+      &lt;>
+        &lt;FilterInput
+          value={filterValue || ""}
+          onChange={(e) => {
+            setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
+          }}
+          cleanFilter={() => setFilter("")}
+          placeholder={`Pesquisar ${count} registro${count > 1 ? "s" : ""}...`}
+          filterTitle={Header}
+        >
+          &lt;Box>{Header}&lt;/Box>
+        &lt;/FilterInput>
+      &lt;/>
+    );
+  }
+  /**
+   * Monta a exibição atualizada depdendendo do valor filtrado.
+   */
+  const filterTypes = useMemo(
+    () => ({
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id];
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true;
+        });
+      },
+    }),
+    []
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    footerGroups,
+    rows,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+      defaultColumn,
+      filterTypes,
+      updateMyData,
+    },
+    useFilters
+  );
+
+  // Render the UI for your table
+  return (
+    &lt;Flex
+      bg="white"
+      rounded="lg"
+      shadow="lg"
+      p={4}
+      w="100%"
+      h="100%"
+      overflowX="auto"
+    >
+      &lt;ChakraTable
+        {...getTableProps()}
+        border={1}
+        style={{ borderCollapse: "collapse", width: "100%" }}
+      >
+        &lt;Thead>
+          {headerGroups.map((headerGroup) => {
+            const { key, ...restHeaderGroupProps } =
+              headerGroup.getHeaderGroupProps();
+
+            return (
+              &lt;Tr key={key} {...restHeaderGroupProps}>
+                {headerGroup.headers.map((column) => {
+                  const { key, ...restColumn } = column.getHeaderProps();
+                  return (
+                    &lt;Th
+                      key={key}
+                      {...restColumn}
+                      isNumeric={key.includes("Ações")}
+                    >
+                      {column.canFilter
+                        ? column.render("Filter")
+                        : column.render("Header")}
+                    &lt;/Th>
+                  );
+                })}
+              &lt;/Tr>
+            );
+          })}
+        &lt;/Thead>
+        &lt;Tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row);
+            return (
+              &lt;Tr key={row.id} {...row.getRowProps()}>
+                {row.cells.map((cell) => (
+                  &lt;Td
+                    key={cell.id}
+                    {...cell.getCellProps()}
+                    isNumeric={cell.getCellProps().key.includes("Ações")}
+                  >
+                    {cell.render("Cell")}
+                  &lt;/Td>
+                ))}
+              &lt;/Tr>
+            );
+          })}
+        &lt;/Tbody>
+        &lt;Tfoot>
+          {footerGroups.map((footerGroup) => {
+            const { key, ...restFooterGroupProps } =
+              footerGroup.getFooterGroupProps();
+            return (
+              &lt;Tr key={key} {...restFooterGroupProps}>
+                {footerGroup.headers.map((column) => {
+                  const { key, ...restColumn } = column.getFooterProps();
+                  return (
+                    column.render("Footer") &amp;&amp; (
+                      &lt;Td key={key} {...restColumn}>
+                        {column.render("Footer")}
+                      &lt;/Td>
+                    )
+                  );
+                })}
+              &lt;/Tr>
+            );
+          })}
+        &lt;/Tfoot>
+      &lt;/ChakraTable>
+    &lt;/Flex>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    </div>
+
+    <footer class="footer" id="footer">
+      Made with ☕️ by <a href='https://github.com/frtechdev'>FR Technologies</a>
+    </footer>
+
+    <script src="scripts/third-party/prettify.js"></script>
+    <script src="scripts/third-party/lang-css.js"></script>
+    <script type="text/javascript" src="scripts/misc.js"></script>
+
+    <script>prettyPrint();</script>
+    <script src="scripts/linenumber.js"></script>
+    <script src="scripts/fix-code-block.js"></script>
+    <script src="scripts/fix-navbar.js"></script>
+    
+      <script src="scripts/search.js"></script>
+      <script src="scripts/third-party/fuse.js"></script>
+      <script>
+        var list = [{"title":"AnimatePresenceWrapper","link":"<a href=\"module-AnimatePresenceWrapper.html\">AnimatePresenceWrapper</a>"},{"title":"module:AnimatePresenceWrapper.AnimatePresenceWrapper","link":"<a href=\"module-AnimatePresenceWrapper.html#.AnimatePresenceWrapper\">module:AnimatePresenceWrapper &rtrif; AnimatePresenceWrapper</a>"},{"title":"api","link":"<a href=\"module-api.html\">api</a>"},{"title":"auth","link":"<a href=\"module-auth.html\">auth</a>"},{"title":"Breadcrumb","link":"<a href=\"module-Breadcrumb.html\">Breadcrumb</a>"},{"title":"module:Breadcrumb.BreadcrumbBar","link":"<a href=\"module-Breadcrumb.html#.BreadcrumbBar\">module:Breadcrumb &rtrif; BreadcrumbBar</a>"},{"title":"module:Breadcrumb.BreadcrumbItem","link":"<a href=\"module-Breadcrumb.html#.BreadcrumbItem\">module:Breadcrumb &rtrif; BreadcrumbItem</a>"},{"title":"Cards","link":"<a href=\"module-Cards.html\">Cards</a>"},{"title":"module:Cards.Card","link":"<a href=\"module-Cards.html#.Card\">module:Cards &rtrif; Card</a>"},{"title":"Charts","link":"<a href=\"module-Charts.html\">Charts</a>"},{"title":"module:Charts.LineChart","link":"<a href=\"module-Charts.html#.LineChart\">module:Charts &rtrif; LineChart</a>"},{"title":"dashboard","link":"<a href=\"module-dashboard.html\">dashboard</a>"},{"title":"module:dashboard.Dashboard","link":"<a href=\"module-dashboard.html#.Dashboard\">module:dashboard &rtrif; Dashboard</a>"},{"title":"Icons","link":"<a href=\"module-Icons.html\">Icons</a>"},{"title":"module:Icons.IconBox","link":"<a href=\"module-Icons.html#.IconBox\">module:Icons &rtrif; IconBox</a>"},{"title":"Inputs","link":"<a href=\"module-Inputs.html\">Inputs</a>"},{"title":"module:Inputs.ChakraCurrencyInput","link":"<a href=\"module-Inputs.html#.ChakraCurrencyInput\">module:Inputs &rtrif; ChakraCurrencyInput</a>"},{"title":"module:Inputs.CurrencyInputBox","link":"<a href=\"module-Inputs.html#.CurrencyInputBox\">module:Inputs &rtrif; CurrencyInputBox</a>"},{"title":"module:Inputs.InputBox","link":"<a href=\"module-Inputs.html#.InputBox\">module:Inputs &rtrif; InputBox</a>"},{"title":"module:Inputs.InputBox","link":"<a href=\"module-Inputs.html#.InputBox\">module:Inputs &rtrif; InputBox</a>"},{"title":"module:Inputs.MultipleSelectInput","link":"<a href=\"module-Inputs.html#.MultipleSelectInput\">module:Inputs &rtrif; MultipleSelectInput</a>"},{"title":"module:Inputs.PasswordInputBox","link":"<a href=\"module-Inputs.html#.PasswordInputBox\">module:Inputs &rtrif; PasswordInputBox</a>"},{"title":"module:Inputs.SelectInputBox","link":"<a href=\"module-Inputs.html#.SelectInputBox\">module:Inputs &rtrif; SelectInputBox</a>"},{"title":"Layout","link":"<a href=\"module-Layout.html\">Layout</a>"},{"title":"module:Layout.DashboardLayout","link":"<a href=\"module-Layout.html#.DashboardLayout\">module:Layout &rtrif; DashboardLayout</a>"},{"title":"LDAPService","link":"<a href=\"module-LDAPService.html\">LDAPService</a>"},{"title":"module:LDAPService.authUser","link":"<a href=\"module-LDAPService.html#.authUser\">module:LDAPService &rtrif; authUser</a>"},{"title":"Logo","link":"<a href=\"module-Logo.html\">Logo</a>"},{"title":"module:Logo.BrandBg","link":"<a href=\"module-Logo.html#.BrandBg\">module:Logo &rtrif; BrandBg</a>"},{"title":"module:Logo.Logo","link":"<a href=\"module-Logo.html#.Logo\">module:Logo &rtrif; Logo</a>"},{"title":"materiais","link":"<a href=\"module-materiais.html\">materiais</a>"},{"title":"module:materiais.Cadastro","link":"<a href=\"module-materiais.html#.Cadastro\">module:materiais &rtrif; Cadastro</a>"},{"title":"module:materiais~getServerSideProps","link":"<a href=\"module-materiais.html#~getServerSideProps\">module:materiais~getServerSideProps &rtrif; undefined</a>"},{"title":"Navbar","link":"<a href=\"module-Navbar.html\">Navbar</a>"},{"title":"module:Navbar.EntitiesChange","link":"<a href=\"module-Navbar.html#.EntitiesChange\">module:Navbar &rtrif; EntitiesChange</a>"},{"title":"module:Navbar.Navbar","link":"<a href=\"module-Navbar.html#.Navbar\">module:Navbar &rtrif; Navbar</a>"},{"title":"Overlay","link":"<a href=\"module-Overlay.html\">Overlay</a>"},{"title":"module:Overlay.Overlay","link":"<a href=\"module-Overlay.html#.Overlay\">module:Overlay &rtrif; Overlay</a>"},{"title":"Sidebar","link":"<a href=\"module-Sidebar.html\">Sidebar</a>"},{"title":"module:Sidebar.Sidebar","link":"<a href=\"module-Sidebar.html#.Sidebar\">module:Sidebar &rtrif; Sidebar</a>"},{"title":"module:Sidebar.SidebarItem","link":"<a href=\"module-Sidebar.html#.SidebarItem\">module:Sidebar &rtrif; SidebarItem</a>"},{"title":"Table","link":"<a href=\"module-Table.html\">Table</a>"},{"title":"module:Table.Table","link":"<a href=\"module-Table.html#.Table\">module:Table &rtrif; Table</a>"},{"title":"tipos-historico","link":"<a href=\"module-tipos-historico.html\">tipos-historico</a>"},{"title":"module:tipos-historico~getServerSideProps","link":"<a href=\"module-tipos-historico.html#~getServerSideProps\">module:tipos-historico~getServerSideProps &rtrif; undefined</a>"},{"title":"unidades-lotacao","link":"<a href=\"module-unidades-lotacao.html\">unidades-lotacao</a>"},{"title":"module:unidades-lotacao.UnidadeLotacao","link":"<a href=\"module-unidades-lotacao.html#.UnidadeLotacao\">module:unidades-lotacao &rtrif; UnidadeLotacao</a>"},{"title":"module:unidades-lotacao~getServerSideProps","link":"<a href=\"module-unidades-lotacao.html#~getServerSideProps\">module:unidades-lotacao~getServerSideProps &rtrif; undefined</a>"},{"title":"allowCors","link":"<a href=\"global.html#allowCors\">allowCors</a>"},{"title":"benefLookupTeste","link":"<a href=\"global.html#benefLookupTeste\">benefLookupTeste</a>"},{"title":"benefValidateTeste","link":"<a href=\"global.html#benefValidateTeste\">benefValidateTeste</a>"},{"title":"Button","link":"<a href=\"global.html#Button\">Button</a>"},{"title":"camelCase","link":"<a href=\"global.html#camelCase\">camelCase</a>"},{"title":"FilterInput","link":"<a href=\"global.html#FilterInput\">FilterInput</a>"},{"title":"formatCPF","link":"<a href=\"global.html#formatCPF\">formatCPF</a>"},{"title":"GlobalStyle","link":"<a href=\"global.html#GlobalStyle\">GlobalStyle</a>"},{"title":"maskCapitalize","link":"<a href=\"global.html#maskCapitalize\">maskCapitalize</a>"},{"title":"maskCPF","link":"<a href=\"global.html#maskCPF\">maskCPF</a>"},{"title":"maskDate","link":"<a href=\"global.html#maskDate\">maskDate</a>"},{"title":"MyApp","link":"<a href=\"global.html#MyApp\">MyApp</a>"},{"title":"replaceKeys","link":"<a href=\"global.html#replaceKeys\">replaceKeys</a>"},{"title":"toastData","link":"<a href=\"global.html#toastData\">toastData</a>"},{"title":"unmaskCPF","link":"<a href=\"global.html#unmaskCPF\">unmaskCPF</a>"},{"title":"variants","link":"<a href=\"global.html#variants\">variants</a>"}];
+        var options = {}
+          setupSearch(list, options)
+      </script>
+    
+
+    
+    <script type="text/javascript">
+        function foo(){console.log('foo')}
+    </script>
+    
+
+    
+      <script src="scripts/resize.js"></script>
+      <script type="text/javascript">
+        var option = {"min":"300","max":"600"}
+        setupResizeOptions(option)
+      </script>
+    
+
+    
+    <script type="text/javascript">
+    var option = JSON.parse('{"options":{}}')
+      document.addEventListener("DOMContentLoaded", function () {
+        OverlayScrollbars(document.querySelectorAll('body'), option.option || {});
+      });
+    </script>
+    
+
+
+  </body>
+
+</html>

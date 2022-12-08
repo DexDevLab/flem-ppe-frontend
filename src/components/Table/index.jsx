@@ -3,7 +3,7 @@
  *  @module Table
  */
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Flex,
   Table as ChakraTable,
@@ -15,19 +15,20 @@ import {
   Tfoot,
   Box,
 } from "@chakra-ui/react";
+import _ from "lodash";
 import { useTable, useFilters } from "react-table";
 import { FilterInput } from "components/Table/FilterInput";
 
 /**
-   * Monta uma exibição de tabela.
-   * @method Table
-   * @memberof module:Table
-   * @param {Object} columns colunas da tabela
-   * @param {Object} data células e seus valores
-   * @returns {Component} componente estilizado.
-   * 
-   */
-export function Table({ columns, data, updateMyData }) {
+ * Monta uma exibição de tabela.
+ * @method Table
+ * @memberof module:Table
+ * @param {Object} columns colunas da tabela
+ * @param {Object} data células e seus valores
+ * @returns {Component} componente estilizado.
+ *
+ */
+export function Table({ columns, data, updateMyData, setRowsCount }) {
   const defaultColumn = useMemo(
     () => ({
       Filter: DefaultColumnFilter,
@@ -46,10 +47,11 @@ export function Table({ columns, data, updateMyData }) {
    * @param {Object} setFilter define dinamicamente a busca
    * @returns {Component} componente de filtro
    */
-  function DefaultColumnFilter({
+   function DefaultColumnFilter({
     column: { filterValue, Header, preFilteredRows, setFilter, ...rest },
   }) {
     const count = preFilteredRows.length;
+
     return (
       <>
         <FilterInput
@@ -81,9 +83,11 @@ export function Table({ columns, data, updateMyData }) {
             : true;
         });
       },
+
     }),
     []
   );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -101,6 +105,12 @@ export function Table({ columns, data, updateMyData }) {
     },
     useFilters
   );
+
+  useEffect(() => {
+    if (_.isFunction(setRowsCount)) {
+      setRowsCount(rows.length);
+    }
+  }, [rows]);
 
   // Render the UI for your table
   return (

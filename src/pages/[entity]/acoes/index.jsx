@@ -1,47 +1,47 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
+  FormLabel,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  VStack,
-  Divider,
+  Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
-  FormLabel,
+  ModalOverlay,
   Progress,
   ProgressLabel,
   ScaleFade,
-  Center,
   Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { SwitchButton } from "components/Buttons/SwitchButton";
+import { InputBox } from "components/Inputs/InputBox";
+import { InputTextBox } from "components/Inputs/InputTextBox";
+import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import ChakraTagInput from "components/Inputs/TagInput";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { cpfMask } from "masks-br";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { InputBox } from "components/Inputs/InputBox";
-import { SelectInputBox } from "components/Inputs/SelectInputBox";
 import { useForm, useFormState } from "react-hook-form";
-import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios } from "services/apiService";
-import { InputTextBox } from "components/Inputs/InputTextBox";
-import { maskCapitalize } from "utils/maskCapitalize";
-import { SwitchButton } from "components/Buttons/SwitchButton";
-import ChakraTagInput from "components/Inputs/TagInput";
-import { cpfMask } from "masks-br";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
 
 export default function AcoesCR({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -153,7 +153,7 @@ export default function AcoesCR({ entity, ...props }) {
                 isAnimated={status !== 100}
                 hasStripe={status !== 100}
                 colorScheme={status !== 100 ? "brand1" : "green"}
-                value={status}
+                value={status >=0 ? status : 0}
                 shadow="inner"
                 rounded="md"
                 h={6}
@@ -164,7 +164,8 @@ export default function AcoesCR({ entity, ...props }) {
                     (status < 40 && "gray.400") || (status <= 100 && "gray.100")
                   }
                 >
-                  {status}%
+                  {status >=0 ? status : 0}%
+                  {/* {status}% */}
                 </ProgressLabel>
               </Progress>
             </Box>
@@ -231,40 +232,44 @@ export default function AcoesCR({ entity, ...props }) {
     e.preventDefault();
     if (selectedRow) {
       formData.id = selectedRow.id;
-      return axios
-        .put(`/api/${entity}/acoes-cr`, formData)
-        .then((res) => {
-          if (res.status === 200) {
-            acaoFormSubmit.onClose();
-            addAcao.onClose();
-            setSelectedRow(null);
-            formAcao.reset({});
-            toast({
-              title: "Ação atualizada com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            acaoFormSubmit.onClose();
-            toast({
-              title: "Ação já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/acoes-cr`, formData)
+          .put(getBackendRoute(entity, "acoes-cr"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              acaoFormSubmit.onClose();
+              addAcao.onClose();
+              setSelectedRow(null);
+              formAcao.reset({});
+              toast({
+                title: "Ação atualizada com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 409) {
+              acaoFormSubmit.onClose();
+              toast({
+                title: "Ação já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
-      .post(`/api/${entity}/acoes-cr`, formData)
+      //.post(`/api/${entity}/acoes-cr`, formData)
+      .post(getBackendRoute(entity, "acoes-cr"), formData)
       .then((res) => {
         if (res.status === 200) {
           acaoFormSubmit.onClose();
@@ -292,7 +297,7 @@ export default function AcoesCR({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -301,7 +306,8 @@ export default function AcoesCR({ entity, ...props }) {
     e.preventDefault();
     tipoAcaoFormSubmit.onOpen();
     axios
-      .post(`/api/${entity}/acoes-cr/tipos`, formData)
+      //.post(`/api/${entity}/acoes-cr/tipos`, formData)
+      .post(getBackendRoute(entity, "acoes-cr/tipos"), formData)
       .then((res) => {
         if (res.status === 200) {
           tipoAcaoFormSubmit.onClose();
@@ -328,7 +334,7 @@ export default function AcoesCR({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -336,11 +342,16 @@ export default function AcoesCR({ entity, ...props }) {
   const deleteAcao = (formData) => {
     acaoFormSubmit.onOpen();
     axios
-      .delete(`/api/${entity}/acoes-cr`, {
+      .delete(getBackendRoute(entity, "acoes-cr"), {
         params: {
           id: formData.id,
         },
       })
+      // .delete(`/api/${entity}/acoes-cr`, {
+      //   params: {
+      //     id: formData.id,
+      //   },
+      // })
       .then((res) => {
         if (res.status === 200) {
           excluir.onClose();
@@ -355,7 +366,10 @@ export default function AcoesCR({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -370,20 +384,25 @@ export default function AcoesCR({ entity, ...props }) {
   useEffect(() => {
     fetchTableData.onOpen();
     axios
-      .get(`/api/${entity}/acoes-cr`)
+      //.get(`/api/${entity}/acoes-cr`)
+      .get(getBackendRoute(entity, "acoes-cr"))
       .then((res) => {
         if (res.status === 200) {
           setAcoesCRFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addAcao.isOpen, excluir.isOpen]);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/acoes-cr/tipos`)
+      //.get(`/api/${entity}/acoes-cr/tipos`)
+      .get(getBackendRoute(entity, "acoes-cr/tipos"))
       .then((res) => {
         if (res.status === 200) {
           setTipoAcoesFromBd(
@@ -395,31 +414,38 @@ export default function AcoesCR({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addAcao.isOpen, addTipoAcao.isOpen]);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/funcionarios`)
+      //.get(`/api/${entity}/colaboradores-cr`)
+      .get(getBackendRoute(entity, "colaboradores-cr"))
       .then((res) => {
         if (res.status === 200) {
           setColaboradoresFromBd(
-            res.data.map(({ matriculaFlem, nome, cpf }) => ({
-              value: matriculaFlem,
-              label: `${matriculaFlem} - ` + maskCapitalize(nome),
-              cpf: cpf,
+            res.data.map(({ id, nome }) => ({
+              value: id,
+              label: maskCapitalize(nome),
             }))
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/beneficiarios`)
+      //.get(`/api/${entity}/beneficiarios`)
+      .get(getBackendRoute(entity, "beneficiarios"))
       .then((res) => {
         if (res.status === 200) {
           setBeneficiariosFromBd(
@@ -431,7 +457,10 @@ export default function AcoesCR({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -445,7 +474,7 @@ export default function AcoesCR({ entity, ...props }) {
     <>
       <AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
         <Flex justifyContent="space-between" alignItems="center" pb={5}>
-          <Heading size="md">Ações CR</Heading>
+          <Heading fontSize="1.4rem">Ações CR</Heading>
           <Button
             colorScheme="brand1"
             shadow="md"
@@ -718,5 +747,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-AcoesCR.auth = false;
+AcoesCR.auth = true;
 AcoesCR.dashboard = true;
