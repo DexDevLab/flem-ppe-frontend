@@ -6,7 +6,6 @@ export const axios = axiosClient.create({
 });
 
 export const filesAPIService = axiosClient.create({
-  //baseURL: `https://fileupload.beta.flem.org.br/api/Portal_PPE/`,
   baseURL: `${process.env.NEXT_PUBLIC_API_FILE_UPLOAD}/${process.env.NEXT_PUBLIC_APP_SOURCE}/`,
   timeout: 30000,
 });

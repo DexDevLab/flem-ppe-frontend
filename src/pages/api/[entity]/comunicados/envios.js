@@ -1,7 +1,6 @@
-import { prisma } from "services/prisma/prismaClient";
-import { maskCapitalize } from "utils/maskCapitalize";
 import { convertDeltaToHtml } from "node-quill-converter";
-import { mailService } from "services/apiService";
+import { mailService, prisma } from "services";
+import { maskCapitalize } from "utils";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

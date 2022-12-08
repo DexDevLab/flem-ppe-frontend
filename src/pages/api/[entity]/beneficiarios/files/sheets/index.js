@@ -1,9 +1,9 @@
 import axios from "axios";
-import { benefLookupTeste, benefValidateTeste } from "controllers";
+//import { benefLookupTeste, benefValidateTeste } from "controllers";
 import { DateTime } from "luxon";
 // import { maskCPF } from "masks-br";
 import nc from "next-connect";
-import { allowCors } from "services/apiAllowCors";
+import { allowCors } from "services";
 import { filesAPIService, filesAPIUpload } from "services/apiService";
 import { phoneNumberFixer } from "utils/phoneNumberFixer";
 import { read, utils } from "xlsx";

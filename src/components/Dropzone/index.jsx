@@ -1,19 +1,14 @@
 import {
   Badge,
   Box,
-  Button,
-  Center,
   Flex,
   FormLabel,
   IconButton,
-  Portal,
   Progress,
-  Stack,
   Tag,
   TagLabel,
   Text,
 } from "@chakra-ui/react";
-import { axios } from "services/apiService";
 import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FiDownload, FiTrash } from "react-icons/fi";

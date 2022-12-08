@@ -1,7 +1,6 @@
-import axios from "axios";
 import { DateTime } from "luxon";
 import { celularMask } from "masks-br";
-import { filesAPIService } from "services/apiService";
+import { filesAPIService} from "services";
 import { prisma } from "services/prisma/prismaClient";
 import { maskCapitalize } from "utils/maskCapitalize";
 
@@ -364,9 +363,9 @@ const postBeneficiariosLote = async (req, res) => {
           where: {
             matriculaSec: data.matriculaSec,
           },
-          include:{
-            vaga: true
-          }
+          include: {
+            vaga: true,
+          },
         })
       )
     );

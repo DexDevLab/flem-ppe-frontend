@@ -1,8 +1,7 @@
-//import { axios } from "services/apiService";
-import  axios  from "axios";
+//import { axios } from "services";
+import axios from "axios";
 import { prisma } from "services/prisma/prismaClient";
-import { maskCapitalize } from "utils/maskCapitalize";
-import { maskCPF } from "utils/masks";
+import { maskCapitalize, maskCPF } from "utils";
 
 /**
  * Localiza beneficiários por matrícula e por CPF. Caso encontre uma matrícula que coincida com alguma informada
@@ -37,10 +36,11 @@ export async function benefLookupTeste(entity, sheet) {
   });
   const urlAPIQuery = `${
     process.env.NEXT_PUBLIC_API_PPE_BD_LEGADO
-  }/${entity}/beneficiarios?condition=OR${matriculas.length ? `&matriculaSAEB=["${matriculas.join('","')}"]` : ""}${cpfs.length ? `&cpf=["${cpfs.join('","')}"]` : ""}`;
+  }/${entity}/beneficiarios?condition=OR${
+    matriculas.length ? `&matriculaSAEB=["${matriculas.join('","')}"]` : ""
+  }${cpfs.length ? `&cpf=["${cpfs.join('","')}"]` : ""}`;
 
   const respQuery = await axios.get(urlAPIQuery);
-
 
   return await Promise.all(
     sheets.map(async (item) => {

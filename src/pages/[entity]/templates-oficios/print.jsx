@@ -6,19 +6,14 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState, useRef } from "react";
-import { signIn, signOut, getSession, useSession } from "next-auth/react";
-import { FiMoreHorizontal } from "react-icons/fi";
-import { useForm } from "react-hook-form";
+import { useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 
-import ReactHtmlParser from "react-html-parser";
-
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
 import { Logo } from "components/Logo";
-import { useCallback } from "react";
+import "quill/dist/quill.snow.css";
+import { useQuill } from "react-quilljs";
 
 // const QuillMention = dynamic(() => import("quill-mention"), { ssr: false });
 

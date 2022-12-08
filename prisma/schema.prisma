@@ -85,6 +85,7 @@ model Ba_Beneficiarios {
   eventos                 Ba_Eventos[]
   eventosListaPresenca    Ba_Eventos_Lista_Presenca[]
   materiais               Ba_Materiais[]
+  monitoramentos          Ba_Monitoramentos[]
   comunicados             Ba_Comunicados[]
   enviosComunicados       Ba_Comunicados_Enviados[]
   oficios                 Ba_Oficios[]
@@ -230,15 +231,16 @@ model Ba_Contatos_Tipos {
 }
 
 model Ba_Demandantes {
-  id        String    @id @default(cuid())
+  id        String         @id @default(cuid())
   sigla     String
-  nome      String    @unique
+  nome      String         @unique
   vagas     Ba_Vaga[]
-  excluido  Boolean   @default(false)
-  createdBy String    @default("SISTEMA")
-  updatedBy String    @default("SISTEMA")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  monitores Ba_Monitores[]
+  excluido  Boolean        @default(false)
+  createdBy String         @default("SISTEMA")
+  updatedBy String         @default("SISTEMA")
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model Ba_Documentos {
@@ -384,6 +386,7 @@ model Ba_Historico {
   contatosBeneficiarios Ba_Contatos_Beneficiarios[]
   documentos            Ba_Documentos[]
   vaga                  Ba_Vaga[]
+  situacaoVaga          Ba_Situacoes_Vaga[]
   remessaSec            Ba_RemessaSec[]
   materialEntregue      Ba_Materiais_Entregues[]
 }
@@ -452,6 +455,53 @@ model Ba_Materiais_Entregues {
   historico_Id       String?
 }
 
+model Ba_Monitoramentos {
+  id                                String                          @id @default(cuid())
+  dataMonitoramento                 DateTime
+  presencaTecnico                   Boolean                         @default(true)
+  tipoMonitoramento                 String
+  registrosVisitacao                String                          @db.Text
+  desvioFuncao                      Boolean                         @default(false)
+  desvioFuncaoTipo                  String?
+  desvioFuncaoDescricao             String?                         @db.Text
+  gravidez                          Boolean?
+  acidenteTrabalho                  Boolean                         @default(false)
+  acidenteTrabalhoDescricao         String?                         @db.Text
+  impressoesConhecimento            String
+  impressoesHabilidade              String
+  impressoesAutonomia               String
+  impressoesPontualidade            String
+  impressoesMotivacao               String
+  impressoesExperienciaCompFormacao String
+  observacoesEquipePpe              String?                         @db.Text
+  metaType                          String
+  autoAvaliacao_anexoId             String?                         @db.Text
+  benefPontoFocal_anexoId           String?                         @db.Text
+  ambienteTrabalho_anexoId          String?                         @db.Text
+  beneficiario_Id                   String
+  excluido                          Boolean                         @default(false)
+  createdBy                         String                          @default("SISTEMA")
+  updatedBy                         String                          @default("SISTEMA")
+  createdAt                         DateTime                        @default(now())
+  updatedAt                         DateTime                        @updatedAt
+  beneficiario                      Ba_Beneficiarios                @relation(fields: [beneficiario_Id], references: [id])
+  monitoramentoComprovacao          Ba_Monitoramentos_Comprovacoes? @relation(fields: [monitoramentoComprovacao_Id], references: [id])
+  monitoramentoComprovacao_Id       String?
+  monitor                           Ba_Monitores?                   @relation(fields: [monitor_Id], references: [id])
+  monitor_Id                        String?
+}
+
+model Ba_Monitoramentos_Comprovacoes {
+  id            String              @id @default(cuid())
+  monitoramento Ba_Monitoramentos[]
+  anexoId       String?             @db.Text
+  excluido      Boolean             @default(false)
+  createdBy     String              @default("SISTEMA")
+  updatedBy     String              @default("SISTEMA")
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
 model Ba_Monitores {
   id                   String                   @id @default(cuid())
   matricula            Int                      @unique
@@ -462,6 +512,8 @@ model Ba_Monitores {
   createdAt            DateTime                 @default(now())
   updatedAt            DateTime                 @updatedAt
   escritoriosRegionais Ba_Escritorio_Regional[]
+  demandantes          Ba_Demandantes[]
+  monitoramentos       Ba_Monitoramentos[]
 }
 
 model Ba_Municipios {
@@ -596,6 +648,7 @@ model Ba_Situacoes_Vaga {
   tipoSituacao    Ba_Tipos_Situacoes_Vaga? @relation(fields: [tipoSituacao_Id], references: [id])
   tipoSituacao_Id String?
   vagas           Ba_Vaga[]
+  historicos      Ba_Historico[]
 }
 
 model Ba_TamanhoUniforme {

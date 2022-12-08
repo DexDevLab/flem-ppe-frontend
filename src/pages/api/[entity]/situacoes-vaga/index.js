@@ -1,4 +1,4 @@
-import { prisma } from "services/prisma/prismaClient";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -102,7 +102,6 @@ const addSituacaoVaga = async (req, res) => {
       },
       where: {
         nome: situacao,
-        
       },
     });
     return res.status(200).json(query);
@@ -112,7 +111,6 @@ const addSituacaoVaga = async (req, res) => {
       case "P2002":
         res.status(409).json({ error: "Unique constraint failed" });
         break;
-
       default:
         res.status(500).json({ error: error });
         break;

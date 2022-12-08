@@ -1,38 +1,38 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  VStack,
-  Divider,
+  Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
+  ModalOverlay,
   ScaleFade,
-  Center,
   Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { InputBox } from "components/Inputs/InputBox";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { InputBox } from "components/Inputs/InputBox";
 import { useForm, useFormState } from "react-hook-form";
-import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios, getBackendRoute } from "services/apiService";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 export default function Demandantes({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -143,7 +143,7 @@ export default function Demandantes({ entity, ...props }) {
               position,
             });
           } else {
-            throw new Error(error.response.data.message);
+            throw new Error(error.response.data);
           }
         });
     }
@@ -203,7 +203,10 @@ export default function Demandantes({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -224,7 +227,10 @@ export default function Demandantes({ entity, ...props }) {
           setDemandantesFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addDemandante.isOpen, excluir.isOpen]);
@@ -281,7 +287,7 @@ export default function Demandantes({ entity, ...props }) {
               id="sigla"
               label="Sigla"
               formControl={formDemandante}
-              defaultValue={selectedRow?.nome}
+              defaultValue={selectedRow?.sigla}
             />
             <InputBox
               id="nome"

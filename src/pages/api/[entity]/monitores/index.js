@@ -1,5 +1,4 @@
-import { prisma } from "services/prisma/prismaClient";
-import { axios } from "services/apiService";
+import { axios, prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -69,8 +68,6 @@ const getMonitores = async (req, res) => {
     return res.status(500).json({ error: error });
   }
 };
-
-
 
 const addMonitor = async (req, res) => {
   const { entity } = req.query;

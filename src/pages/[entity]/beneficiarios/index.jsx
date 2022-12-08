@@ -1,27 +1,4 @@
 import {
-    Box,
-    Button,
-    chakra,
-    Flex,
-    Heading,
-    IconButton,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalHeader,
-    ModalOverlay,
-    SimpleGrid,
-    Stack,
-    useDisclosure
-} from "@chakra-ui/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { Dropzone } from "components/Dropzone";
-import { Table } from "components/Table";
-import { useCustomForm } from "hooks";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
-import {
   Box,
   Button,
   ButtonGroup,
@@ -42,15 +19,17 @@ import {
   useBoolean,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Table } from "components/Table";
-import { FiEye, FiFilter, FiPlus, FiTrash2 } from "react-icons/fi";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { axios, filesAPIUpload } from "services/apiService";
 import { Dropzone } from "components/Dropzone";
-import { useCustomForm } from "hooks";
-import { Overlay } from "components/Overlay";
 import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useCustomForm } from "hooks";
 import _ from "lodash";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { FiEye, FiFilter, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, filesAPIUpload, getBackendRoute } from "services";
 
 export default function Beneficiarios({ entity, ...props }) {
   const fetchTableData = useDisclosure();
@@ -302,7 +281,10 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     filtroAvancadoForm.control.control._fields.municipios?._f.ref.clearValue();
   }, [escritoriosRegionais]);
 
@@ -330,7 +312,10 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, [escritoriosRegionais, municipios]);
 
   useEffect(() => {
@@ -355,7 +340,10 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     filtroAvancadoForm.control.control._fields.demandantes?._f.ref.clearValue();
   }, [municipios]);
 
@@ -374,7 +362,10 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, [filtroAvancadoForm.control.watch("")]);
 
   useEffect(() => {
@@ -390,7 +381,10 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, [filtroAvancadoForm.control.watch("")]);
 
   return (

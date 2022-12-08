@@ -45,8 +45,8 @@ import {
   FiSend,
   FiTrash2,
 } from "react-icons/fi";
-import { axios, filesAPIUpload, getBackendRoute } from "services/apiService";
-import { maskCapitalize } from "utils/maskCapitalize";
+import { axios, filesAPIUpload, getBackendRoute } from "services";
+import { maskCapitalize } from "utils"; 
 
 export default function Comunicados({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -248,12 +248,12 @@ export default function Comunicados({ entity, ...props }) {
                   // );
                   await axios.put(
                     getBackendRoute(entity, "comunicados/anexos"),
+                    { anexosId: res.data },
                     {
                       params: {
                         id: selectedRow.id,
                       },
                     },
-                    { anexosId: res.data }
                   );
                   comunicadoFormSubmit.onClose();
                   addComunicado.onClose();
@@ -326,7 +326,7 @@ export default function Comunicados({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -363,7 +363,7 @@ export default function Comunicados({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -395,7 +395,10 @@ export default function Comunicados({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   const onSubmitEnviarComunicado = (formData) => {
@@ -416,7 +419,10 @@ export default function Comunicados({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(() => enviarComunicadoFormSubmit.onClose());
   };
 
@@ -435,9 +441,7 @@ export default function Comunicados({ entity, ...props }) {
     fetchTableData.onOpen();
     axios
       //.get(`/api/${entity}/comunicados`)
-      .get(
-        getBackendRoute(entity, "comunicados")
-      )
+      .get(getBackendRoute(entity, "comunicados"))
       .then((res) => {
         if (res.status === 200) {
           setComunicadosFromBd(
@@ -448,9 +452,13 @@ export default function Comunicados({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     axios
-      .get(`/api/${entity}/editor-parametros`)
+      //.get(`/api/${entity}/editor-parametros`)
+      .get(getBackendRoute(entity, "editor-parametros"))
       .then(({ data, status }) => {
         if (status === 200) {
           setParametrosFromBd(
@@ -461,7 +469,10 @@ export default function Comunicados({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addComunicado.isOpen, excluirComunicado.isOpen, enviarComunicado.isOpen]);
@@ -469,9 +480,7 @@ export default function Comunicados({ entity, ...props }) {
   useEffect(() => {
     axios
       //.get(`/api/${entity}/comunicados/remetentes`)
-      .get(
-        getBackendRoute(entity, "comunicados/remetentes")
-      )
+      .get(getBackendRoute(entity, "comunicados/remetentes"))
       .then((res) => {
         if (res.status === 200) {
           setEmailsRemetentesFromBd(
@@ -483,7 +492,10 @@ export default function Comunicados({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEmailRemetente.isOpen]);
 

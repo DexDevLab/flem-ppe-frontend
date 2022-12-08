@@ -1,5 +1,5 @@
-import { prisma } from "services/prisma/prismaClient";
 import _ from "lodash";
+import { prisma } from "services";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

@@ -1,55 +1,17 @@
-import {
-  Box,
-  Button,
-  chakra,
-  Container,
-  Flex,
-  FormLabel,
-  Heading,
-  HStack,
-  Icon,
-  IconButton,
-  Image,
-  Stack,
-  Tag,
-  TagLabel,
-  Text,
-  useDisclosure,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, IconButton, Text, useDisclosure } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState, useRef } from "react";
-import { signIn, signOut, getSession, useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import {
-  FiBold,
-  FiCheck,
-  FiItalic,
-  FiMoreHorizontal,
-  FiPlus,
-  FiUnderline,
-  FiX,
-} from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { InputBox } from "components/Inputs/InputBox";
-import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { InputTextBox } from "components/Inputs/InputTextBox";
-import dynamic from "next/dynamic";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 import { useReactToPrint } from "react-to-print";
 
 // import htmlToDraft from 'html-to-draftjs';
 
-import ReactHtmlParser from "react-html-parser";
-
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
-import { Logo } from "components/Logo";
-import NoSSR from "react-no-ssr";
-import { useCallback } from "react";
 import "@deevotechvn/quill-mention/dist/quill.mention.min.css";
+import "quill/dist/quill.snow.css";
+import { useQuill } from "react-quilljs";
 
 // const QuillMention = dynamic(() => import("quill-mention"), { ssr: false });
 

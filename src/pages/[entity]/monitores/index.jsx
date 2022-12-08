@@ -1,39 +1,39 @@
 import {
   Box,
   Button,
+  Center,
   chakra,
+  Divider,
   Flex,
   Heading,
   HStack,
   Icon,
-  Stack,
-  Text,
-  useDisclosure,
-  VStack,
-  Divider,
+  Modal,
   ModalBody,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Modal,
-  useBreakpointValue,
-  useToast,
+  ModalOverlay,
   ScaleFade,
-  Center,
   Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { SelectInputBox } from "components/Inputs/SelectInputBox";
 import { useForm, useFormState } from "react-hook-form";
-import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios } from "services/apiService";
-import { maskCapitalize } from "utils/maskCapitalize";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
 
 export default function Monitores({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -143,38 +143,40 @@ export default function Monitores({ entity, ...props }) {
     e.preventDefault();
     if (selectedRow) {
       formData.id = selectedRow.id;
-      return axios
-        //.put(`/api/${entity}/monitores`, formData)
-        .put(getBackendRoute(entity, "monitores"), formData)
-        .then((res) => {
-          if (res.status === 200) {
-            monitorFormSubmit.onClose();
-            addMonitor.onClose();
-            setSelectedRow(null);
-            formMonitor.reset({});
-            toast({
-              title: "Monitor(a) aualizado(a) com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            monitorFormSubmit.onClose();
-            toast({
-              title: "Monitor(a) já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/monitores`, formData)
+          .put(getBackendRoute(entity, "monitores"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              monitorFormSubmit.onClose();
+              addMonitor.onClose();
+              setSelectedRow(null);
+              formMonitor.reset({});
+              toast({
+                title: "Monitor(a) aualizado(a) com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 409) {
+              monitorFormSubmit.onClose();
+              toast({
+                title: "Monitor(a) já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
       //.post(`/api/${entity}/monitores`, formData)
@@ -205,7 +207,7 @@ export default function Monitores({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -237,7 +239,10 @@ export default function Monitores({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -260,7 +265,10 @@ export default function Monitores({ entity, ...props }) {
           console.log(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addMonitor.isOpen, excluirMonitor.isOpen]);
@@ -270,7 +278,13 @@ export default function Monitores({ entity, ...props }) {
       1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010,
     ];
     axios
-      .get(`/api/${entity}/funcionarios/rh`, {
+      // .get(`/api/${entity}/funcionarios/rh`, {
+      //   params: {
+      //     id_situacao: 1,
+      //     condition: "AND",
+      //   },
+      // })
+      .get(getBackendRoute(entity, "funcionarios"), {
         params: {
           id_situacao: 1,
           condition: "AND",
@@ -295,7 +309,10 @@ export default function Monitores({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     axios
       //.get(`/api/${entity}/escritorios-regionais`)
       .get(getBackendRoute(entity, "escritorios-regionais"))
@@ -311,7 +328,10 @@ export default function Monitores({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monitoresFromBd]);
 

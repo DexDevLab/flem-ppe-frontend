@@ -1,6 +1,4 @@
-import { DateTime } from "luxon";
 import puppeteer from "puppeteer";
-import { prisma } from "services/prisma/prismaClient";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

@@ -1,8 +1,5 @@
 import axios from "axios";
-import { benefLookupTeste, benefValidateTeste } from "controllers";
-import { DateTime } from "luxon";
-import { celularMask } from "masks-br";
-import { prisma } from "services/prisma/prismaClient";
+//import { benefValidateTeste } from "controllers";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);

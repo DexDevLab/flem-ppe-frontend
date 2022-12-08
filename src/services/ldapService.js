@@ -6,10 +6,10 @@
 import ActiveDirectory from "activedirectory";
 
 const config = {
-  url: process.env.LDAP_URI,
-  baseDN: process.env.LDAP_BASE_DN,
-  username: process.env.LDAP_USERNAME,
-  password: process.env.LDAP_PASSWORD,
+  url: process.env.NEXT_PUBLIC_LDAP_URI,
+  baseDN: process.env.NEXT_PUBLIC_LDAP_BASE_DN,
+  username: process.env.NEXT_PUBLIC_LDAP_USERNAME,
+  password: process.env.NEXT_PUBLIC_LDAP_PASSWORD,
 };
 
 const ad = new ActiveDirectory(config);

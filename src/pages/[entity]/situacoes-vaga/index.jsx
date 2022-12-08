@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { axios } from "services/apiService";
+import { axios, getBackendRoute } from "services";
 
 export default function SituacoesDeVaga({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -137,10 +137,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
       return (
         axios
           //.put(`/api/${entity}/situacoes-vaga`, formData)
-          .put(
-            getBackendRoute(entity, "situacoes-vaga"),
-            formData
-          )
+          .put(getBackendRoute(entity, "situacoes-vaga"), formData)
           .then((res) => {
             if (res.status === 200) {
               situacaoFormSubmit.onClose();
@@ -167,17 +164,14 @@ export default function SituacoesDeVaga({ entity, ...props }) {
                 position,
               });
             } else {
-              throw new Error(error);
+              throw new Error(error.response.data);
             }
           })
       );
     }
     axios
       //.post(`/api/${entity}/situacoes-vaga`, formData)
-      .post(
-        getBackendRoute(entity, "situacoes-vaga"),
-        formData
-      )
+      .post(getBackendRoute(entity, "situacoes-vaga"), formData)
       .then((res) => {
         if (res.status === 200) {
           situacaoFormSubmit.onClose();
@@ -204,7 +198,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -214,10 +208,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
     tipoSituacaoFormSubmit.onOpen();
     axios
       //.post(`/api/${entity}/situacoes-vaga/tipos`, formData)
-      .post(
-        getBackendRoute(entity, "situacoes-vaga/tipos"),
-        formData
-      )
+      .post(getBackendRoute(entity, "situacoes-vaga/tipos"), formData)
       .then((res) => {
         if (res.status === 200) {
           tipoSituacaoFormSubmit.onClose();
@@ -244,7 +235,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -257,14 +248,11 @@ export default function SituacoesDeVaga({ entity, ...props }) {
       //     id: formData.id,
       //   },
       // })
-      .delete(
-        getBackendRoute(entity, "situacoes-vaga"),
-        {
-          params: {
-            id: formData.id,
-          },
-        }
-      )
+      .delete(getBackendRoute(entity, "situacoes-vaga"), {
+        params: {
+          id: formData.id,
+        },
+      })
       .then((res) => {
         if (res.status === 200) {
           excluir.onClose();
@@ -279,7 +267,10 @@ export default function SituacoesDeVaga({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -301,7 +292,10 @@ export default function SituacoesDeVaga({ entity, ...props }) {
           setSituacoesFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addSituacao.isOpen, addSituacao.isOpen, excluir.isOpen]);
@@ -311,6 +305,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
       //.get(`/api/${entity}/situacoes-vaga/tipos`)
       .get(getBackendRoute(entity, "situacoes-vaga/tipos"))
       .then((res) => {
+        console.log(res.data);
         if (res.status === 200) {
           setTiposSituacoesFromBd(
             res.data.map((eixo) => ({
@@ -321,7 +316,10 @@ export default function SituacoesDeVaga({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, [addSituacao.isOpen, addTipoSituacao.isOpen]);
 
   return (

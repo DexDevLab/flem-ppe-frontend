@@ -4,6 +4,7 @@ import {
   Center,
   chakra,
   Divider,
+  Fade,
   Flex,
   Heading,
   HStack,
@@ -15,7 +16,12 @@ import {
   ModalOverlay,
   ScaleFade,
   Spinner,
-  Fade,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { InputBox } from "components/Inputs/InputBox";
@@ -30,7 +36,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { axios } from "services/apiService";
+import { axios, getBackendRoute } from "services";
 
 export default function TemplateOficios({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -157,7 +163,7 @@ export default function TemplateOficios({ entity, ...props }) {
                 position,
               });
             } else {
-              throw new Error(error);
+              throw new Error(error.response.data);
             }
           })
       );
@@ -191,7 +197,7 @@ export default function TemplateOficios({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -201,10 +207,7 @@ export default function TemplateOficios({ entity, ...props }) {
     tipoOficioFormSubmit.onOpen();
     axios
       //.post(`/api/${entity}/oficios/tipos`, formData)
-      .post(
-        getBackendRoute(entity, "oficios/tipos"),
-        formData
-      )
+      .post(getBackendRoute(entity, "oficios/tipos"), formData)
       .then((res) => {
         if (res.status === 200) {
           tipoOficioFormSubmit.onClose();
@@ -231,7 +234,7 @@ export default function TemplateOficios({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -263,7 +266,10 @@ export default function TemplateOficios({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -284,10 +290,14 @@ export default function TemplateOficios({ entity, ...props }) {
           setTemplatesFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
 
     axios
-      .get(`/api/${entity}/editor-parametros`)
+      //.get(`/api/${entity}/editor-parametros`)
+      .get(getBackendRoute(entity, "editor-parametros"))
       .then(({ data, status }) => {
         if (status === 200) {
           setParametrosFromBd(
@@ -298,7 +308,10 @@ export default function TemplateOficios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -323,7 +336,10 @@ export default function TemplateOficios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, [addTemplateOficio.isOpen, addTipoOficio.isOpen]);
 
   useEffect(() => {
@@ -424,7 +440,10 @@ export default function TemplateOficios({ entity, ...props }) {
               defaultValue={selectedRow?.descricao}
               required={false}
             />
-            <Fade in={tituloTemplate && tituloTemplate.length > 1} unmountOnExit>
+            <Fade
+              in={tituloTemplate && tituloTemplate.length > 1}
+              unmountOnExit
+            >
               <Box>
                 <TextEditor
                   id="conteudo"

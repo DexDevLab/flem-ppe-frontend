@@ -30,10 +30,17 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { InputBox } from "components/Inputs/InputBox";
+import { MaskedInputBox } from "components/Inputs/MaskedInputBox";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useCustomForm } from "hooks";
+import { celularMask, cepMask } from "masks-br";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
-import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import {
   FiEdit,
   FiInfo,
@@ -43,14 +50,7 @@ import {
   FiTool,
   FiTrash2,
 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
-import { InputBox } from "components/Inputs/InputBox";
-import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios } from "services/apiService";
-import { useCustomForm } from "hooks";
-import { MaskedInputBox } from "components/Inputs/MaskedInputBox";
-import { celularMask, cepMask } from "masks-br";
+import { axios, getBackendRoute } from "services";
 
 /**
  * Renderiza o cadastro de unidades de lotação
@@ -95,7 +95,7 @@ export default function UnidadeLotacao({ entity, ...props }) {
         Cell: ({ row: { original } }) => (
           <Text
             noOfLines={2}
-          >{`${original.logradouro}, ${original.bairro}, ${original.municipio} - ${original.uf}`}</Text>
+          >{`${original.logradouro}, ${original.complemento}, ${original.bairro}, ${original.municipio} - ${original.uf}`}</Text>
         ),
         Footer: false,
       },
@@ -253,38 +253,40 @@ export default function UnidadeLotacao({ entity, ...props }) {
     e.preventDefault();
     if (selectedRow) {
       formData.id = selectedRow.id;
-      return axios
-        //.put(`/api/${entity}/unidades-lotacao`, formData)
-        .put(getBackendRoute(entity, "unidades-lotacao"), formData)
-        .then((res) => {
-          if (res.status === 200) {
-            formAddUnidade.closeOverlay();
-            setSelectedRow(null);
-            toast({
-              title: "Unidade atualizada com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.response.status === 409) {
-            formSubmit.onClose();
-            toast({
-              title: "Unidade já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            formAddUnidade.setLoaded();
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/unidades-lotacao`, formData)
+          .put(getBackendRoute(entity, "unidades-lotacao"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              formAddUnidade.closeOverlay();
+              setSelectedRow(null);
+              toast({
+                title: "Unidade atualizada com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            if (error.response.status === 409) {
+              formSubmit.onClose();
+              toast({
+                title: "Unidade já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              formAddUnidade.setLoaded();
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
       //.post(`/api/${entity}/unidades-lotacao`, formData)
@@ -313,7 +315,7 @@ export default function UnidadeLotacao({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       })
       .finally(formAddUnidade.setLoaded);
@@ -330,11 +332,15 @@ export default function UnidadeLotacao({ entity, ...props }) {
         //     idPontoFocal: selectedPontoFocal.id,
         //   },
         // })
-        .put(getBackendRoute(entity, "unidades-lotacao/ponto-focal"), formData, {
-             params: {
-               idPontoFocal: selectedPontoFocal.id,
-             },
-           })
+        .put(
+          getBackendRoute(entity, "unidades-lotacao/ponto-focal"),
+          formData,
+          {
+            params: {
+              idPontoFocal: selectedPontoFocal.id,
+            },
+          }
+        )
         .then((res) => {
           if (res.status === 200) {
             formGerenciarUnidade.closeOverlay();
@@ -357,7 +363,7 @@ export default function UnidadeLotacao({ entity, ...props }) {
               position,
             });
           } else {
-            throw new Error(error);
+            throw new Error(error.response.data);
           }
         })
         .finally(formGerenciarUnidade.setLoaded);
@@ -387,7 +393,7 @@ export default function UnidadeLotacao({ entity, ...props }) {
               position,
             });
           } else {
-            throw new Error(error);
+            throw new Error(error.response.data);
           }
         })
         .finally(formGerenciarUnidade.setLoaded);
@@ -403,10 +409,10 @@ export default function UnidadeLotacao({ entity, ...props }) {
       //   },
       // })
       .delete(getBackendRoute(entity, "unidades-lotacao"), {
-          params: {
-             id: formData.id,
-           },
-         })
+        params: {
+          id: formData.id,
+        },
+      })
       .then((res) => {
         if (res.status === 200) {
           formDeleteUnidadeLotacao.closeOverlay();
@@ -420,7 +426,10 @@ export default function UnidadeLotacao({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(formDeleteUnidadeLotacao.setLoaded);
   };
 
@@ -434,9 +443,9 @@ export default function UnidadeLotacao({ entity, ...props }) {
       // })
       .delete(getBackendRoute(entity, "unidades-lotacao/ponto-focal"), {
         params: {
-           id: formData.id,
-         },
-       })
+          id: formData.id,
+        },
+      })
       .then((res) => {
         if (res.status === 200) {
           formDeletePontoFocal.closeOverlay();
@@ -450,7 +459,10 @@ export default function UnidadeLotacao({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(formDeletePontoFocal.setLoaded);
   };
 
@@ -461,12 +473,11 @@ export default function UnidadeLotacao({ entity, ...props }) {
       // const { data } = await axios.get(
       //   `https://brasilapi.com.br/api/cep/v2/${cep}`
       // );
-      const { data } = await axios.get(
-        getBackendRoute(entity, "ext/cep"), {
-          params: {
-            cep: cep,
-          },
-        });
+      const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+        params: {
+          cep: cep,
+        },
+      });
       setCepData(data);
       toast({
         title: "Endereço localizado",
@@ -515,7 +526,10 @@ export default function UnidadeLotacao({ entity, ...props }) {
           setUnidadesLotacaoFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formAddUnidade.overlayIsOpen, formDeleteUnidadeLotacao.overlayIsOpen]);
@@ -530,7 +544,10 @@ export default function UnidadeLotacao({ entity, ...props }) {
           setPontosFocaisFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(setFetchPontosFocaisFromBd.off);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -648,6 +665,7 @@ export default function UnidadeLotacao({ entity, ...props }) {
                   formControl={formAddUnidade.control}
                   label="Complemento"
                   required={false}
+                  defaultValue={selectedRow?.complemento}
                 />
                 <InputBox
                   id="bairro"

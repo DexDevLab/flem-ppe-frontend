@@ -49,7 +49,7 @@ const getPontoFocal = async (req, res) => {
   const { entity } = req.query;
   try {
     const table = `${entity}_Unidade_Lotacao_Ponto_Focal`;
-      const query = await prisma[table].findMany({
+    const query = await prisma[table].findMany({
       where: {
         excluido: {
           equals: false,
@@ -173,7 +173,7 @@ const putPontoFocal = async (req, res) => {
 
     return res.status(200).json(query);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     switch (error.code) {
       case "P2002":
         res.status(409).json({ error: "Unique constraint failed" });

@@ -44,8 +44,8 @@ import {
   FiTool,
   FiTrash2,
 } from "react-icons/fi";
-import { axios } from "services/apiService";
-import { dynamicSort } from "utils/dynamicSort";
+import { axios, getBackendRoute } from "services";
+import { dynamicSort } from "utils";
 
 export default function EscritoriosRegionais({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -197,7 +197,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
                 position,
               });
             } else {
-              throw new Error(error);
+              throw new Error(error.response.data);
             }
           })
       );
@@ -231,7 +231,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -268,7 +268,8 @@ export default function EscritoriosRegionais({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          console.log(error);
+          throw new Error(error.response.data);
         }
       })
       .finally(() => gerenciarEscritorioFormSubmit.onClose());
@@ -301,7 +302,10 @@ export default function EscritoriosRegionais({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -323,7 +327,9 @@ export default function EscritoriosRegionais({ entity, ...props }) {
           setEscritoriosFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     axios
       //.get(`/api/${entity}/municipios`)
@@ -333,14 +339,16 @@ export default function EscritoriosRegionais({ entity, ...props }) {
           setMunicipiosFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     addEscritorioRegional.isOpen,
     gerenciarEscritorio.isOpen,
     excluirEscritorio.isOpen,
   ]);
-  console.log(selectedRow);
   const cepInput = formAddEscritorio.watch("cep");
 
   const consultaEndereco = async () => {
@@ -350,12 +358,11 @@ export default function EscritoriosRegionais({ entity, ...props }) {
       // const { data } = await axios.get(
       //   `https://brasilapi.com.br/api/cep/v2/${cep}`
       // );
-      const { data } = await axios.get(
-        getBackendRoute(entity, "ext/cep"), {
-          params: {
-            cep: cep,
-          },
-        })
+      const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+        params: {
+          cep: cep,
+        },
+      });
       setCepData(data);
       toast({
         title: "Endereço localizado",
@@ -417,7 +424,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         )
       )
       .catch((error) => {
-        throw new Error(error);
+        throw new Error(error.response.data);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -429,7 +436,6 @@ export default function EscritoriosRegionais({ entity, ...props }) {
       selectedRow &&
       ibgeData
         .map((municipIbge) => {
-          console.log(413, municipIbge);
           const check = municipiosFromBd.find(
             (municip) =>
               municip.idIBGE === municipIbge.value &&

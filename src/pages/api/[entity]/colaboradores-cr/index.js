@@ -1,5 +1,4 @@
-import { allowCors } from "services/apiAllowCors";
-import { prisma } from "services/prisma/prismaClient";
+import { allowCors, prisma } from "services";
 
 const handler = async (req, res) => {
   switch (req.method) {

@@ -13,19 +13,18 @@ import {
   useColorModeValue as mode,
   useToast,
 } from "@chakra-ui/react";
-import { getCsrfToken, getSession, signIn } from "next-auth/react";
 import { InputBox } from "components/Inputs/InputBox";
 import { PasswordInputBox } from "components/Inputs/PasswordInputBox";
 import { Logo } from "components/Logo";
 import { BrandBg } from "components/Logo/BrandBG";
+import { useCustomForm } from "hooks";
+import { toastData } from "messages/toasts/signInPage";
+import { getCsrfToken, getSession, signIn } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { toastData } from "messages/toasts/signInPage";
 import { FiCheck } from "react-icons/fi";
-import { useCustomForm } from "hooks";
 import { PulseLoader } from "react-spinners";
-import { maskCapitalize } from "utils/maskCapitalize";
-import Head from "next/head";
 
 export default function Signin({ csrfToken, ...props }) {
   const [session, setSession] = useState({});
@@ -65,7 +64,10 @@ export default function Signin({ csrfToken, ...props }) {
           router.push("/ba/dashboard");
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(signInForm.setLoaded);
   };
 

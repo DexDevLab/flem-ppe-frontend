@@ -1,5 +1,5 @@
 import { Client } from "@googlemaps/google-maps-services-js";
-import { allowCors } from "services/apiAllowCors";
+import { allowCors } from "services";
 
 const maps = new Client({});
 

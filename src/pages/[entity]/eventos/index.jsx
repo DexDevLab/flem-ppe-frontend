@@ -58,8 +58,8 @@ import {
   FiTrash2,
   FiUserCheck,
 } from "react-icons/fi";
-import { axios } from "services/apiService";
-import { maskCapitalize } from "utils/maskCapitalize";
+import { axios, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
 
 export default function Eventos({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -271,7 +271,7 @@ export default function Eventos({ entity, ...props }) {
                 isClosable: false,
               });
             } else {
-              throw new Error(error);
+              throw new Error(error.response.data);
             }
           })
       );
@@ -303,7 +303,7 @@ export default function Eventos({ entity, ...props }) {
             isClosable: false,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -337,7 +337,7 @@ export default function Eventos({ entity, ...props }) {
             isClosable: false,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -372,7 +372,7 @@ export default function Eventos({ entity, ...props }) {
             isClosable: false,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -397,13 +397,14 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        throw new Error(error);
+        throw new Error(error.response.data);
       })
       .finally(informarPresenca.setLoaded);
   };
 
   const excluirEvento = (formData) => {
     formSubmit.onOpen();
+    console.log(formData);
     axios
       // .delete(`/api/${entity}/oficios`, {
       //   params: {
@@ -428,7 +429,10 @@ export default function Eventos({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   const downloadListaPresenca = ({ id, nome }) => {
@@ -445,11 +449,11 @@ export default function Eventos({ entity, ...props }) {
         getBackendRoute(entity, "reports"),
         {
           params: {
-            id: formData.id,
+            id: id,
             reportUrl: "eventos/lista-presenca",
           },
-        },
-        { responseType: "blob" }
+        responseType: "blob"
+        }
       )
       .then((res) => {
         if (res.status === 200) {
@@ -464,7 +468,10 @@ export default function Eventos({ entity, ...props }) {
           downloadingFile.onClose();
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -490,7 +497,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -509,7 +519,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -523,9 +536,11 @@ export default function Eventos({ entity, ...props }) {
           setEventosFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     axios
-    //TODO VERIFICAR ORIGEM DESTA ROTA
       //.get(`/api/${entity}/editor-parametros`)
       .get(getBackendRoute(entity, "editor-parametros"))
       .then(({ data, status }) => {
@@ -538,7 +553,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, excluirEventoModal.isOpen]);
@@ -558,7 +576,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addLoca.isOpen]);
 
@@ -577,7 +598,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addTipoEvento.isOpen]);
 
@@ -596,7 +620,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addLocalEvento.isOpen]);
 
@@ -615,7 +642,10 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     axios
       //.get(`/api/${entity}/demandantes`)
       .get(getBackendRoute(entity, "demandantes"))
@@ -630,9 +660,11 @@ export default function Eventos({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   }, []);
-  console.log(selectedRow);
   const cepInput = formLocalEvento.watch("cep");
   const filtroParticipantes = formAddEvento.watch("filtro");
   const nomeEventoForm = formAddEvento.watch("nome");
@@ -648,14 +680,11 @@ export default function Eventos({ entity, ...props }) {
       // const { data } = await axios.get(
       //   `https://brasilapi.com.br/api/cep/v2/${cep}`
       // );
-      const { data } = await axios.get(
-        getBackendRoute(entity, "ext/cep"),
-        {
-          params: {
-            cep: cep,
-          },
-        }
-      );
+      const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+        params: {
+          cep: cep,
+        },
+      });
       setCepData(data);
       toast({
         title: "Endereço localizado",
@@ -893,9 +922,9 @@ export default function Eventos({ entity, ...props }) {
                 size="xs"
                 formControl={formAddEvento}
                 defaultValue={
-                  selectedRow &&
-                  Array.isArray(selectedRow.benefAssoc) &&
-                  "benef"
+                  selectedRow 
+                  && Array.isArray(selectedRow.benefAssoc) 
+                  && "benef"
                 }
               />
             </HStack>

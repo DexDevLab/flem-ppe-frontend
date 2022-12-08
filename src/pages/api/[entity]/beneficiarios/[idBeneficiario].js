@@ -1,7 +1,6 @@
-import { allowCors } from "services/apiAllowCors";
-import { filesAPIService } from "services/apiService";
-import { prisma } from "services/prisma/prismaClient";
 import _ from "lodash";
+import { allowCors, filesAPIService } from "services";
+import { prisma } from "services/prisma/prismaClient";
 
 const handler = async (req, res) => {
   switch (req.method) {
@@ -96,8 +95,6 @@ const getBeneficiario = async (req, res) => {
     return res.status(500).json({ error: error });
   }
 };
-
-
 
 const putBeneficiarios = async (req, res) => {
   const { entity, idBeneficiario } = req.query;

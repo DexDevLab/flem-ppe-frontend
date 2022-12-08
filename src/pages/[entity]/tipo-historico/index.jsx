@@ -34,7 +34,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { axios } from "services/apiService";
+import { axios, getBackendRoute } from "services";
 
 /**
  * Renderiza o cadastro de tipos de histórico
@@ -126,10 +126,7 @@ export default function TipoHistorico({ entity, ...props }) {
       return (
         axios
           //.put(`/api/${entity}/tipo-historico`, formData)
-          .put(
-            getBackendRoute(entity, "tipo-historico"),
-            formData
-          )
+          .put(getBackendRoute(entity, "tipo-historico"), formData)
           .then((res) => {
             if (res.status === 200) {
               formTipoHistorico.closeOverlay();
@@ -156,17 +153,14 @@ export default function TipoHistorico({ entity, ...props }) {
               });
             } else {
               formTipoHistorico.setLoaded();
-              throw new Error(error);
+              throw new Error(error.response.data);
             }
           })
       );
     }
     axios
       //.post(`/api/${entity}/tipo-historico`, formData)
-      .post(
-        getBackendRoute(entity, "tipos-historico"),
-        formData
-      )
+      .post(getBackendRoute(entity, "tipos-historico"), formData)
       .then((res) => {
         if (res.status === 200) {
           formTipoHistorico.closeOverlay();
@@ -191,7 +185,7 @@ export default function TipoHistorico({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       })
       .finally(formTipoHistorico.setLoaded);
@@ -223,7 +217,10 @@ export default function TipoHistorico({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(formDeleteTipoHistorico.setLoaded);
   };
 
@@ -244,7 +241,10 @@ export default function TipoHistorico({ entity, ...props }) {
           setTiposHistoricoFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
   }, [formTipoHistorico.overlayIsOpen, formDeleteTipoHistorico.overlayIsOpen]);
 
@@ -325,7 +325,9 @@ export default function TipoHistorico({ entity, ...props }) {
           <Divider />
           <ModalBody pb={6}>
             <VStack my={3} spacing={6}>
-              <Heading size="md">Deseja excluir o seguinte tipo de histórico?</Heading>
+              <Heading size="md">
+                Deseja excluir o seguinte tipo de histórico?
+              </Heading>
               <Text fontSize="xl" align="center">
                 {selectedRow?.nome}
               </Text>
@@ -335,6 +337,7 @@ export default function TipoHistorico({ entity, ...props }) {
                   variant="outline"
                   onClick={() => {
                     deleteTipoHistorico(selectedRow);
+                    setSelectedRow(null);
                   }}
                   isLoading={formDeleteTipoHistorico.isLoading}
                   loadingText="Aguarde"
@@ -346,6 +349,7 @@ export default function TipoHistorico({ entity, ...props }) {
                   variant="outline"
                   onClick={() => {
                     formDeleteTipoHistorico.closeOverlay();
+                    setSelectedRow(null);
                   }}
                 >
                   Cancelar

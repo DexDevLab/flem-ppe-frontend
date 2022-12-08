@@ -27,18 +27,18 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
-import { signIn, signOut, getSession, useSession } from "next-auth/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { Table } from "components/Table";
-import { Overlay } from "components/Overlay";
 import { InputBox } from "components/Inputs/InputBox";
-import { useForm, useFormState } from "react-hook-form";
 import { InputTextBox } from "components/Inputs/InputTextBox";
 import { MenuIconButton } from "components/Menus/MenuIconButton";
-import { axios } from "services/apiService";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 /**
  * Renderiza o cadastro de materiais
@@ -134,43 +134,45 @@ export default function Cadastro({ entity, ...props }) {
     e.preventDefault();
     if (selectedRow) {
       formData.id = selectedRow.id;
-      return axios
-        //.put(`/api/${entity}/materiais`, formData)
-        .put(getBackendRoute(entity, "materiais"), formData)
-        .then((res) => {
-          if (res.status === 200) {
-            formSubmit.onClose();
-            addMaterial.onClose();
-            setSelectedRow(null);
-            formAddMaterial.reset({});
-            toast({
-              title: "Material atualizado com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          if (error.response.status === 409) {
-            formSubmit.onClose();
-            toast({
-              title: "Material já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+      return (
+        axios
+          //.put(`/api/${entity}/materiais`, formData)
+          .put(getBackendRoute(entity, "materiais"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              formSubmit.onClose();
+              addMaterial.onClose();
+              setSelectedRow(null);
+              formAddMaterial.reset({});
+              toast({
+                title: "Material atualizado com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            if (error.response.status === 409) {
+              formSubmit.onClose();
+              toast({
+                title: "Material já existe",
+                status: "error",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            } else {
+              throw new Error(error.response.data);
+            }
+          })
+      );
     }
     axios
       //.post(`/api/${entity}/materiais`, formData)
-      .get(getBackendRoute(entity, "materiais"), formData)
+      .post(getBackendRoute(entity, "materiais"), formData)
       .then((res) => {
         if (res.status === 200) {
           formSubmit.onClose();
@@ -198,7 +200,7 @@ export default function Cadastro({ entity, ...props }) {
             position,
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response.data);
         }
       });
   };
@@ -230,7 +232,10 @@ export default function Cadastro({ entity, ...props }) {
           });
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   useEffect(() => {
@@ -252,7 +257,10 @@ export default function Cadastro({ entity, ...props }) {
           setMateriaisFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addMaterial.isOpen, excluirMaterial.isOpen]);

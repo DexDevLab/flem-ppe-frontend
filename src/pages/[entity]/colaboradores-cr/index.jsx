@@ -25,11 +25,11 @@ import { MenuIconButton } from "components/Menus/MenuIconButton";
 import { Overlay } from "components/Overlay";
 import { Table } from "components/Table";
 import { useCustomForm } from "hooks";
-import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useState } from "react";
-import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { axios } from "services/apiService";
 import _ from "lodash";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 export default function ColaboradoresCR({ entity }) {
   const router = useRouter();
@@ -109,18 +109,26 @@ export default function ColaboradoresCR({ entity }) {
     formAddColabCr.setLoading();
     try {
       const { status } = _.isEmpty(selectedRow)
-        // ? await axios.post(`/api/${entity}/colaboradores-cr`, formData)
-        // : await axios.put(`/api/${entity}/colaboradores-cr`, formData, {
-        //     params: {
-        //       id: selectedRow.id,
-        //     },
-        //   });
-          ? await axios.post(getBackendRoute(entity, "colaboradores-cr"), formData)
-          : await axios.put(getBackendRoute(entity, "colaboradores-cr"), formData ,{
-            params: {
-              id: selectedRow.id,
+        ? // ? await axios.post(`/api/${entity}/colaboradores-cr`, formData)
+          // : await axios.put(`/api/${entity}/colaboradores-cr`, formData, {
+          //     params: {
+          //       id: selectedRow.id,
+          //     },
+          //   });
+          await axios.post(
+            getBackendRoute(entity, "colaboradores-cr"),
+            formData
+          )
+        : await axios.put(
+            getBackendRoute(entity, "colaboradores-cr"),
+            formData,
+            {
+              params: {
+                id: selectedRow.id,
+              },
             },
-          }, formData)
+            formData
+          );
       if (status === 200) {
         toast({
           title: _.isEmpty(selectedRow)
@@ -137,7 +145,7 @@ export default function ColaboradoresCR({ entity }) {
           status: "error",
         });
       } else {
-        throw new Error(JSON.stringify(err.response.data.error));
+        throw new Error(error.response.data);
       }
     } finally {
       formAddColabCr.setLoaded();
@@ -153,11 +161,14 @@ export default function ColaboradoresCR({ entity }) {
       //     id: selectedRow.id,
       //   },
       // });
-      const { status } = await axios.delete(getBackendRoute(entity, "colaboradores-cr"),{
-        params: {
-          id: selectedRow.id,
-        },
-      });
+      const { status } = await axios.delete(
+        getBackendRoute(entity, "colaboradores-cr"),
+        {
+          params: {
+            id: selectedRow.id,
+          },
+        }
+      );
       if (status === 200) {
         toast({
           title: "Colaborador excluído com sucesso",
@@ -166,7 +177,7 @@ export default function ColaboradoresCR({ entity }) {
         formDeleteColabCr.closeOverlay();
       }
     } catch (err) {
-      throw new Error(JSON.stringify(err.response.data.error));
+      throw new Error(error.response.data);
     } finally {
       formDeleteColabCr.setLoaded();
     }
@@ -197,7 +208,10 @@ export default function ColaboradoresCR({ entity }) {
           setColaboradoresFromBd(res.data);
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(setLoadingPageData.off);
   }, [formAddColabCr.overlayIsOpen, formDeleteColabCr.overlayIsOpen]);
 

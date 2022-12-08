@@ -3,12 +3,7 @@
  * @module dashboard
  */
 
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
-  Box,
-  Button,
   Flex,
   Heading,
   SimpleGrid,
@@ -16,15 +11,13 @@ import {
   useBoolean,
   useDisclosure,
 } from "@chakra-ui/react";
-import { signIn, signOut, getSession, useSession } from "next-auth/react";
-import { DashboardLayout } from "components/Layout/DashboardLayout";
-import { variants } from "styles/transitions";
-import { Card } from "components/Cards";
-import { LineChart } from "components/Charts/LineChart";
-import { IoWallet } from "react-icons/io5";
-import { FiCalendar, FiUsers } from "react-icons/fi";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
-import { axios, getBackendRoute } from "services/apiService";
+import { Card } from "components/Cards";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { FiUsers } from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
 
 /**
  * Renderiza a Página de Dashboard.
@@ -54,7 +47,10 @@ export default function Dashboard({ entity, ...props }) {
       //   `/api/${entity}/beneficiarios`,
       //   queryConfig
       // );
-      const { data: ativos } = await axios.patch(getBackendRoute(entity, "beneficiarios"), queryConfig)
+      const { data: ativos } = await axios.patch(
+        getBackendRoute(entity, "beneficiarios"),
+        queryConfig
+      );
       setBenefAtivos(ativos);
     } catch (error) {
       console.log(error);

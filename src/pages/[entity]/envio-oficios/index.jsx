@@ -47,8 +47,8 @@ import {
   FiSend,
   FiTrash2,
 } from "react-icons/fi";
-import { axios, filesAPIUpload, getBackendRoute } from "services/apiService";
-import { maskCapitalize } from "utils/maskCapitalize";
+import { axios, filesAPIUpload, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
 
 export default function EnvioOficios({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
@@ -220,6 +220,9 @@ export default function EnvioOficios({ entity, ...props }) {
 
     if (selectedRow) {
       return axios
+      // .put(`/api/${entity}/oficios/gerenciar`, formData, {
+      //   params: { id: selectedRow.id },
+      // })
         .put(getBackendRoute(entity, "oficios/gerenciar"), formData, {
           params: { id: selectedRow.id },
         })
@@ -228,6 +231,11 @@ export default function EnvioOficios({ entity, ...props }) {
             if (formData.anexos.length) {
               fileUpload(anexos, { referenceObjId: res.data.id }).then(
                 async (res) => {
+                  // await axios.put(
+                  //   `/api/${entity}/oficios/anexos`,
+                  //   { anexosId: res.data },
+                  //   { params: { id: selectedRow.id } }
+                  // );
                   await axios.put(
                     getBackendRoute(entity, "oficios/anexos"),
                     { anexosId: res.data },
@@ -266,54 +274,53 @@ export default function EnvioOficios({ entity, ...props }) {
 
     axios
       //.post(`/api/${entity}/oficios/gerenciar`, formData)
-      .post(getBackendRoute(entity, "oficios/gerenciar"),
-      formData)
-        .then((res) => {
-          if (res.status === 200) {
-            fileUpload(anexos, { referenceObjId: res.data.id }).then(
-              async (res) => {
-                // await axios.put(
-                //   `/api/${entity}/oficios/anexos`,
-                //   { anexosId: res.data },
-                //   { params: { id: res.data[0].referenceObjId } }
-                // );
-                await axios.put(
-                  getBackendRoute(entity, "oficios/anexos"),
-                  {
-                    params: {
-                      id: res.data[0].referenceObjId,
-                    },
+      .post(getBackendRoute(entity, "oficios/gerenciar"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          fileUpload(anexos, { referenceObjId: res.data.id }).then(
+            async (res) => {
+              // await axios.put(
+              //   `/api/${entity}/oficios/anexos`,
+              //   { anexosId: res.data },
+              //   { params: { id: res.data[0].referenceObjId } }
+              // );
+              await axios.put(
+                getBackendRoute(entity, "oficios/anexos"),
+                {
+                  params: {
+                    id: res.data[0].referenceObjId,
                   },
-                  { anexosId: res.data }
-                );
-                formAddOficio.setLoaded();
-                formAddOficio.closeOverlay();
-                setSelectedRow(null);
-                toast({
-                  title: "Ofício adicionado com sucesso",
-                  status: "success",
-                  duration: 5000,
-                  isClosable: false,
-                  position,
-                });
-              }
-            );
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            formAddOficio.setLoaded();
-            toast({
-              title: "Ofício já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error);
-          }
-        });
+                },
+                { anexosId: res.data }
+              );
+              formAddOficio.setLoaded();
+              formAddOficio.closeOverlay();
+              setSelectedRow(null);
+              toast({
+                title: "Ofício adicionado com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          );
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 409) {
+          formAddOficio.setLoaded();
+          toast({
+            title: "Ofício já existe",
+            status: "error",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        } else {
+          throw new Error(error.response.data);
+        }
+      });
   };
 
   const deleteOficio = (formData) => {
@@ -340,17 +347,17 @@ export default function EnvioOficios({ entity, ...props }) {
           setSelectedRow(null);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
   };
 
   const onSubmitEnviarOficio = (formData) => {
     enviarOficioSubmit.onOpen();
     axios
       //.post(`/api/${entity}/oficios/enviar`, formData)
-      .post(
-        getBackendRoute(entity, "oficios/enviar"),
-        formData
-      )
+      .post(getBackendRoute(entity, "oficios/enviar"), formData)
       .then((res) => {
         if (res.status === 200) {
           enviarOficioSubmit.onClose();
@@ -395,9 +402,13 @@ export default function EnvioOficios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     axios
-      .get(`/api/${entity}/editor-parametros`)
+      //.get(`/api/${entity}/editor-parametros`)
+      .get(getBackendRoute(entity, "editor-parametros"))
       .then(({ data, status }) => {
         if (status === 200) {
           setParametrosFromBd(
@@ -408,7 +419,10 @@ export default function EnvioOficios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      })
       .finally(fetchTableData.onClose);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -432,7 +446,10 @@ export default function EnvioOficios({ entity, ...props }) {
           setTemplatesFromBd(templatesOptions);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -451,7 +468,10 @@ export default function EnvioOficios({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.response.data);
+        throw new Error(error.response.data);
+      });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

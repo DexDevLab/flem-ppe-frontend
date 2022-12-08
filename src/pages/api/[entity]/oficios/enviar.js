@@ -1,5 +1,5 @@
 import { prisma } from "services/prisma/prismaClient";
-import { maskCapitalize } from "utils/maskCapitalize";
+import { maskCapitalize } from "utils";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
