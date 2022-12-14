@@ -8,8 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import { useEffect } from "react";
 
 import { Logo } from "components/Logo";
 import "quill/dist/quill.snow.css";
@@ -30,12 +29,6 @@ export default function Oficios({ entity, ...props }) {
       setTimeout(onLoad, 1000);
     }
   }, [asPath]);
-
-  const componentRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
 
   const { quill, quillRef, Quill } = useQuill({
     formats: [

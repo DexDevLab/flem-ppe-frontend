@@ -1,11 +1,9 @@
 import { Box, IconButton, Text, useDisclosure } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FiMoreHorizontal } from "react-icons/fi";
-
-import { useReactToPrint } from "react-to-print";
 
 // import htmlToDraft from 'html-to-draftjs';
 
@@ -116,12 +114,6 @@ export default function Oficios({ entity, ...props }) {
       setTimeout(onLoad, 1000);
     }
   }, [asPath]);
-
-  const componentRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
 
   async function suggestPeople(searchTerm) {
     return atValues.filter((person) =>

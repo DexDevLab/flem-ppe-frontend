@@ -7,7 +7,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { FiMoreHorizontal, FiUnlock } from "react-icons/fi";
+import _ from "lodash";
 
 export function MenuIconButton({ icon, menuItems, ...props }) {
   return (
@@ -34,17 +34,22 @@ export function MenuIconButton({ icon, menuItems, ...props }) {
                 title={menuGroup.menuGroupLabel}
                 textAlign="left"
               >
-                {menuGroup.menuGroupButtons.map((menuButton, idx) => (
-                  <MenuItem
-                  key={menuButton.text + idx}
-                  onClick={menuButton.onClick}
-                  isDisabled={menuButton.disabled}
-                  icon={icon}
-                  {...menuButton}
-                  >
-                    {menuButton.text}
-                  </MenuItem>
-                ))}
+                {menuGroup.menuGroupButtons
+                  .filter(
+                    (menuButton) =>
+                      !_.isEmpty(menuButton) && _.isObject(menuButton)
+                  )
+                  .map((menuButton, idx) => (
+                    <MenuItem
+                      key={menuButton.text + idx}
+                      onClick={menuButton.onClick}
+                      isDisabled={menuButton.disabled}
+                      icon={icon}
+                      {...menuButton}
+                    >
+                      {menuButton.text}
+                    </MenuItem>
+                  ))}
               </MenuGroup>
             ))}
         </MenuList>

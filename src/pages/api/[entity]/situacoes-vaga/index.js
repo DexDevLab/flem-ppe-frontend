@@ -67,7 +67,7 @@ const getSituacoesVaga = async (req, res) => {
     });
     return res.status(200).json(query);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({ error: error });
   }
 };
@@ -90,7 +90,7 @@ const addSituacaoVaga = async (req, res) => {
       throw error;
     }
     const query = await prisma.ba_Situacoes_Vaga.upsert({
-    // const query = await prisma[table].upsert({
+      // const query = await prisma[table].upsert({
       create: {
         nome: situacao,
         tipoSituacao_Id: tipo,
@@ -106,7 +106,7 @@ const addSituacaoVaga = async (req, res) => {
     });
     return res.status(200).json(query);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     switch (error.code) {
       case "P2002":
         res.status(409).json({ error: "Unique constraint failed" });

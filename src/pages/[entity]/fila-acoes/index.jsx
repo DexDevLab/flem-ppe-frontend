@@ -397,7 +397,7 @@ export default function FilaAcoesCR({ entity, ...props }) {
           pb={5}
           minH="60px"
         >
-          <Heading size="md">Fila de Ações CR</Heading>
+          <Heading fontSize="1.4rem">Fila de Ações CR</Heading>
         </Flex>
         <ScaleFade in={fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
           <Center h="90vh">

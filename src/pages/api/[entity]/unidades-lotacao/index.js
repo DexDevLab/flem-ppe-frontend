@@ -1,4 +1,5 @@
-import { prisma } from "services";
+import _ from "lodash";
+import { prisma } from "services/prisma/prismaClient";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -45,7 +46,8 @@ const handler = async (req, res) => {
 export default allowCors(handler);
 
 const getUnidadesLotacao = async (req, res) => {
-  const { entity } = req.query;
+  const { entity, municipio_Id, escritorioRegional_Id, demandante_Id } =
+    req.query;
   try {
     const table = `${entity}_Unidade_Lotacao`;
     const query = await prisma[table].findMany({
@@ -53,6 +55,32 @@ const getUnidadesLotacao = async (req, res) => {
         excluido: {
           equals: false,
         },
+        vaga:
+          _.isUndefined(municipio_Id) &&
+          _.isUndefined(escritorioRegional_Id) &&
+          _.isUndefined(demandante_Id)
+            ? {}
+            : {
+                some: {
+                  municipio: _.isUndefined(escritorioRegional_Id)
+                    ? {}
+                    : {
+                        escritorio_RegionalId: {
+                          in: JSON.parse(escritorioRegional_Id),
+                        },
+                      },
+                  municipio_Id: _.isUndefined(municipio_Id)
+                    ? {}
+                    : {
+                        in: JSON.parse(municipio_Id),
+                      },
+                  demandante_Id: _.isUndefined(demandante_Id)
+                    ? {}
+                    : {
+                        in: JSON.parse(demandante_Id),
+                      },
+                },
+              },
       },
       orderBy: [
         {
@@ -60,8 +88,10 @@ const getUnidadesLotacao = async (req, res) => {
         },
       ],
     });
+    // console.log(query);
     return res.status(200).json(query);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error });
   }
 };

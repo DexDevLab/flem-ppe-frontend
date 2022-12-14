@@ -9,6 +9,7 @@ const tiposHistorico = [
   { nome: "Evento" },
   { nome: "Ofício" },
   { nome: "Vaga" },
+  { nome: "Situação da Vaga" },
 ];
 const tipoHistoricoSeed = async (prisma) => {
   try {

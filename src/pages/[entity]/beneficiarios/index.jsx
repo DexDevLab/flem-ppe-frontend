@@ -128,8 +128,10 @@ export default function Beneficiarios({ entity, ...props }) {
       },
       {
         Header: "Situação Vaga",
-        accessor: (row) =>
-          `${row.vaga.situacaoVaga.tipoSituacao.nome} - ${row.vaga.situacaoVaga.nome}`,
+        accessor: ({ vaga: { situacaoVaga } }) =>
+          situacaoVaga.tipoSituacao.nome === situacaoVaga.nome
+            ? situacaoVaga.nome
+            : `${situacaoVaga.tipoSituacao.nome} - ${situacaoVaga.nome}`,
         Cell: ({ value }) => {
           return <Box minW={200}>{value}</Box>;
         },
@@ -394,7 +396,9 @@ export default function Beneficiarios({ entity, ...props }) {
           <Box>
             <Heading fontSize="1.4rem">Beneficiários</Heading>
             <Heading size="xs" color="gray.500" mt={1}>
-              {tableRowsCount && tableRowsCount.length === 1
+              {tableRowsCount && tableRowsCount === 0
+                ? `Nenhum registro encontrado`
+                : tableRowsCount === 1
                 ? `${tableRowsCount} registro encontrado`
                 : `${tableRowsCount} registros encontrados`}
             </Heading>

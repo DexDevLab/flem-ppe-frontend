@@ -1,4 +1,6 @@
-import { axios, prisma } from "services";
+import _ from "lodash";
+import { prisma } from "services/prisma/prismaClient";
+import { maskCapitalize } from "utils/maskCapitalize";
 
 const allowCors = (fn) => async (req, res) => {
   res.setHeader("Access-Control-Allow-Credentials", true);
@@ -32,7 +34,7 @@ const handler = async (req, res) => {
       await modifyMonitor(req, res);
       break;
     case "DELETE":
-      await deleteMaterial(req, res);
+      await deleteMonitor(req, res);
       break;
 
     default:
@@ -44,7 +46,8 @@ const handler = async (req, res) => {
 };
 
 const getMonitores = async (req, res) => {
-  const { entity } = req.query;
+  const { entity, escritorioRegional_Id, municipio_Id, demandante_Id } =
+    req.query;
   try {
     const table = `${entity}_Monitores`;
     const query = await prisma[table].findMany({
@@ -52,9 +55,42 @@ const getMonitores = async (req, res) => {
         excluido: {
           equals: false,
         },
+        escritoriosRegionais:
+          _.isUndefined(escritorioRegional_Id) && _.isUndefined(municipio_Id)
+            ? {}
+            : {
+                some: {
+                  id: _.isUndefined(escritorioRegional_Id)
+                    ? {}
+                    : {
+                        in: JSON.parse(escritorioRegional_Id),
+                      },
+                  municipios: _.isUndefined(municipio_Id)
+                    ? {}
+                    : {
+                        some: {
+                          id: {
+                            in: JSON.parse(municipio_Id),
+                          },
+                        },
+                      },
+                },
+              },
+        demandantes: _.isUndefined(demandante_Id)
+          ? {}
+          : {
+              some: {
+                id: _.isUndefined(demandante_Id)
+                  ? {}
+                  : {
+                      in: JSON.parse(demandante_Id),
+                    },
+              },
+            },
       },
       include: {
         escritoriosRegionais: true,
+        demandantes: true,
       },
       orderBy: [
         {
@@ -65,30 +101,22 @@ const getMonitores = async (req, res) => {
 
     return res.status(200).json(query);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: error });
   }
 };
 
 const addMonitor = async (req, res) => {
   const { entity } = req.query;
-  const { monitor, erAssoc } = req.body;
+  const { monitor, erAssoc, demandantesAssociados } = req.body;
 
   try {
     const table = `${entity}_Monitores`;
 
-    const {
-      data: [colabFromRh],
-    } = await axios.get("http://localhost:3001/api/funcionarios", {
-      params: {
-        matricula: parseInt(monitor),
-        condition: "AND",
-      },
-    });
-
     if (
       (await prisma[table].findFirst({
         where: {
-          matricula: colabFromRh.func_matricula,
+          matricula: monitor.matriculaDominio,
           excluido: false,
         },
       })) !== null
@@ -99,20 +127,26 @@ const addMonitor = async (req, res) => {
     }
     const query = await prisma[table].upsert({
       where: {
-        matricula: colabFromRh.func_matricula,
+        matricula: monitor.matriculaDominio,
       },
       update: {
-        nome: colabFromRh.func_nome,
+        nome: maskCapitalize(monitor.nome),
         excluido: false,
         escritoriosRegionais: {
-          connect: erAssoc.map(({ id }) => ({ id })),
+          set: erAssoc.map(({ value }) => ({ id: value })),
+        },
+        demandantes: {
+          set: demandantesAssociados.map(({ value }) => ({ id: value })),
         },
       },
       create: {
-        nome: colabFromRh.func_nome,
-        matricula: colabFromRh.func_matricula,
+        nome: maskCapitalize(monitor.nome),
+        matricula: monitor.matriculaDominio,
         escritoriosRegionais: {
-          connect: erAssoc.map(({ id }) => ({ id })),
+          connect: erAssoc.map(({ value }) => ({ id: value })),
+        },
+        demandantes: {
+          connect: demandantesAssociados.map(({ value }) => ({ id: value })),
         },
       },
     });
@@ -133,14 +167,17 @@ const addMonitor = async (req, res) => {
 
 const modifyMonitor = async (req, res) => {
   const { entity } = req.query;
-  const { id, erAssoc } = req.body;
+  const { id, erAssoc, demandantesAssociados } = req.body;
 
   try {
     const table = `${entity}_Monitores`;
     const query = await prisma[table].update({
       data: {
         escritoriosRegionais: {
-          set: erAssoc.map(({ id }) => ({ id })),
+          set: erAssoc.map(({ value }) => ({ id: value })),
+        },
+        demandantes: {
+          set: demandantesAssociados.map(({ value }) => ({ id: value })),
         },
       },
       where: {
@@ -162,7 +199,7 @@ const modifyMonitor = async (req, res) => {
   }
 };
 
-const deleteMaterial = async (req, res) => {
+const deleteMonitor = async (req, res) => {
   const { entity, id } = req.query;
   try {
     const table = `${entity}_Monitores`;

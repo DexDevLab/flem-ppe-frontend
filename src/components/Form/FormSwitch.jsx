@@ -15,8 +15,21 @@ export const FormSwitch = ({
   validate,
   required = false,
   defaultValue,
+  onChange,
 }) => {
   const [checked, setChecked] = useState(defaultValue || false);
+
+  const handleOnChange = (e) => {
+    if (unlockEdit) {
+      setChecked(e.target.checked);
+      setValue(id, e.target.checked);
+      trigger(id);
+
+      if (_.isFunction(onChange)) {
+        onChange(e);
+      }
+    }
+  };
 
   useEffect(() => {
     if (defaultValue) {
@@ -30,7 +43,7 @@ export const FormSwitch = ({
       display={{ base: "block", md: "flex" }}
       alignItems="center"
       py={2}
-      onChange={({ target: { checked } }) => unlockEdit && setChecked(checked)}
+      onChange={handleOnChange}
       isReadOnly={!unlockEdit}
       isInvalid={errors[id]}
     >

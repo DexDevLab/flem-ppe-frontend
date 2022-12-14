@@ -39,7 +39,7 @@ const modifyMunicipiosMonitoresEscrReg = async (req, res) => {
   const { id, municipios = [], monitores = [] } = req.body;
 
   const tableEscritorios = `${entity}_Escritorio_Regional`;
-  
+
   try {
     const query = await prisma[tableEscritorios].update({
       data: {

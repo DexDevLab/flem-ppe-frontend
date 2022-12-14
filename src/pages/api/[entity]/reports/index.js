@@ -1,3 +1,4 @@
+import PDFMerger from "pdf-merger-js";
 import puppeteer from "puppeteer";
 
 const allowCors = (fn) => async (req, res) => {
@@ -46,7 +47,14 @@ const handler = async (req, res) => {
 export default allowCors(handler);
 
 const getSituacoesVaga = async (req, res) => {
-  const { entity, reportUrl, id } = req.query;
+  const {
+    entity,
+    reportUrl,
+    landscape = false,
+    anexosId = null,
+    ...params
+  } = req.query;
+
   try {
     const browser = await puppeteer.launch({
       headless: true,
@@ -62,56 +70,71 @@ const getSituacoesVaga = async (req, res) => {
         "--lang=pt-BR",
       ],
     });
+
+    const query = Object.keys(params)
+      .map((key) => `${key}=${params[key]}`)
+      .join("&");
+
     const page = await browser.newPage();
-    await page.goto(
-      `http://localhost:3000/${entity}/${reportUrl}?idEvento=${id}`,
-      {
-        waitUntil: "networkidle0",
-      }
-    );
 
-    const pdf = await page.pdf({
-      printBackground: true,
-      format: "A4",
-      displayHeaderFooter: false,
-      landscape: false,
-      // headerTemplate: `<div id="header-template" style="font-size:10px !important; color:#666999; padding-left:10px; padding-right:10px; width: 100%; display:flex; justify-content: space-between;">
-      //   <div>
-      //   <span class="title"></span>
-      //   <span> - </span>
-      //   <span class="date"></span>
-      //   </div>
-      //   <div>
-      //   <span class="pageNumber"></span>
-      //   <span> of </span>
-      //   <span class="totalPages"></span>
-      //   </div>
-      //   </div>`,
-      // footerTemplate: `<div id="header-template" style="font-size:10px !important; color:#666999; padding-left:10px; padding-right:10px; width: 100%; display:flex; justify-content: space-between;">
-      // <div>
-      // <span class="title"></span>
-      // <span> - </span>
-      // <span class="date"></span>
-      // </div>
-      // <div>
-      // <span class="pageNumber"></span>
-      // <span> of </span>
-      // <span class="totalPages"></span>
-      // </div>
-      // </div>`,
-      margin: {
-        top: "20px",
-        bottom: "40px",
-        right: "30px",
-        left: "30px",
-      },
+    await page.goto(`http://localhost:3000/${entity}/${reportUrl}?${query}`, {
+      waitUntil: "networkidle0",
     });
+    const title = await page.title();
+    res.setHeader("Content-Disposition", "attachment;filename=" + title);
 
-    await browser.close();
+    if (landscape === "custom") {
+      const pagesWithOrientation = await page.$$eval(".page", (pagesToPrint) =>
+        pagesToPrint.map((pageToPrint, idx) => ({
+          pageId: pageToPrint.id,
+          pageNumber: idx + 1,
+        }))
+      );
 
-    // res.headers["Content-Type"] = "application/pdf";
+      const pagesPrinted = [];
 
-    return res.send(pdf);
+      for await (const pageToPrint of pagesWithOrientation) {
+        const print = await page.pdf({
+          printBackground: true,
+          format: "A4",
+          displayHeaderFooter: false,
+          landscape: pageToPrint.pageId === "landscape",
+          pageRanges: `${pageToPrint.pageNumber}`,
+          margin: {
+            top: "20px",
+            bottom: "40px",
+            right: "30px",
+            left: "30px",
+          },
+        });
+        pagesPrinted.push(print);
+      }
+
+      const merger = new PDFMerger();
+
+      for (const file of pagesPrinted) {
+        await merger.add(file);
+      }
+      const mergedPdf = await merger.saveAsBuffer();
+      await browser.close();
+      return res.send(mergedPdf);
+    } else {
+      const pdf = await page.pdf({
+        printBackground: true,
+        format: "A4",
+        displayHeaderFooter: false,
+        landscape: JSON.parse(landscape),
+        margin: {
+          top: "20px",
+          bottom: "40px",
+          right: "30px",
+          left: "30px",
+        },
+      });
+
+      await browser.close();
+      return res.send(pdf);
+    }
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: error });

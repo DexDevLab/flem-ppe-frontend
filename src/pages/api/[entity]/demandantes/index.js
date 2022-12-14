@@ -81,6 +81,18 @@ const getDemandantes = async (req, res) => {
                 },
               },
       },
+      include: {
+        vagas: {
+          select: {
+            demandante_Id: true,
+            municipio: {
+              select: {
+                escritorio_RegionalId: true,
+              },
+            },
+          },
+        },
+      },
     });
     return res.status(200).json(query);
   } catch (error) {

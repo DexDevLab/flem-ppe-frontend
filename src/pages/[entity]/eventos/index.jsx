@@ -445,16 +445,13 @@ export default function Eventos({ entity, ...props }) {
       //   },
       //   responseType: "blob",
       // })
-      .get(
-        getBackendRoute(entity, "reports"),
-        {
-          params: {
-            id: id,
-            reportUrl: "eventos/lista-presenca",
-          },
-        responseType: "blob"
-        }
-      )
+      .get(getBackendRoute(entity, "reports"), {
+        params: {
+          id: id,
+          reportUrl: "eventos/lista-presenca",
+        },
+        responseType: "blob",
+      })
       .then((res) => {
         if (res.status === 200) {
           const content = res.headers["content-type"];
@@ -922,9 +919,9 @@ export default function Eventos({ entity, ...props }) {
                 size="xs"
                 formControl={formAddEvento}
                 defaultValue={
-                  selectedRow 
-                  && Array.isArray(selectedRow.benefAssoc) 
-                  && "benef"
+                  selectedRow &&
+                  Array.isArray(selectedRow.benefAssoc) &&
+                  "benef"
                 }
               />
             </HStack>

@@ -1,29 +1,28 @@
-import
-  {
-    Box,
-    Button,
-    chakra,
-    Divider,
-    Fade,
-    Flex,
-    Heading,
-    HStack,
-    Icon,
-    IconButton,
-    SimpleGrid,
-    Spinner,
-    Stack,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    Text,
-    Tooltip,
-    useBoolean,
-    useBreakpointValue,
-    useNumberInput
-  } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  chakra,
+  Divider,
+  Fade,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  SimpleGrid,
+  Spinner,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  Tooltip,
+  useBoolean,
+  useBreakpointValue,
+  useNumberInput,
+} from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { FormMaker } from "components/Form";
 import { Overlay } from "components/Overlay";
@@ -35,22 +34,20 @@ import { DateTime } from "luxon";
 import { celularMask, cepMask, cpfMask } from "masks-br";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import
-  {
-    FiAlertCircle,
-    FiDownload,
-    FiLock,
-    FiMinus,
-    FiPlus,
-    FiUnlock
-  } from "react-icons/fi";
-import
-  {
-    axios,
-    filesAPIService,
-    filesAPIUpload,
-    getBackendRoute
-  } from "services";
+import {
+  FiAlertCircle,
+  FiDownload,
+  FiLock,
+  FiMinus,
+  FiPlus,
+  FiUnlock,
+} from "react-icons/fi";
+import {
+  axios,
+  filesAPIService,
+  filesAPIUpload,
+  getBackendRoute,
+} from "services";
 import { variants } from "styles/transitions";
 
 export default function Beneficiarios({ entity, idBeneficiario }) {
@@ -80,6 +77,7 @@ export default function Beneficiarios({ entity, idBeneficiario }) {
     formDadosBeneficiario.setLoading();
     e.preventDefault();
     const anexos = new FormData();
+
     formData.dataNasc = DateTime.fromSQL(formData.dataNasc)
       .setLocale("pt-BR")
       .toISO();
@@ -740,14 +738,14 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
   const formTelefone = new Array().concat(
     ...telefoneQtd.map((obj, idx, arr) => [
       {
-        id: `celular.${idx}`,
+        id: `telefone.${idx}`,
         formControl,
         placeholder: "(11) 98765-4321",
         mask: celularMask,
         defaultValue: obj.contato,
       },
       {
-        id: `obsCelular.${idx}`,
+        id: `obsTelefone.${idx}`,
         formControl,
         placeholder: "Observação",
         defaultValue: obj.observacao,
@@ -764,8 +762,8 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
                 setTelefoneQtd((prev) =>
                   prev.filter((obj, idx2) => idx2 !== idx)
                 );
-                formControl.unregister(`celular`);
-                formControl.unregister(`obsCelular`);
+                formControl.unregister(`telefone`);
+                formControl.unregister(`obsTelefone`);
               }
             }}
             isLoading={buscaCep}
@@ -797,7 +795,7 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
   useEffect(() => {
     if (data && data.contatos.length >= 1) {
       const telefones = data.contatos.filter(
-        ({ tipoContato_Id }) => tipoContato_Id === "celular"
+        ({ tipoContato_Id }) => tipoContato_Id === "telefone"
       );
       const emails = data.contatos.filter(
         ({ tipoContato_Id }) => tipoContato_Id === "email"
@@ -2253,7 +2251,9 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
     const { data } = await axios.get(getBackendRoute(entity, "situacoes-vaga"));
     const unidadesOptions = data.map(({ id, nome, tipoSituacao }) => ({
       value: id,
-      label: `${tipoSituacao.nome} - ${nome}`,
+      label:
+        tipoSituacao.nome === nome ? nome : `${tipoSituacao.nome} - ${nome}`,
+      // disabled: ["Contratado", "Desligado"].includes(tipoSituacao.nome),
     }));
     setSituacoesVagaFromBd(unidadesOptions);
   });
@@ -2309,6 +2309,18 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       defaultValue: situacoesVagaFromBd.find(
         ({ value }) => vagaInfo?.situacaoVaga_Id === value
       )?.value,
+      onChange: () => formControl.setValue("situacaoVagaHasChanged", "true"),
+      // disabled: ["Contratado - Ativo", "Desligado"].includes(
+      //   situacoesVagaFromBd.find(
+      //     ({ value }) => vagaInfo?.situacaoVaga_Id === value
+      //   )?.label
+      // ),
+    },
+    {
+      id: "situacaoVagaHasChanged",
+      formControl,
+      type: "hidden",
+      defaultValue: "false",
     },
     {
       id: "escritorioRegional",
@@ -2397,18 +2409,18 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
         : null,
       readOnly: true,
     },
-    {
-      id: "mes_remessa",
-      label: "Mês Remessa/Lote",
-      placeholder: "Mês Remessa/Lote",
-      formControl,
-      defaultValue: vagaInfo?.remessaSec?.data_remessa
-        ? DateTime.fromISO(vagaInfo?.remessaSec?.data_remessa)
-            .setLocale("pt-BR")
-            .toFormat("MMMM 'de' yyyy")
-        : null,
-      readOnly: true,
-    },
+    // {
+    //   id: "mes_remessa",
+    //   label: "Mês Remessa/Lote",
+    //   placeholder: "Mês Remessa/Lote",
+    //   formControl,
+    //   defaultValue: vagaInfo?.remessaSec?.data_remessa
+    //     ? DateTime.fromISO(vagaInfo?.remessaSec?.data_remessa)
+    //         .setLocale("pt-BR")
+    //         .toFormat("MMMM 'de' yyyy")
+    //     : null,
+    //   readOnly: true,
+    // },
     // {
     //   id: "1",
     //   label: "Data Envio da Situação",

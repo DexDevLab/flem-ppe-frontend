@@ -44,6 +44,8 @@ export function Dropzone({
   validate = (v) => true,
   maxFiles = 4,
   multiple = false,
+  disabled,
+  disabledText,
   ...rest
 }) {
   const [myFiles, setMyFiles] = useState([]);
@@ -131,6 +133,41 @@ export function Dropzone({
       </TagLabel>
     </Tag>
   ));
+
+  if (disabled) {
+    return (
+      <Box role="group">
+        <FormLabel
+          opacity="50%"
+          _groupHover={{
+            opacity: "100%",
+          }}
+        >
+          {label}
+        </FormLabel>
+        <Flex
+          p={4}
+          alignItems="center"
+          justifyContent="center"
+          border="dashed 2px"
+          bg="gray.200"
+          color="gray.400"
+          rounded="lg"
+          outline="none"
+          transition="all .24s ease-in-out"
+          opacity="50%"
+          _hover={{
+            opacity: "80%",
+          }}
+          _groupHover={{
+            opacity: "80%",
+          }}
+        >
+          {disabledText || "Desativado"}
+        </Flex>
+      </Box>
+    );
+  }
   return (
     <>
       {label && <FormLabel>{label}</FormLabel>}
@@ -146,6 +183,7 @@ export function Dropzone({
         transition="all .24s ease-in-out"
         {...getRootProps()}
         onClick={() => (myFiles.length > 0 ? null : open())}
+        // w="full"
         {...rest}
       >
         <Flex flexDir="column" alignItems="center">

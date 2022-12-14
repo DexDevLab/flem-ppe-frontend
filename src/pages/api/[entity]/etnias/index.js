@@ -38,7 +38,7 @@ const getEtnias = async (req, res) => {
   const { entity } = req.query;
   try {
     const table = `${entity}_Etnia`;
-      const query = await prisma[table].findMany({
+    const query = await prisma[table].findMany({
       orderBy: [
         {
           etnia: "asc",

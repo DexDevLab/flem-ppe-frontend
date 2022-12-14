@@ -47,7 +47,6 @@ const patchValidarPendencias = async (req, res) => {
       return raw;
     }),
   };
-  
 
   try {
     //const output1 = await benefLookupTeste(entity, {Plan1: req.body});

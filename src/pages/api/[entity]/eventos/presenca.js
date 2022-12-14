@@ -91,6 +91,7 @@ const postPresencaBenefEvento = async (req, res) => {
     const query = await prisma[table].createMany({
       data: benefToInformPresenca.map(({ id }) => ({
         benefAssocId: id,
+        eventoId,
       })),
     });
     return res.status(200).json(query);

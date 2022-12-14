@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useEffect } from "react";
+import _ from "lodash";
 
 /**
  * Cria uma Inpux Box de senha.
@@ -56,6 +57,7 @@ export function SelectInputBox({
   bg,
   defaultValue,
   inputRightElement,
+  w = "full",
   ...props
 }) {
   const chakraStyles = {
@@ -63,7 +65,7 @@ export function SelectInputBox({
       ...provided,
       shadow: state.isFocused ? "inner" : shadow,
       bg: bg,
-      w: "full",
+      w,
       _focus: {
         boxShadow: state.isFocused
           ? `0 0 0 1px var(--chakra-colors-${colorScheme}-500)`
@@ -79,12 +81,17 @@ export function SelectInputBox({
     }),
     container: (provided) => ({
       ...provided,
-      w: "100%",
+      w,
     }),
   };
   useEffect(() => {
-    if (Array.isArray(defaultValue))
+    if (Array.isArray(defaultValue)) {
       setValue(id, isMulti ? defaultValue : defaultValue[0]?.value);
+      trigger(id);
+    } else if (_.isObject(defaultValue)) {
+      setValue(id, defaultValue.value);
+      trigger(id);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -112,13 +119,13 @@ export function SelectInputBox({
               options={options}
               onChange={(e) => {
                 setValue(id, isMulti ? e : e.value);
+                onChange && onChange(e);
                 trigger(id);
               }}
               isMulti={isMulti}
               noOptionsMessage={() => "Sem opções"}
               closeMenuOnSelect={!isMulti}
               chakraStyles={chakraStyles}
-              
             />
 
             {inputRightElement && (
