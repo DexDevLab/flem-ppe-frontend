@@ -206,6 +206,10 @@ Para mais informações, visite a [Documentação do Docker](https://docs.docker
 
 <br>
 
+### v1.1.1-230623
+
+- Remoção da biblioteca npm-check (CWE-601 / CVE-2022-33987 / CVSS 5.4 / MEDIUM / SNYK-JS-GOT-2932019)
+
 ### v1.1.0-230623
 
 - Features
