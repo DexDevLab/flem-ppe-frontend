@@ -1,0 +1,2564 @@
+<!DOCTYPE html><html lang="en" style="font-size:16px"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="author" content="https://github.com/DexDevLab"><meta name="author" content="https://github.com/rodsl"><meta name="description" content="Aplicação FrontEnd para o Portal Projeto Primeiro Emprego, da FLEM"><script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"><title>Source: pages/[entity]/beneficiarios/[idBeneficiario].jsx</title><!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--><script src="scripts/third-party/hljs.js" defer="defer"></script><script src="scripts/third-party/hljs-line-num.js" defer="defer"></script><script src="scripts/third-party/popper.js" defer="defer"></script><script src="scripts/third-party/tippy.js" defer="defer"></script><script src="scripts/third-party/tocbot.min.js"></script><script>var baseURL="/",locationPathname="";baseURL=(locationPathname=document.location.pathname).substr(0,locationPathname.lastIndexOf("/")+1)</script><link rel="stylesheet" href="styles/clean-jsdoc-theme.min.css"><svg aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display:none"><defs><symbol id="copy-icon" viewbox="0 0 488.3 488.3"><g><path d="M314.25,85.4h-227c-21.3,0-38.6,17.3-38.6,38.6v325.7c0,21.3,17.3,38.6,38.6,38.6h227c21.3,0,38.6-17.3,38.6-38.6V124    C352.75,102.7,335.45,85.4,314.25,85.4z M325.75,449.6c0,6.4-5.2,11.6-11.6,11.6h-227c-6.4,0-11.6-5.2-11.6-11.6V124    c0-6.4,5.2-11.6,11.6-11.6h227c6.4,0,11.6,5.2,11.6,11.6V449.6z"/><path d="M401.05,0h-227c-21.3,0-38.6,17.3-38.6,38.6c0,7.5,6,13.5,13.5,13.5s13.5-6,13.5-13.5c0-6.4,5.2-11.6,11.6-11.6h227    c6.4,0,11.6,5.2,11.6,11.6v325.7c0,6.4-5.2,11.6-11.6,11.6c-7.5,0-13.5,6-13.5,13.5s6,13.5,13.5,13.5c21.3,0,38.6-17.3,38.6-38.6    V38.6C439.65,17.3,422.35,0,401.05,0z"/></g></symbol><symbol id="search-icon" viewBox="0 0 512 512"><g><g><path d="M225.474,0C101.151,0,0,101.151,0,225.474c0,124.33,101.151,225.474,225.474,225.474    c124.33,0,225.474-101.144,225.474-225.474C450.948,101.151,349.804,0,225.474,0z M225.474,409.323    c-101.373,0-183.848-82.475-183.848-183.848S124.101,41.626,225.474,41.626s183.848,82.475,183.848,183.848    S326.847,409.323,225.474,409.323z"/></g></g><g><g><path d="M505.902,476.472L386.574,357.144c-8.131-8.131-21.299-8.131-29.43,0c-8.131,8.124-8.131,21.306,0,29.43l119.328,119.328    c4.065,4.065,9.387,6.098,14.715,6.098c5.321,0,10.649-2.033,14.715-6.098C514.033,497.778,514.033,484.596,505.902,476.472z"/></g></g></symbol><symbol id="font-size-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol><symbol id="add-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></symbol><symbol id="minus-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></symbol><symbol id="dark-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></symbol><symbol id="light-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></symbol><symbol id="reset-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z"/></symbol><symbol id="down-icon" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.7803 6.21967C13.0732 6.51256 13.0732 6.98744 12.7803 7.28033L8.53033 11.5303C8.23744 11.8232 7.76256 11.8232 7.46967 11.5303L3.21967 7.28033C2.92678 6.98744 2.92678 6.51256 3.21967 6.21967C3.51256 5.92678 3.98744 5.92678 4.28033 6.21967L8 9.93934L11.7197 6.21967C12.0126 5.92678 12.4874 5.92678 12.7803 6.21967Z"></path></symbol><symbol id="codepen-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16.5 13.202L13 15.535v3.596L19.197 15 16.5 13.202zM14.697 12L12 10.202 9.303 12 12 13.798 14.697 12zM20 10.869L18.303 12 20 13.131V10.87zM19.197 9L13 4.869v3.596l3.5 2.333L19.197 9zM7.5 10.798L11 8.465V4.869L4.803 9 7.5 10.798zM4.803 15L11 19.131v-3.596l-3.5-2.333L4.803 15zM4 13.131L5.697 12 4 10.869v2.262zM2 9a1 1 0 0 1 .445-.832l9-6a1 1 0 0 1 1.11 0l9 6A1 1 0 0 1 22 9v6a1 1 0 0 1-.445.832l-9 6a1 1 0 0 1-1.11 0l-9-6A1 1 0 0 1 2 15V9z"/></symbol><symbol id="close-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></symbol><symbol id="menu-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></symbol></defs></svg></head><body class="dark" data-theme="dark"><div class="sidebar-container"><div class="sidebar" id="sidebar"><a href="/" class="sidebar-title sidebar-title-anchor">FLEM PPE Frontend - Documentação</a><div class="sidebar-items-container"><div class="sidebar-section-title with-arrow" data-isopen="false" id="CN57_vBhoybX-eFzlqeh7"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-acoes.html">acoes</a></div><div class="sidebar-section-children"><a href="module-AnimatePresenceWrapper.html">AnimatePresenceWrapper</a></div><div class="sidebar-section-children"><a href="module-api.html">api</a></div><div class="sidebar-section-children"><a href="module-auth.html">auth</a></div><div class="sidebar-section-children"><a href="module-beneficiarios.html">beneficiarios</a></div><div class="sidebar-section-children"><a href="module-Breadcrumb.html">Breadcrumb</a></div><div class="sidebar-section-children"><a href="module-Buttons.html">Buttons</a></div><div class="sidebar-section-children"><a href="module-Cards.html">Cards</a></div><div class="sidebar-section-children"><a href="module-Charts.html">Charts</a></div><div class="sidebar-section-children"><a href="module-colaboradores-cr.html">colaboradores-cr</a></div><div class="sidebar-section-children"><a href="module-comunicados.html">comunicados</a></div><div class="sidebar-section-children"><a href="module-dashboard.html">dashboard</a></div><div class="sidebar-section-children"><a href="module-demandantes.html">demandantes</a></div><div class="sidebar-section-children"><a href="module-Dropzone.html">Dropzone</a></div><div class="sidebar-section-children"><a href="module-EmailEditor.html">EmailEditor</a></div><div class="sidebar-section-children"><a href="module-envio-oficios.html">envio-oficios</a></div><div class="sidebar-section-children"><a href="module-escritorios-regionais.html">escritorios-regionais</a></div><div class="sidebar-section-children"><a href="module-eventos.html">eventos</a></div><div class="sidebar-section-children"><a href="module-Form.html">Form</a></div><div class="sidebar-section-children"><a href="module-geral.html">geral</a></div><div class="sidebar-section-children"><a href="module-Icons.html">Icons</a></div><div class="sidebar-section-children"><a href="module-importar.html">importar</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Layout.html">Layout</a></div><div class="sidebar-section-children"><a href="module-LDAPService.html">LDAPService</a></div><div class="sidebar-section-children"><a href="module-Logo.html">Logo</a></div><div class="sidebar-section-children"><a href="module-materiais.html">materiais</a></div><div class="sidebar-section-children"><a href="module-Menus.html">Menus</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitores.html">monitores</a></div><div class="sidebar-section-children"><a href="module-Navbar.html">Navbar</a></div><div class="sidebar-section-children"><a href="module-Overlay.html">Overlay</a></div><div class="sidebar-section-children"><a href="module-por-beneficiario.html">por-beneficiario</a></div><div class="sidebar-section-children"><a href="module-relatorios-monitoramentos.html">relatorios-monitoramentos</a></div><div class="sidebar-section-children"><a href="module-Sidebar.html">Sidebar</a></div><div class="sidebar-section-children"><a href="module-sintese.html">sintese</a></div><div class="sidebar-section-children"><a href="module-situacoes-vaga.html">situacoes-vaga</a></div><div class="sidebar-section-children"><a href="module-Table.html">Table</a></div><div class="sidebar-section-children"><a href="module-TagInput.html">TagInput</a></div><div class="sidebar-section-children"><a href="module-templates-oficios.html">templates-oficios</a></div><div class="sidebar-section-children"><a href="module-TextEditor.html">TextEditor</a></div><div class="sidebar-section-children"><a href="module-TextViewer.html">TextViewer</a></div><div class="sidebar-section-children"><a href="module-tipos-historico.html">tipos-historico</a></div><div class="sidebar-section-children"><a href="module-Toast.html">Toast</a></div><div class="sidebar-section-children"><a href="module-unidades-lotacao.html">unidades-lotacao</a></div><div class="sidebar-section-children"><a href="module-utils.html">utils</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="Ohx0bpRBg7-xpqCleJhxN"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#allowCors">allowCors</a></div><div class="sidebar-section-children"><a href="global.html#authDb">authDb</a></div><div class="sidebar-section-children"><a href="global.html#authUserQa">authUserQa</a></div><div class="sidebar-section-children"><a href="global.html#axios">axios</a></div><div class="sidebar-section-children"><a href="global.html#axiosNoTimeout">axiosNoTimeout</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#filesAPIService">filesAPIService</a></div><div class="sidebar-section-children"><a href="global.html#filesAPIUpload">filesAPIUpload</a></div><div class="sidebar-section-children"><a href="global.html#getBackendRoute">getBackendRoute</a></div><div class="sidebar-section-children"><a href="global.html#GlobalStyle">GlobalStyle</a></div><div class="sidebar-section-children"><a href="global.html#mailService">mailService</a></div><div class="sidebar-section-children"><a href="global.html#MyApp">MyApp</a></div><div class="sidebar-section-children"><a href="global.html#toastData">toastData</a></div><div class="sidebar-section-children"><a href="global.html#variants">variants</a></div></div></div></div></div><div class="navbar-container" id="VuAckcnZhf"><nav class="navbar"><div class="navbar-left-items"><div class="some-class navbar-item"><a id="some-id" href="https://frtechnologies.com.br" target="_blank">Website</a></div><div class="some-class navbar-item"><a id="some-id" href="https://github.com/frtechdev/flem-ppe-frontend/" target="_blank">Github</a></div></div><div class="navbar-right-items"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div><nav></nav></nav></div><div class="toc-container"><div class="toc-content"><span class="bold">On this page</span><div id="eed4d2a0bfd64539bb9df78095dec881"></div></div></div><div class="body-wrapper"><div class="main-content"><div class="main-wrapper"><section id="source-page" class="source-page"><header><h1 id="title" class="has-anchor">pages_[entity]_beneficiarios_[idBeneficiario].jsx</h1></header><article><pre class="prettyprint source lang-js"><code>import {
+  Box,
+  Button,
+  chakra,
+  Divider,
+  Fade,
+  Flex,
+  Heading,
+  HStack,
+  Icon,
+  IconButton,
+  SimpleGrid,
+  Spinner,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+  Tooltip,
+  useBoolean,
+  useBreakpointValue,
+  useNumberInput,
+  useToast,
+} from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { FormMaker } from "components/Form";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import download from "downloadjs";
+import { motion } from "framer-motion";
+import { useCustomForm } from "hooks";
+import { DateTime } from "luxon";
+import { celularMask, cepMask, cpfMask } from "masks-br";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  FiAlertCircle,
+  FiDownload,
+  FiLock,
+  FiMinus,
+  FiPlus,
+  FiUnlock,
+} from "react-icons/fi";
+import {
+  axios,
+  filesAPIService,
+  filesAPIUpload,
+  getBackendRoute,
+} from "services";
+import { variants } from "styles/transitions";
+import { exceptionHandler } from "utils/exceptionHandler";
+
+/**
+ * Renderiza a tela de beneficiário com o detalhamento das informações
+ * @method Beneficiarios
+ * @memberof module:beneficiarios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} idBeneficiario o id do Beneficiário no banco de dados
+ * @returns {Component} página renderizada
+ */
+export default function Beneficiarios({ entity, idBeneficiario }) {
+  const router = useRouter();
+  const [unlockEdit, setUnlockEdit] = useBoolean();
+  const [benefDataIsLoading, setBenefDataIsLoading] = useBoolean(true);
+  const [benefDataReloading, setBenefDataReloading] = useBoolean(false);
+  const [uploadProgress, setUploadProgress] = useState();
+  const [uploadController, setUploadController] = useState(null);
+  const [benefData, setBenefData] = useState([]);
+  const [benefDataNotFound, setBenefDataNotFound] = useState(true);
+  const formDadosBeneficiario = useCustomForm();
+  const toast = useToast();
+
+  const fileUpload = async (data, params) => {
+    const config = {
+      signal: uploadController.signal,
+      onUploadProgress: (event) => {
+        setUploadProgress(Math.round((event.loaded * 100) / event.total));
+      },
+      params,
+    };
+    const response = await filesAPIUpload.post(`/uploadFile`, data, config);
+    return response;
+  };
+
+  const onSubmit = ({ anexoDocumento, ...formData }, e) => {
+    formDadosBeneficiario.setLoading();
+    e.preventDefault();
+    const anexos = new FormData();
+
+    formData.dataNasc = DateTime.fromSQL(formData.dataNasc)
+      .setLocale("pt-BR")
+      .toISO();
+    formData.dataEntregaMaterial = DateTime.fromSQL(
+      formData.dataEntregaMaterial
+    )
+      .setLocale("pt-BR")
+      .toISO();
+
+    if (anexoDocumento) {
+      anexoDocumento.map((file, idx) => anexos.append(`files`, file));
+    }
+
+    if (anexos.getAll("files").length) {
+      fileUpload(anexos).then((res) => {
+        formData.anexos = res.data[0];
+        axios
+          .put(
+            getBackendRoute(entity, `beneficiarios/${benefData.id}`),
+            formData
+          )
+          .then(({ data }) => console.log(data))
+          // .catch((err) => console.log(err))
+          .catch((error) => {
+            toast(exceptionHandler(error));
+          })
+          .finally(() => {
+            formDadosBeneficiario.setLoaded();
+            setUnlockEdit.off();
+          });
+      });
+    } else {
+      axios
+        .put(getBackendRoute(entity, `beneficiarios/${benefData.id}`), formData)
+        .then(({ data }) => console.log(data))
+        // .catch((err) => console.log(err))
+        .catch((error) => {
+          toast(exceptionHandler(error));
+        })
+        .finally(() => {
+          formDadosBeneficiario.setLoaded();
+          setUnlockEdit.off();
+        });
+    }
+  };
+
+  const panels = [
+    {
+      label: "Dados",
+      content: (
+        &lt;Dados
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+        />
+      ),
+    },
+    {
+      label: "Formação",
+      content: (
+        &lt;Formacao
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+        />
+      ),
+    },
+    {
+      label: "Documentos",
+      content: (
+        &lt;Documentos
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+          onSubmit={formDadosBeneficiario.handleSubmit(onSubmit)}
+          formState={{
+            isLoading: formDadosBeneficiario.isLoading,
+            validation: formDadosBeneficiario.validation,
+          }}
+          uploadProgress={uploadProgress}
+          setUploadProgress={setUploadProgress}
+          uploadController={uploadController}
+        />
+      ),
+    },
+    {
+      label: "Pendências",
+      content: (
+        &lt;Pendencias
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+        />
+      ),
+    },
+    {
+      label: "Histórico",
+      content: (
+        &lt;Historico
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+          onSubmit={formDadosBeneficiario.handleSubmit(onSubmit)}
+          formState={{
+            isLoading: formDadosBeneficiario.isLoading,
+            validation: formDadosBeneficiario.validation,
+          }}
+        />
+      ),
+    },
+    {
+      label: "Materiais",
+      content: (
+        &lt;Materiais
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+          onSubmit={formDadosBeneficiario.handleSubmit(onSubmit)}
+          formState={{
+            isLoading: formDadosBeneficiario.isLoading,
+            validation: formDadosBeneficiario.validation,
+          }}
+        />
+      ),
+    },
+    {
+      label: "Informações Sigilosas",
+      content: (
+        &lt;InformacoesSigilosas
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+          onSubmit={formDadosBeneficiario.handleSubmit(onSubmit)}
+          formState={{
+            isLoading: formDadosBeneficiario.isLoading,
+            validation: formDadosBeneficiario.validation,
+          }}
+          uploadProgress={uploadProgress}
+          setUploadProgress={setUploadProgress}
+          uploadController={uploadController}
+        />
+      ),
+    },
+    {
+      label: "Vaga",
+      content: (
+        &lt;Vaga
+          data={benefData}
+          entity={entity}
+          formControl={formDadosBeneficiario.control}
+          unlockEdit={unlockEdit &amp;&amp; !benefDataReloading}
+        />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    setBenefDataReloading.on();
+    axios
+      .get(getBackendRoute(entity, "beneficiarios"), {
+        params: {
+          id: idBeneficiario,
+        },
+      })
+      .then(({ data }) => {
+        if (data) {
+          setBenefData(data[0]);
+          setBenefDataNotFound(false);
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      // .catch((err) => new Error(err))
+      .finally(() => {
+        setBenefDataIsLoading.off();
+        setBenefDataReloading.off();
+      });
+  }, [unlockEdit, formDadosBeneficiario.isLoading]);
+
+  useEffect(() => {
+    setUploadController(new AbortController());
+  }, []);
+
+  return (
+    &lt;>
+      &lt;AnimatePresenceWrapper router={router} isLoaded={!benefDataIsLoading}>
+        &lt;Fade in={!benefDataNotFound} unmountOnExit>
+          &lt;chakra.form onSubmit={formDadosBeneficiario.handleSubmit(onSubmit)}>
+            &lt;HStack pb={5}>
+              &lt;Heading size="md">
+                Dados do Beneficiário - {benefData &amp;&amp; benefData.nome}
+              &lt;/Heading>
+              &lt;Tooltip
+                hasArrow
+                label={
+                  unlockEdit
+                    ? "Bloquear para Edição"
+                    : "Desbloquear para Edição"
+                }
+                bg={unlockEdit ? "red.700" : "brand1.700"}
+                placement="bottom"
+              >
+                &lt;IconButton
+                  icon={
+                    unlockEdit &amp;&amp; !benefDataReloading ? (
+                      &lt;FiUnlock size={22} />
+                    ) : (
+                      &lt;FiLock size={22} />
+                    )
+                  }
+                  colorScheme={unlockEdit ? "red" : "brand1"}
+                  variant={
+                    unlockEdit &amp;&amp; !benefDataReloading ? "solid" : "ghost"
+                  }
+                  size="sm"
+                  onClick={() => {
+                    setUnlockEdit.toggle();
+                    setBenefDataReloading.on();
+                  }}
+                  isDisabled={unlockEdit &amp;&amp; formDadosBeneficiario.isLoading}
+                  isLoading={benefDataReloading}
+                  transition="all .2s ease-in-out"
+                />
+              &lt;/Tooltip>
+              &lt;Fade in={unlockEdit &amp;&amp; !benefDataReloading} unmountOnExit>
+                &lt;Button
+                  type="submit"
+                  colorScheme="brand1"
+                  size="sm"
+                  isLoading={formDadosBeneficiario.isLoading}
+                  isDisabled={!formDadosBeneficiario.validation}
+                  loadingText="Aguarde..."
+                >
+                  Salvar alterações
+                &lt;/Button>
+              &lt;/Fade>
+            &lt;/HStack>
+            &lt;Tabs
+              variant="soft-rounded"
+              colorScheme="brand1"
+              size="md"
+              bg="gray.100"
+              shadow="md"
+              rounded="lg"
+              isFitted={useBreakpointValue({ base: true, md: false })}
+            >
+              &lt;TabList
+                flexWrap="wrap"
+                borderBottom="2px"
+                borderColor="brand1.500"
+                p={2}
+                shadow="md"
+              >
+                {panels.map(({ label, content }, idx) => (
+                  &lt;Tab
+                    key={`tab-${label}`}
+                    rounded="lg"
+                    fontSize="xs"
+                    _selected={{
+                      shadow: "inner",
+                      bg: "brand1.100",
+                      color: "brand1.700",
+                    }}
+                    _hover={{
+                      transform: "scale(1.1) ",
+                      color: "brand1.400",
+                    }}
+                    transition="all .2s ease-in-out"
+                  >
+                    {label}
+                  &lt;/Tab>
+                ))}
+              &lt;/TabList>
+
+              &lt;TabPanels>
+                {panels.map(({ label, content }, idx) => (
+                  &lt;TabPanel key={`tab-${label}`} p={0} roundedBottom="lg">
+                    &lt;motion.div
+                      initial="pageInitial"
+                      animate="pageAnimate"
+                      exit="pageExit"
+                      variants={variants}
+                    >
+                      &lt;Box pos="relative">
+                        &lt;Stack
+                          p={4}
+                          rounded="lg"
+                          shadow="md"
+                          spacing={3}
+                          opacity={
+                            (benefDataReloading ||
+                              formDadosBeneficiario.isLoading) &amp;&amp;
+                            0.2
+                          }
+                          transition="all .2s ease-in-out"
+                        >
+                          {content}
+                        &lt;/Stack>
+                        &lt;Box pos="absolute" top="4" right="4">
+                          &lt;Fade
+                            in={
+                              benefDataReloading ||
+                              formDadosBeneficiario.isLoading
+                            }
+                          >
+                            &lt;HStack>
+                              &lt;Text>Carregando&lt;/Text>
+                              &lt;Spinner
+                                color="brand1.500"
+                                thickness="2px"
+                                speed=".5s"
+                                emptyColor="gray.200"
+                              />
+                            &lt;/HStack>{" "}
+                          &lt;/Fade>
+                        &lt;/Box>
+                      &lt;/Box>
+                    &lt;/motion.div>
+                  &lt;/TabPanel>
+                ))}
+              &lt;/TabPanels>
+            &lt;/Tabs>
+          &lt;/chakra.form>
+        &lt;/Fade>
+        &lt;Fade in={benefDataNotFound} unmountOnExit>
+          &lt;Box bg="gray.200" mt={2} rounded="lg" shadow="md">
+            &lt;HStack p={10} justifyContent="space-between">
+              &lt;Heading size="md" color="brand1.700">
+                Beneficiário não localizado
+              &lt;/Heading>
+              &lt;Icon
+                as={FiAlertCircle}
+                boxSize={10}
+                bg="red.600"
+                color="whiteAlpha.800"
+                p={1}
+                rounded="md"
+              />
+            &lt;/HStack>
+          &lt;/Box>
+        &lt;/Fade>
+      &lt;/AnimatePresenceWrapper>
+    &lt;/>
+  );
+}
+
+export async function getServerSideProps(context) {
+  const {
+    params: { entity, idBeneficiario },
+  } = context;
+  const entities = ["ba", "to", "rj"];
+
+  // const posts = await api.getContentList({
+  //   referenceName: "posts",
+  //   languageCode: "en-us"
+  // });
+  // const page = posts.items.find((post) => {
+  //   return post.fields.slug === ctx.params.slug.join("/");
+  // });
+
+  const entityCheck = entities.find((ent) => ent === entity || undefined);
+
+  return {
+    props: {
+      entity: entityCheck || null,
+      idBeneficiario,
+    },
+  };
+}
+
+const Dados = ({ data, entity, formControl, unlockEdit }) => {
+  const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
+  const toast = useToast();
+  const [etniasFromBd, setEtniasFromBd] = useState(null);
+  const [tamanhosFromBd, setTamanhosFromBd] = useState(null);
+  const [territorioIdentidade, setTerritorioIdentidade] = useState(null);
+  const [cepData, setCepData] = useState({
+    street: data?.logradouro,
+    neighborhood: data?.bairro,
+    city: data?.municipio,
+    state: data?.uf,
+  });
+  const [buscaCep, setBuscaCep] = useBoolean();
+  const [emailQtd, setEmailQtd] = useState([0]);
+  const [telefoneQtd, setTelefoneQtd] = useState([0]);
+
+  const getEtnias = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "etnias"));
+    const etniasOptions = data.map(({ id, etnia }) => ({
+      value: id,
+      label: etnia,
+    }));
+    setEtniasFromBd(etniasOptions);
+  }, [entity]);
+
+  const getTamanhoUniforme = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "tamanhos-uniforme")
+    );
+    const tamanhoOptions = data.map(({ id, tamanho }) => ({
+      value: id,
+      label: tamanho,
+    }));
+
+    setTamanhosFromBd(tamanhoOptions);
+  }, [entity]);
+
+  const getTerritorioIdentidade = useCallback(async () => {
+    const { data: municipios } = await axios.get(
+      getBackendRoute(entity, "municipios")
+    );
+    const municipioFiltered = municipios.find(
+      ({ nome }) => nome === data?.municipio
+    );
+
+    setTerritorioIdentidade(municipioFiltered?.territorioIdentidade);
+  }, []);
+
+  const formDadosPessoais = [
+    {
+      id: "nome",
+      label: "Nome",
+      placeholder: "Nome Beneficiario",
+      formControl,
+    },
+    {
+      id: "dataNasc",
+      label: "Data de Nascimento",
+      placeholder: "Data de Nascimento Beneficiario",
+      formControl,
+      type: "date",
+      validate: (v) => DateTime.isDateTime(DateTime.fromSQL(v)),
+    },
+    {
+      id: "cpf",
+      label: "CPF",
+      placeholder: "CPF Beneficiario",
+      formControl,
+      mask: cpfMask,
+    },
+    {
+      id: "rg",
+      label: "RG",
+      placeholder: "RG Beneficiario",
+      formControl,
+      type: "number",
+    },
+    {
+      id: "sexo",
+      label: "Sexo",
+      placeholder: "Sexo Beneficiario",
+      formControl,
+      type: "select",
+      options: [
+        {
+          id: "Masculino",
+          label: "Masculino",
+        },
+        {
+          id: "Feminino",
+          label: "Feminino",
+        },
+      ],
+    },
+    {
+      id: "etnia_Id",
+      label: "Etnia",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: etniasFromBd,
+    },
+    {
+      id: "observacao",
+      label: "Observações",
+      placeholder: "Observações Beneficiário",
+      formControl,
+    },
+  ];
+
+  const formDadosRh = [
+    {
+      id: "matriculaFlem",
+      label: "Matrícula RH",
+      placeholder: "Matrícula RH Beneficiario",
+      formControl,
+      type: "number",
+    },
+    {
+      id: "ctps",
+      label: "CTPS",
+      placeholder: "CTPS Beneficiario",
+      formControl,
+    },
+    {
+      id: "pis",
+      label: "PIS",
+      placeholder: "PIS Beneficiario",
+      formControl,
+      type: "number",
+    },
+    {
+      id: "deficiencia",
+      label: "Deficiência",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: [
+        {
+          value: "nenhuma",
+          label: "Nenhuma",
+        },
+        {
+          value: "deficiencia auditiva",
+          label: "Deficiência Auditiva",
+        },
+        {
+          value: "deficiencia fisica",
+          label: "Deficiência Física",
+        },
+        {
+          value: "deficiencia intelectual",
+          label: "Deficiência Intelectual",
+        },
+        {
+          value: "deficiencia visual",
+          label: "Deficiência Visual",
+        },
+      ],
+    },
+    {
+      id: "tamanhoUniforme_Id",
+      label: "Tamanho Fardamento",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: tamanhosFromBd,
+    },
+  ];
+
+  const formEndereco = [
+    {
+      id: "cep",
+      label: "CEP",
+      placeholder: "CEP Beneficiario",
+      formControl,
+      mask: cepMask,
+      inputRightElement: (
+        &lt;Box w={24}>
+          &lt;Button
+            colorScheme="brand1"
+            size="xs"
+            variant="outline"
+            hidden={!(unlockEdit &amp;&amp; formControl.getValues("cep")?.length === 9)}
+            onClick={() => consultaEndereco()}
+            isLoading={buscaCep}
+          >
+            Buscar CEP
+          &lt;/Button>
+        &lt;/Box>
+      ),
+    },
+    {
+      id: "logradouro",
+      label: "Logradouro",
+      placeholder: "Logradouro",
+      formControl,
+      defaultValue: cepData.street,
+    },
+    {
+      id: "numero",
+      label: "Número",
+      placeholder: "Número",
+      formControl,
+    },
+    {
+      id: "complemento",
+      label: "Complemento",
+      placeholder: "Complemento",
+      formControl,
+    },
+    {
+      id: "bairro",
+      label: "Bairro",
+      placeholder: "Bairro",
+      formControl,
+      defaultValue: cepData.neighborhood,
+    },
+    {
+      id: "municipio",
+      label: "Município",
+      placeholder: "Município",
+      formControl,
+      defaultValue: cepData.city,
+    },
+    {
+      id: "uf",
+      label: "UF",
+      placeholder: "UF",
+      formControl,
+      defaultValue: cepData.state,
+    },
+    {
+      id: "territorio",
+      label: "Território",
+      placeholder: "Território",
+      formControl,
+      defaultValue: territorioIdentidade?.nome,
+      readOnly: true,
+    },
+  ];
+
+  const formEmail = new Array().concat(
+    ...emailQtd.map((obj, idx, arr) => [
+      {
+        id: `email.${idx}`,
+        formControl,
+        placeholder: "email@exemplo.com",
+        defaultValue: obj.contato,
+      },
+      {
+        id: `obsEmail.${idx}`,
+        formControl,
+        placeholder: "Observação",
+        defaultValue: obj.observacao,
+        inputRightElement: (
+          &lt;IconButton
+            colorScheme="brand1"
+            size="sm"
+            variant="outline"
+            hidden={!unlockEdit}
+            onClick={() => {
+              if (idx === 0 &amp;&amp; arr.length >= 1) {
+                setEmailQtd((prev) => [...prev, emailQtd.length + 1]);
+              } else {
+                setEmailQtd((prev) => prev.filter((obj, idx2) => idx2 !== idx));
+                formControl.unregister(`email`);
+                formControl.unregister(`obsEmail`);
+              }
+            }}
+            isLoading={buscaCep}
+          >
+            {idx === 0 ? arr.length >= 1 &amp;&amp; &lt;FiPlus /> : &lt;FiMinus />}
+          &lt;/IconButton>
+        ),
+      },
+    ])
+  );
+
+  const formTelefone = new Array().concat(
+    ...telefoneQtd.map((obj, idx, arr) => [
+      {
+        id: `telefone.${idx}`,
+        formControl,
+        placeholder: "(11) 98765-4321",
+        mask: celularMask,
+        defaultValue: obj.contato,
+      },
+      {
+        id: `obsTelefone.${idx}`,
+        formControl,
+        placeholder: "Observação",
+        defaultValue: obj.observacao,
+        inputRightElement: (
+          &lt;IconButton
+            colorScheme="brand1"
+            size="sm"
+            variant="outline"
+            hidden={!unlockEdit}
+            onClick={() => {
+              if (idx === 0 &amp;&amp; arr.length >= 1) {
+                setTelefoneQtd((prev) => [...prev, telefoneQtd.length + 1]);
+              } else {
+                setTelefoneQtd((prev) =>
+                  prev.filter((obj, idx2) => idx2 !== idx)
+                );
+                formControl.unregister(`telefone`);
+                formControl.unregister(`obsTelefone`);
+              }
+            }}
+            isLoading={buscaCep}
+          >
+            {idx === 0 ? arr.length >= 1 &amp;&amp; &lt;FiPlus /> : &lt;FiMinus />}
+          &lt;/IconButton>
+        ),
+      },
+    ])
+  );
+
+  // const consultaEndereco = async () => {
+  //   const cep = formControl.getValues("cep");
+  //   try {
+  //     setBuscaCep.on();
+  //     const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+  //       params: {
+  //         cep: cep,
+  //       },
+  //     });
+
+  //     setCepData(data);
+  //   } catch (error) {
+  //     setCepData({});
+  //   } finally {
+  //     setBuscaCep.off();
+  //   }
+  // };
+
+  const consultaEndereco = async () => {
+    const cep = formControl.getValues("cep");
+    try {
+      setBuscaCep.on();
+      // const { data } = await axios.get(
+      //   `https://brasilapi.com.br/api/cep/v2/${cep}`
+      // );
+      const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+        params: {
+          cep: cep,
+        },
+      });
+      setCepData(data);
+      toast({
+        title: "Endereço localizado",
+        status: "success",
+        duration: 5000,
+        isClosable: false,
+        position,
+      });
+    } catch (error) {
+      setCepData({});
+      formControl.reset({
+        cep,
+      });
+      const exception = exceptionHandler(error);
+      if (exception.code == 404) {
+        exception.title = "Endereço não localizado";
+        exception.description =
+          "Verifique o CEP ou preencha o endereço manualmente.";
+        exception.status = "warning";
+        exception.duration = 5000;
+      }
+      toast(exception);
+      // setCepData({});
+      // formControl.reset({
+      //   cep,
+      // });
+      // toast({
+      //   title: "Endereço não localizado",
+      //   description: "Verifique o CEP ou preencha o endereço manualmente",
+      //   status: "warning",
+      //   duration: 5000,
+      //   isClosable: false,
+      //   position,
+      //   containerStyle: {
+      //     width: "300px",
+      //   },
+      // });
+    } finally {
+      setBuscaCep.off();
+    }
+  };
+
+  useEffect(() => {
+    if (data &amp;&amp; data.contatos.length >= 1) {
+      const telefones = data.contatos.filter(
+        ({ tipoContato_Id }) => tipoContato_Id === "telefone"
+      );
+      const emails = data.contatos.filter(
+        ({ tipoContato_Id }) => tipoContato_Id === "email"
+      );
+
+      setEmailQtd(emails.length ? emails : [0]);
+      setTelefoneQtd(telefones.length ? telefones : [0]);
+    }
+  }, [data?.contatos]);
+
+  useEffect(() => {
+    getEtnias();
+    getTamanhoUniforme();
+  }, []);
+
+  useEffect(() => {
+    getTerritorioIdentidade();
+  }, [data?.municipio]);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4} py={1}>
+          Dados Pessoais
+        &lt;/Heading>
+        &lt;FormMaker inlineForm unlockEdit={unlockEdit} data={data}>
+          {formDadosPessoais}
+        &lt;/FormMaker>
+      &lt;/Box>
+
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Dados RH
+        &lt;/Heading>
+        &lt;FormMaker inlineForm unlockEdit={unlockEdit} data={data}>
+          {formDadosRh}
+        &lt;/FormMaker>
+      &lt;/Box>
+
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Endereço
+        &lt;/Heading>
+        &lt;FormMaker inlineForm unlockEdit={unlockEdit} data={data}>
+          {formEndereco}
+        &lt;/FormMaker>
+      &lt;/Box>
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Contatos
+        &lt;/Heading>
+        &lt;SimpleGrid columns={2}>
+          &lt;Heading color="brand1.700" size="sm" mt={6}>
+            Telefone / Celular
+          &lt;/Heading>
+          &lt;Heading color="brand1.700" size="sm" mt={6}>
+            Observação
+          &lt;/Heading>
+        &lt;/SimpleGrid>
+        &lt;SimpleGrid columns={2}>
+          &lt;FormMaker inlineForm unlockEdit={unlockEdit} data={data}>
+            {formTelefone}
+          &lt;/FormMaker>
+        &lt;/SimpleGrid>
+        &lt;SimpleGrid columns={2}>
+          &lt;Heading color="brand1.700" size="sm" mt={6}>
+            E-mail
+          &lt;/Heading>
+          &lt;Heading color="brand1.700" size="sm" mt={6}>
+            Observação
+          &lt;/Heading>
+        &lt;/SimpleGrid>
+        &lt;SimpleGrid columns={2}>
+          &lt;FormMaker inlineForm unlockEdit={unlockEdit} data={data}>
+            {formEmail}
+          &lt;/FormMaker>
+        &lt;/SimpleGrid>
+      &lt;/Box>
+    &lt;/>
+  );
+};
+
+const Formacao = ({ data, entity, formControl, unlockEdit }) => {
+  const [formacoesFromBd, setFormacoesFromBd] = useState([]);
+  const [formacoesOptions, setFormacoesOptions] = useState([]);
+  const [loadingFormacoes, setLoadingFormacoes] = useBoolean(false);
+
+  const getFormacoes = useCallback(async () => {
+    setLoadingFormacoes.on();
+    const { data } = await axios.get(getBackendRoute(entity, "formacoes"));
+    const formacoesOptions = data.map(({ id, nome }) => ({
+      value: id,
+      label: nome,
+    }));
+
+    setFormacoesFromBd(data);
+    setFormacoesOptions(formacoesOptions);
+    setLoadingFormacoes.off();
+  }, []);
+
+  const formFormacao = [
+    {
+      id: "matriculaSec",
+      label: "Matrícula SEC",
+      placeholder: "Matrícula SEC Beneficiário",
+      formControl,
+      type: "number",
+    },
+    {
+      id: "escolaMunicipio",
+      label: "Município da instituição de ensino",
+      formControl,
+    },
+    {
+      id: "escolaConclusao",
+      label: "Nome da instituição de ensino",
+      formControl,
+    },
+    {
+      id: "eixoFormacao_Id",
+      label: "Eixo de Formação",
+      placeholder: "Selecione...",
+      formControl,
+      defaultValue: data?.formacao?.eixo?.nome,
+      disabled: true,
+    },
+    {
+      id: "formacao_Id",
+      label: "Formação",
+      placeholder: loadingFormacoes ? "Carregando..." : "Selecione...",
+      formControl,
+      type: "select",
+      options: formacoesOptions,
+      defaultValue: formacoesOptions.find(
+        ({ value }) => value === data?.formacao.id
+      )?.value,
+      onChange: (e) =>
+        formControl.setValue(
+          "eixoFormacao_Id",
+          formacoesFromBd.find(({ id }) => id === e.target.value).eixo.nome
+        ),
+    },
+    {
+      id: "anamnese",
+      label: "Anamnese",
+      formControl,
+      type: "switch",
+      checkedLabel: {
+        true: "Sim",
+        false: "Não",
+      },
+    },
+  ];
+
+  const formCursoSuperior = [
+    {
+      id: "superiorConcluido",
+      label: "Concluiu Ensino Superior?",
+      formControl,
+      type: "select",
+      placeholder: "Não Informado",
+      options: [
+        {
+          value: "N",
+          label: "Não",
+        },
+        {
+          value: "S",
+          label: "Sim",
+        },
+      ],
+    },
+    {
+      id: "superiorCursando",
+      label: "Está cursando Ensino Superior?",
+      formControl,
+      type: "select",
+      placeholder: "Não Informado",
+      options: [
+        {
+          value: "N",
+          label: "Não",
+        },
+        {
+          value: "S",
+          label: "Sim",
+        },
+      ],
+      showIn: formControl.getValues("superiorConcluido") === "N",
+    },
+    {
+      id: "superiorTipo",
+      label: "Tipo de Instituição (Particular ou Pública)",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: [
+        {
+          value: "particular",
+          label: "Particular",
+        },
+        {
+          value: "publica",
+          label: "Pública",
+        },
+      ],
+      // required: "Obrigatório",
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S",
+    },
+    {
+      id: "superiorCurso",
+      label: "Curso",
+      formControl,
+      // required: "Obrigatório",
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S",
+    },
+    {
+      id: "superiorInstituicao",
+      label: "Instituição",
+      formControl,
+      // required: "Obrigatório",
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S",
+    },
+    {
+      id: "superiorModalidade",
+      label: "Modalidade de Ensino",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: [
+        {
+          value: "ead",
+          label: "EAD",
+        },
+        {
+          value: "presencial",
+          label: "Presencial",
+        },
+        {
+          value: "semi",
+          label: "Semipresencial",
+        },
+      ],
+      // required: "Obrigatório",
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S",
+    },
+    {
+      id: "superiorAnoInicio",
+      label: "Ano de início",
+      formControl,
+      type: "number",
+      // required: "Obrigatório",
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S",
+      validate: (v) => v &lt;= DateTime.now().year || "Ano inválido",
+    },
+    {
+      id: "superiorAnoConclusao",
+      label: "Ano de conclusão",
+      formControl,
+      type: "number",
+      // required: "Obrigatório",
+      showIn: formControl.getValues("superiorConcluido") === "S",
+      validate: (v) => v &lt;= DateTime.now().year || "Ano inválido",
+    },
+    {
+      id: "superiorPeriodo",
+      label: "Período",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: [
+        {
+          value: "1",
+          label: "1º Período",
+        },
+        {
+          value: "2",
+          label: "2º Período",
+        },
+        {
+          value: "3",
+          label: "3º Período",
+        },
+        {
+          value: "4",
+          label: "4º Período",
+        },
+        {
+          value: "5",
+          label: "5º Período",
+        },
+        {
+          value: "6",
+          label: "6º Período",
+        },
+      ],
+      // required: "Obrigatório",
+      showIn: formControl.getValues("superiorCursando") === "S",
+    },
+    {
+      id: "superiorPretende",
+      label: "Pretende fazer Curso Superior?",
+      formControl,
+      type: "select",
+      placeholder: "Não Informado",
+      options: [
+        {
+          value: "N",
+          label: "Não",
+        },
+        {
+          value: "S",
+          label: "Sim",
+        },
+      ],
+      showIn: formControl.getValues("superiorCursando") === "N",
+    },
+    {
+      id: "tecnicoMatriculadoOutro",
+      label: "Está matriculado em outro curso técnico e/ou profissionalizante?",
+      formControl,
+      type: "select",
+      placeholder: "Não Informado",
+      options: [
+        {
+          value: "N",
+          label: "Não",
+        },
+        {
+          value: "S",
+          label: "Sim",
+        },
+      ],
+      showIn: formControl.getValues("superiorPretende") === "N",
+    },
+    {
+      id: "cursoTipo",
+      label: "Tipo de Instituição (Particular ou Pública)",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: [
+        {
+          value: "particular",
+          label: "Particular",
+        },
+        {
+          value: "publica",
+          label: "Pública",
+        },
+      ],
+      // required: "Obrigatório",
+      showIn: formControl.getValues("tecnicoMatriculadoOutro") === "S",
+    },
+    {
+      id: "tecnicoCursandoOutro",
+      label: "Curso",
+      formControl,
+      // required: "Obrigatório",
+      showIn: formControl.getValues("tecnicoMatriculadoOutro") === "S",
+    },
+    {
+      id: "rendaPpeAjuda",
+      label: "Renda do PPE ajudou na manutenção do curso?",
+      formControl,
+      type: "select",
+      placeholder: "Não Informado",
+      options: [
+        {
+          value: "N",
+          label: "Não",
+        },
+        {
+          value: "S",
+          label: "Sim",
+        },
+      ],
+      showIn:
+        formControl.getValues("superiorConcluido") === "S" ||
+        formControl.getValues("superiorCursando") === "S" ||
+        formControl.getValues("tecnicoMatriculadoOutro") === "S",
+    },
+  ];
+
+  useEffect(() => {
+    getFormacoes();
+  }, [data]);
+
+  useEffect(() => {
+    if (formControl.getValues("superiorConcluido") === "S") {
+      formControl.setValue("superiorCursando", "");
+      formControl.setValue("superiorPretende", "");
+      formControl.setValue("tecnicoMatriculadoOutro", "");
+    }
+    if (formControl.getValues("superiorConcluido") === "N") {
+      formControl.setValue("superiorTipo", "");
+      formControl.setValue("superiorCurso", "");
+      formControl.setValue("superiorInstituicao", "");
+      formControl.setValue("superiorModalidade", "");
+      formControl.setValue("superiorAnoInicio", "");
+      formControl.setValue("superiorAnoConclusao", "");
+      formControl.setValue("superiorPeriodo", "");
+      formControl.setValue("cursoTipo", "");
+      formControl.setValue("tecnicoCursandoOutro", "");
+      formControl.setValue("rendaPpeAjuda", "");
+    }
+  }, [formControl.getValues("superiorConcluido")]);
+
+  useEffect(() => {
+    if (formControl.getValues("superiorCursando") === "S") {
+      formControl.setValue("superiorPretende", "");
+      formControl.setValue("tecnicoMatriculadoOutro", "");
+    }
+    if (formControl.getValues("superiorCursando") === "N") {
+      formControl.setValue("superiorTipo", "");
+      formControl.setValue("superiorCurso", "");
+      formControl.setValue("superiorInstituicao", "");
+      formControl.setValue("superiorModalidade", "");
+      formControl.setValue("superiorAnoInicio", "");
+      formControl.setValue("superiorAnoConclusao", "");
+      formControl.setValue("superiorPeriodo", "");
+      formControl.setValue("cursoTipo", "");
+      formControl.setValue("rendaPpeAjuda", "");
+    }
+  }, [formControl.getValues("superiorCursando")]);
+
+  useEffect(() => {
+    if (formControl.getValues("superiorPretende") === "S") {
+      formControl.setValue("tecnicoMatriculadoOutro", "");
+      formControl.setValue("cursoTipo", "");
+      formControl.setValue("tecnicoCursandoOutro", "");
+      formControl.setValue("rendaPpeAjuda", "");
+    }
+  }, [formControl.getValues("superiorPretende")]);
+
+  useEffect(() => {
+    if (formControl.getValues("tecnicoMatriculadoOutro") === "N") {
+      formControl.setValue("cursoTipo", "");
+      formControl.setValue("tecnicoCursandoOutro", "");
+      formControl.setValue("rendaPpeAjuda", "");
+    }
+  }, [formControl.getValues("tecnicoMatriculadoOutro")]);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4} py={1}>
+          Formação
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formFormacao}
+        &lt;/FormMaker>
+      &lt;/Box>
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Ensino Superior
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formCursoSuperior}
+        &lt;/FormMaker>
+      &lt;/Box>
+    &lt;/>
+  );
+};
+
+const Documentos = ({
+  data,
+  formControl,
+  entity,
+  formState,
+  unlockEdit,
+  onSubmit,
+  uploadProgress,
+  setUploadProgress,
+  uploadController,
+}) => {
+  const [openAddHistorico, setOpenAddHistorico] = useBoolean();
+
+  const downloadFile = async (id) => {
+    const {
+      data: { fileDetails },
+    } = await filesAPIService.get(`/getFile`, {
+      params: {
+        referenceObjId: id,
+      },
+    });
+    const { data: file } = await filesAPIService.get(`/downloadFile`, {
+      params: {
+        fileId: fileDetails.id,
+      },
+      responseType: "blob",
+    });
+
+    download(file, fileDetails.name, fileDetails.contentType);
+  };
+
+  const tableDocumentosColumns = useMemo(
+    () => [
+      {
+        Header: "criado em",
+        accessor: "createdAt",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED)}h
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "descrição",
+        accessor: "descricao",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Criado por",
+        accessor: "createdBy",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Ações",
+        props: { teste: "true" },
+        Cell: ({
+          row: {
+            original: { id },
+          },
+        }) => (
+          &lt;IconButton
+            icon={&lt;FiDownload />}
+            onClick={() => downloadFile(id)}
+            variant="outline"
+            colorScheme="brand1"
+            _focus={{
+              boxShadow: "0 0 0 3px var(--chakra-colors-brand1-300)",
+            }}
+          />
+        ),
+        Footer: false,
+      },
+    ],
+    []
+  );
+
+  const tableDocumentosData = useMemo(
+    () => data.documentos.filter(({ sigiloso }) => !sigiloso),
+    [data?.documentos]
+  );
+
+  const formDocumentoInputs = [
+    {
+      id: "descricaoDocumento",
+      label: "Descrição",
+      formControl: formControl,
+      required: "Obrigatório",
+    },
+    {
+      id: "anexoDocumento",
+      formControl: formControl,
+      type: "file",
+      uploadProgress,
+      setUploadProgress,
+      uploadController,
+      validate: (v) => v.length || "Obrigatório",
+      mt: 4,
+    },
+    {
+      id: "docSigiloso",
+      formControl: formControl,
+      type: "hidden",
+      defaultValue: "false",
+    },
+  ];
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading color="brand1.700" size="md" py={1}>
+            Documentos
+          &lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            size="sm"
+            hidden={!unlockEdit || formState.isLoading}
+            onClick={setOpenAddHistorico.on}
+            zIndex="banner"
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        {tableDocumentosData &amp;&amp; tableDocumentosData.length ? (
+          &lt;Table data={tableDocumentosData} columns={tableDocumentosColumns} />
+        ) : (
+          &lt;Heading size="sm" color="gray.600">
+            Nenhum registro foi encontrado.
+          &lt;/Heading>
+        )}
+      &lt;/Box>
+
+      {/* Adicionar histórico Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          formControl.unregister(formDocumentoInputs.map(({ id }) => id));
+          setOpenAddHistorico.off();
+        }}
+        isOpen={unlockEdit &amp;&amp; openAddHistorico}
+        header="Adicionar Documento"
+        closeButton
+        onCloseComplete={setOpenAddHistorico.off}
+      >
+        &lt;FormMaker inlineForm data={data}>
+          {formDocumentoInputs}
+        &lt;/FormMaker>
+        &lt;HStack justifyContent="flex-end">
+          &lt;Button
+            type="submit"
+            colorScheme="brand1"
+            isLoading={formState.isLoading}
+            isDisabled={!formState.validation}
+            loadingText="Aguarde..."
+            onClick={onSubmit}
+          >
+            Salvar
+          &lt;/Button>
+        &lt;/HStack>
+      &lt;/Overlay>
+    &lt;/>
+  );
+};
+
+const Pendencias = ({ data, formControl, entity, unlockEdit }) => {
+  const [tiposPendenciasFromBd, setTiposPendenciasFromBd] = useState([]);
+
+  const getPendenciasTipos = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "pendencias/tipos")
+    );
+
+    setTiposPendenciasFromBd(data);
+  }, []);
+
+  const formDocumentosPendentes = tiposPendenciasFromBd
+    .filter(({ label }) => !label.includes("Vale"))
+    .filter(({ label }) => !label.includes("Plano"))
+    .map(({ id, label }) => ({
+      id: `pendencias.${id}`,
+      label,
+      formControl,
+      type: "switch",
+      checkedLabel: {
+        true: "Sim",
+        false: "Não",
+      },
+      defaultValue:
+        data &amp;&amp;
+        Array.isArray(data.pendencias) &amp;&amp;
+        data.pendencias
+          .filter(({ tipoPendencia_Id }) => tipoPendencia_Id === id)
+          .pop()?.pendente,
+    }));
+
+  const formBeneficiosPendentes = tiposPendenciasFromBd
+    .filter(({ label }) => label.includes("Vale") || label.includes("Plano"))
+    .map(({ id, label }) => ({
+      id: `pendencias.${id}`,
+      label,
+      formControl,
+      type: "switch",
+      checkedLabel: {
+        true: "Sim",
+        false: "Não",
+      },
+      defaultValue:
+        data &amp;&amp;
+        Array.isArray(data.pendencias) &amp;&amp;
+        data.pendencias
+          .filter(({ tipoPendencia_Id }) => tipoPendencia_Id === id)
+          .pop()?.pendente,
+    }));
+
+  useEffect(() => {
+    getPendenciasTipos();
+  }, []);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4} py={1}>
+          Benefícios Pendentes
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formBeneficiosPendentes}
+        &lt;/FormMaker>
+      &lt;/Box>
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Documentos Pendentes
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formDocumentosPendentes}
+        &lt;/FormMaker>
+      &lt;/Box>
+    &lt;/>
+  );
+};
+
+const Historico = ({
+  data,
+  formControl,
+  entity,
+  formState,
+  unlockEdit,
+  onSubmit,
+}) => {
+  const [tiposHistoricoFromBd, setTiposHistoricoFromBd] = useState([]);
+  const [openAddHistorico, setOpenAddHistorico] = useBoolean();
+
+  const getTiposHistorico = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "tipos-historico")
+    );
+
+    const tiposOptions = data
+      .filter(({ sigiloso }) => !sigiloso)
+      .filter(({ nome }) => !["Documento", "Documento Sigiloso"].includes(nome))
+      .map(({ id, nome }) => ({
+        value: id,
+        label: nome,
+      }));
+    setTiposHistoricoFromBd(tiposOptions);
+  }, []);
+
+  const tableHistoricoColumns = useMemo(
+    () => [
+      {
+        Header: "criado em",
+        accessor: "createdAt",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED)}h
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "tipo",
+        accessor: "tipoHistorico.nome",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "descrição",
+        accessor: "descricao",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Criado por",
+        accessor: "createdBy",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+    ],
+    []
+  );
+
+  const tableHistoricoData = useMemo(
+    () => data.historico.filter(({ sigiloso }) => !sigiloso),
+    [data?.historico]
+  );
+
+  const formHistoricoInputs = [
+    {
+      id: "idCatHistorico",
+      label: "Categoria",
+      placeholder: "Selecione...",
+      formControl: formControl,
+      type: "select",
+      options: tiposHistoricoFromBd,
+      required: "Obrigatório",
+    },
+    {
+      id: "descricaoHistorico",
+      label: "Descrição",
+      formControl: formControl,
+      required: "Obrigatório",
+    },
+    {
+      id: "histSigiloso",
+      formControl: formControl,
+      type: "hidden",
+      defaultValue: "false",
+    },
+  ];
+
+  useEffect(() => {
+    getTiposHistorico();
+  }, [openAddHistorico]);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading color="brand1.700" size="md" py={1}>
+            Histórico
+          &lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            size="sm"
+            hidden={!unlockEdit}
+            onClick={setOpenAddHistorico.on}
+            zIndex="banner"
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        {tableHistoricoData.length ? (
+          &lt;Table data={tableHistoricoData} columns={tableHistoricoColumns} />
+        ) : (
+          &lt;Heading size="sm" color="gray.600">
+            Nenhum registro foi encontrado.
+          &lt;/Heading>
+        )}
+      &lt;/Box>
+
+      {/* Adicionar histórico Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          formControl.unregister(formHistoricoInputs.map(({ id }) => id));
+          setOpenAddHistorico.off();
+        }}
+        isOpen={unlockEdit &amp;&amp; openAddHistorico}
+        header="Adicionar Histórico"
+        closeButton
+        onCloseComplete={setOpenAddHistorico.off}
+      >
+        &lt;FormMaker inlineForm data={data}>
+          {formHistoricoInputs}
+        &lt;/FormMaker>
+        &lt;HStack justifyContent="flex-end">
+          &lt;Button
+            type="submit"
+            colorScheme="brand1"
+            isLoading={formState.isLoading}
+            isDisabled={!formState.validation}
+            loadingText="Aguarde..."
+            onClick={onSubmit}
+          >
+            Salvar
+          &lt;/Button>
+        &lt;/HStack>
+      &lt;/Overlay>
+    &lt;/>
+  );
+};
+
+const Materiais = ({
+  data,
+  formControl,
+  entity,
+  formState,
+  unlockEdit,
+  onSubmit,
+}) => {
+  const [openAddMaterial, setOpenAddMaterial] = useBoolean();
+  const [materiaisFromBd, setMateriaisFromBd] = useState();
+  const [tamanhosFromBd, setTamanhosFromBd] = useState();
+  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } =
+    useNumberInput({
+      step: 1,
+      min: 1,
+      max: 99,
+      defaultValue: 1,
+      onChange: (v) => formControl.setValue("qtdMaterial", v),
+    });
+
+  const formEntregaMateriais = [
+    {
+      id: "dataEntregaMaterial",
+      label: "Data de Entrega",
+      formControl,
+      type: "date",
+      required: true,
+      validate: (v) => DateTime.fromSQL(v).toJSDate() !== "Invalid Date",
+    },
+    {
+      id: "idMaterial",
+      label: "Material",
+      placeholder: "Selecione...",
+      formControl: formControl,
+      type: "select",
+      options: materiaisFromBd,
+      required: true,
+    },
+    {
+      id: "idTamanho",
+      label: "Tamanho",
+      placeholder: "Selecione...",
+      formControl: formControl,
+      type: "select",
+      options: tamanhosFromBd,
+      required: true,
+    },
+    {
+      id: "qtdMaterial",
+      label: "Quantidade",
+      formControl: formControl,
+      customInputProps: getInputProps,
+      inputLeftElement: (
+        &lt;IconButton
+          size="sm"
+          colorScheme="brand1"
+          variant="outline"
+          {...getDecrementButtonProps()}
+        >
+          &lt;FiMinus />
+        &lt;/IconButton>
+      ),
+      inputRightElement: (
+        &lt;IconButton
+          size="sm"
+          colorScheme="brand1"
+          variant="outline"
+          {...getIncrementButtonProps()}
+        >
+          &lt;FiPlus />
+        &lt;/IconButton>
+      ),
+      textAlign: "center",
+      defaultValue: "1",
+    },
+    {
+      id: "obsMaterial",
+      label: "Observações",
+      formControl: formControl,
+      type: "textarea",
+    },
+  ];
+
+  const tableMateriaisColumns = useMemo(
+    () => [
+      {
+        Header: "entregue em",
+        accessor: "dataEntrega",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATE_MED)}
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "material",
+        accessor: "tipo.nome",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "tamanho",
+        accessor: "tamanhoEntregue.tamanho",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "quantidade",
+        accessor: "quantidade",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "observações",
+        accessor: "observacao",
+        Cell: ({ value }) => (
+          &lt;Box minW={200} fontSize="sm">
+            {value}
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+    ],
+    []
+  );
+
+  const tableMateriaisData = useMemo(
+    () => data.materiaisEntregues,
+    [data.materiaisEntregues]
+  );
+
+  const getMateriais = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "materiais"));
+    const materiaisOptions = data.map(({ id, nome }) => ({
+      value: id,
+      label: nome,
+    }));
+
+    setMateriaisFromBd(materiaisOptions);
+  }, []);
+
+  const getTamanhosUniforme = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "tamanhos-uniforme")
+    );
+
+    const tamanhosOptions = data.map(({ id, tamanho }) => ({
+      value: id,
+      label: tamanho,
+    }));
+    setTamanhosFromBd(tamanhosOptions);
+  }, []);
+
+  useEffect(() => {
+    getMateriais();
+    getTamanhosUniforme();
+  }, [openAddMaterial]);
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading color="brand1.700" size="md" py={1}>
+            Materiais
+          &lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            size="sm"
+            hidden={!unlockEdit}
+            onClick={setOpenAddMaterial.on}
+            zIndex="banner"
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        {tableMateriaisData.length ? (
+          &lt;Table data={tableMateriaisData} columns={tableMateriaisColumns} />
+        ) : (
+          &lt;Heading size="sm" color="gray.600">
+            Nenhum registro foi encontrado.
+          &lt;/Heading>
+        )}
+      &lt;/Box>
+
+      {/* Adicionar entrega de material Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          formControl.unregister(formEntregaMateriais.map(({ id }) => id));
+          setOpenAddMaterial.off();
+        }}
+        isOpen={unlockEdit &amp;&amp; openAddMaterial}
+        header="Informar entrega de material"
+        closeButton
+        onCloseComplete={setOpenAddMaterial.off}
+      >
+        &lt;FormMaker inlineForm data={data}>
+          {formEntregaMateriais}
+        &lt;/FormMaker>
+        &lt;HStack justifyContent="flex-end">
+          &lt;Button
+            type="submit"
+            colorScheme="brand1"
+            isLoading={formState.isLoading}
+            isDisabled={!formState.validation}
+            loadingText="Aguarde..."
+            onClick={onSubmit}
+          >
+            Salvar
+          &lt;/Button>
+        &lt;/HStack>
+      &lt;/Overlay>
+    &lt;/>
+  );
+};
+
+const InformacoesSigilosas = ({
+  data,
+  formControl,
+  entity,
+  formState,
+  unlockEdit,
+  onSubmit,
+  uploadProgress,
+  setUploadProgress,
+  uploadController,
+}) => {
+  const [tiposHistoricoFromBd, setTiposHistoricoFromBd] = useState([]);
+  const [openAddHistoricoSigiloso, setOpenAddHistoricoSigiloso] = useBoolean();
+  const [openAddDocumentoSigiloso, setOpenAddDocumentoSigiloso] = useBoolean();
+
+  const getTiposHistorico = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "tipos-historico")
+    );
+
+    const tiposOptions = data
+      .filter(({ sigiloso }) => sigiloso)
+      .filter(({ nome }) => !["Documento"].includes(nome))
+      .map(({ id, nome }) => ({
+        value: id,
+        label: nome,
+      }));
+    setTiposHistoricoFromBd(tiposOptions);
+  }, []);
+
+  const downloadFile = async (id) => {
+    const {
+      data: { fileDetails },
+    } = await filesAPIService.get(`/getFile`, {
+      params: {
+        referenceObjId: id,
+      },
+    });
+    const { data: file } = await filesAPIService.get(`/downloadFile`, {
+      params: {
+        fileId: fileDetails.id,
+      },
+      responseType: "blob",
+    });
+
+    download(file, fileDetails.name, fileDetails.contentType);
+  };
+
+  const tableHistoricoSigilosoColumns = useMemo(
+    () => [
+      {
+        Header: "criado em",
+        accessor: "createdAt",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED)}h
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "tipo",
+        accessor: "tipoHistorico.nome",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "descrição",
+        accessor: "descricao",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Criado por",
+        accessor: "createdBy",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+    ],
+    []
+  );
+
+  const tableHistoricoSigilosoData = useMemo(
+    () => data.historico.filter(({ sigiloso }) => sigiloso),
+    [data.historico]
+  );
+
+  const tableDocumentosSigilososColumns = useMemo(
+    () => [
+      {
+        Header: "criado em",
+        accessor: "createdAt",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED)}h
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "descrição",
+        accessor: "descricao",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Criado por",
+        accessor: "createdBy",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Ações",
+        Cell: ({
+          row: {
+            original: { id },
+          },
+        }) => (
+          &lt;IconButton
+            icon={&lt;FiDownload />}
+            onClick={() => downloadFile(id)}
+            variant="outline"
+            colorScheme="brand1"
+            _focus={{
+              boxShadow: "0 0 0 3px var(--chakra-colors-brand1-300)",
+            }}
+          />
+        ),
+        Footer: false,
+      },
+    ],
+    []
+  );
+
+  const tableDocumentosSigilososData = useMemo(
+    () => data.documentos.filter(({ sigiloso }) => sigiloso),
+    [data?.documentos]
+  );
+
+  const formHistoricoSigilosoInputs = [
+    {
+      id: "idCatHistorico",
+      label: "Categoria",
+      placeholder: "Selecione...",
+      formControl: formControl,
+      type: "select",
+      options: tiposHistoricoFromBd,
+      required: "Obrigatório",
+    },
+    {
+      id: "descricaoHistorico",
+      label: "Descrição",
+      formControl: formControl,
+      required: "Obrigatório",
+    },
+    {
+      id: "histSigiloso",
+      formControl: formControl,
+      type: "hidden",
+      defaultValue: true,
+    },
+  ];
+
+  const formDocumentoSigilosoInputs = [
+    {
+      id: "descricaoDocumento",
+      label: "Descrição",
+      formControl: formControl,
+      required: "Obrigatório",
+    },
+    {
+      id: "anexoDocumento",
+      formControl: formControl,
+      type: "file",
+      uploadProgress,
+      setUploadProgress,
+      uploadController,
+      validate: (v) => v.length || "Obrigatório",
+      mt: 4,
+    },
+    {
+      id: "docSigiloso",
+      formControl: formControl,
+      type: "hidden",
+      defaultValue: "true",
+    },
+  ];
+
+  useEffect(() => {
+    getTiposHistorico();
+  }, [openAddHistoricoSigiloso]);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading color="brand1.700" size="md" py={1}>
+            Histórico Sigiloso
+          &lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            size="sm"
+            hidden={!unlockEdit}
+            onClick={setOpenAddHistoricoSigiloso.on}
+            zIndex="banner"
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        {tableHistoricoSigilosoData.length ? (
+          &lt;Table
+            data={tableHistoricoSigilosoData}
+            columns={tableHistoricoSigilosoColumns}
+          />
+        ) : (
+          &lt;Heading size="sm" color="gray.600">
+            Nenhum registro foi encontrado.
+          &lt;/Heading>
+        )}
+      &lt;/Box>
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+      &lt;Box>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading color="brand1.700" size="md" py={1}>
+            Documentos Sigilosos
+          &lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            size="sm"
+            hidden={!unlockEdit || formState.isLoading}
+            onClick={setOpenAddDocumentoSigiloso.on}
+            zIndex="banner"
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        {tableDocumentosSigilososData.length ? (
+          &lt;Table
+            data={tableDocumentosSigilososData}
+            columns={tableDocumentosSigilososColumns}
+          />
+        ) : (
+          &lt;Heading size="sm" color="gray.600">
+            Nenhum registro foi encontrado.
+          &lt;/Heading>
+        )}
+      &lt;/Box>
+
+      {/* Adicionar histórico Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          formControl.unregister(
+            formHistoricoSigilosoInputs.map(({ id }) => id)
+          );
+          setOpenAddHistoricoSigiloso.off();
+        }}
+        isOpen={unlockEdit &amp;&amp; openAddHistoricoSigiloso}
+        header="Adicionar Histórico Sigiloso"
+        closeButton
+        onCloseComplete={setOpenAddHistoricoSigiloso.off}
+      >
+        &lt;FormMaker inlineForm data={data}>
+          {formHistoricoSigilosoInputs}
+        &lt;/FormMaker>
+        &lt;HStack justifyContent="flex-end">
+          &lt;Button
+            type="submit"
+            colorScheme="brand1"
+            isLoading={formState.isLoading}
+            isDisabled={!formState.validation}
+            loadingText="Aguarde..."
+            onClick={onSubmit}
+          >
+            Salvar
+          &lt;/Button>
+        &lt;/HStack>
+      &lt;/Overlay>
+
+      {/* Adicionar documento Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          formControl.unregister(
+            formDocumentoSigilosoInputs.map(({ id }) => id)
+          );
+          setOpenAddDocumentoSigiloso.off();
+        }}
+        isOpen={unlockEdit &amp;&amp; openAddDocumentoSigiloso}
+        header="Adicionar Documento Sigiloso"
+        closeButton
+        onCloseComplete={setOpenAddDocumentoSigiloso.off}
+      >
+        &lt;FormMaker inlineForm data={data}>
+          {formDocumentoSigilosoInputs}
+        &lt;/FormMaker>
+        &lt;HStack justifyContent="flex-end">
+          &lt;Button
+            type="submit"
+            colorScheme="brand1"
+            isLoading={formState.isLoading}
+            isDisabled={!formState.validation}
+            loadingText="Aguarde..."
+            onClick={onSubmit}
+          >
+            Salvar
+          &lt;/Button>
+        &lt;/HStack>
+      &lt;/Overlay>
+    &lt;/>
+  );
+};
+
+const Vaga = ({ data, entity, formControl, unlockEdit }) => {
+  const [demandantesFromBd, setDemandantesFromBd] = useState([]);
+  const [formacoesFromBd, setFormacoesFromBd] = useState([]);
+  const [municipiosFromBd, setMunicipiosFromBd] = useState([]);
+  const [unidadesLotacaoFromBd, setUnidadesLotacaoFromBd] = useState([]);
+  const [situacoesVagaFromBd, setSituacoesVagaFromBd] = useState([]);
+  const [distanciaVaga, setDistanciaVaga] = useState([]);
+  const [vagaInfo, setVagaInfo] = useState([]);
+
+  const getDemandantes = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "demandantes"));
+    const demandantesOptions = data.map(({ id, sigla, nome }) => ({
+      value: id,
+      label: `${sigla} - ${nome}`,
+    }));
+
+    setDemandantesFromBd(demandantesOptions);
+  }, []);
+
+  const getFormacoes = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "formacoes"));
+    const formacoesOptions = data.map(({ id, nome }) => ({
+      value: id,
+      label: nome,
+    }));
+
+    setFormacoesFromBd(formacoesOptions);
+  }, []);
+
+  const getMunicipios = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "municipios"));
+    const formacoesOptions = data.map(({ id, nome }) => ({
+      value: id,
+      label: nome,
+    }));
+
+    setMunicipiosFromBd(formacoesOptions);
+  }, []);
+
+  const getUnidadesLotacao = useCallback(async () => {
+    const { data } = await axios.get(
+      getBackendRoute(entity, "unidades-lotacao")
+    );
+    const unidadesOptions = data.map(({ id, nome }) => ({
+      value: id,
+      label: nome,
+    }));
+    setUnidadesLotacaoFromBd(unidadesOptions);
+  }, []);
+
+  const getSituacoesVaga = useCallback(async () => {
+    const { data } = await axios.get(getBackendRoute(entity, "situacoes-vaga"));
+    const unidadesOptions = data.map(({ id, nome, tipoSituacao }) => ({
+      value: id,
+      label:
+        tipoSituacao.nome === nome ? nome : `${tipoSituacao.nome} - ${nome}`,
+      // disabled: ["Contratado", "Desligado"].includes(tipoSituacao.nome),
+    }));
+    setSituacoesVagaFromBd(unidadesOptions);
+  }, []);
+
+  const getDistanciaVaga = useCallback(async () => {
+    if (data.municipio &amp;&amp; vagaInfo?.municipio?.nome) {
+      const origem = `${data.municipio} - ${entity}`;
+      const destino = `${vagaInfo?.municipio?.nome} - ${entity}`;
+
+      const { data: response } = await axios.get(
+        getBackendRoute(entity, "ext/distancia"),
+        {
+          params: {
+            origem,
+            destino,
+          },
+        }
+      );
+      setDistanciaVaga(response);
+    }
+  }, []);
+
+  const formVaga = [
+    {
+      id: "demandante_Id",
+      label: "Demandante",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: demandantesFromBd,
+      defaultValue: demandantesFromBd.find(
+        ({ value }) => vagaInfo?.demandante_Id === value
+      )?.value,
+    },
+    // {
+    //   id: "formacao_Id",
+    //   label: "Formação",
+    //   placeholder: "Selecione...",
+    //   formControl,
+    //   type: "select",
+    //   options: formacoesFromBd,
+    //   defaultValue: formacoesFromBd.find(
+    //     ({ value }) => data?.formacao_Id === value
+    //   )?.value,
+    // },
+    {
+      id: "situacaoVaga_Id",
+      label: "Situação",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: situacoesVagaFromBd,
+      defaultValue: situacoesVagaFromBd.find(
+        ({ value }) => vagaInfo?.situacaoVaga_Id === value
+      )?.value,
+      onChange: () => formControl.setValue("situacaoVagaHasChanged", "true"),
+      // disabled: ["Contratado - Ativo", "Desligado"].includes(
+      //   situacoesVagaFromBd.find(
+      //     ({ value }) => vagaInfo?.situacaoVaga_Id === value
+      //   )?.label
+      // ),
+    },
+    {
+      id: "situacaoVagaHasChanged",
+      formControl,
+      type: "hidden",
+      defaultValue: "false",
+    },
+    {
+      id: "escritorioRegional",
+      label: "Escritório Regional",
+      formControl,
+      defaultValue: vagaInfo?.municipio?.escritorioRegional?.nome,
+      readOnly: true,
+    },
+    {
+      id: "territorioIdentidade",
+      label: "Território",
+      placeholder: "Território Vaga",
+      formControl,
+      defaultValue: vagaInfo?.municipio?.territorioIdentidade?.nome,
+      readOnly: true,
+    },
+    {
+      id: "vaga_municipio_Id",
+      label: "Município Vaga",
+      placeholder: "Município Vaga",
+      formControl,
+      type: "select",
+      options: municipiosFromBd,
+      defaultValue: municipiosFromBd.find(
+        ({ value }) => vagaInfo?.municipio_Id === value
+      )?.value,
+    },
+    {
+      id: "municipio",
+      label: "Município Residência",
+      placeholder: "Município Residência",
+      formControl,
+      readOnly: true,
+    },
+    {
+      id: "distanciaMunicipios",
+      label: "Distância entre Municípios",
+      placeholder: "Distância entre Municípios",
+      formControl,
+      defaultValue: distanciaVaga?.distance?.text,
+      readOnly: true,
+    },
+    {
+      id: "unidadeLotacao_Id",
+      label: "Unidade de Lotação",
+      placeholder: "Selecione...",
+      formControl,
+      type: "select",
+      options: unidadesLotacaoFromBd,
+      defaultValue: unidadesLotacaoFromBd.find(
+        ({ value }) => vagaInfo?.unidadeLotacao_Id === value
+      )?.value,
+    },
+  ];
+
+  const formSec = [
+    {
+      id: "dataConvocacao",
+      label: "Data de Convocação",
+      placeholder: "Data de Convocação",
+      formControl,
+      defaultValue: vagaInfo?.dataConvocacao
+        ? DateTime.fromISO(vagaInfo.dataConvocacao).toLocaleString(
+            DateTime.DATE_MED
+          )
+        : null,
+      readOnly: true,
+    },
+    {
+      id: "remessa",
+      label: "Remessa/Lote",
+      placeholder: "Remessa/Lote",
+      formControl,
+      defaultValue: vagaInfo?.remessaSec?.remessa,
+      readOnly: true,
+    },
+    {
+      id: "data_remessa",
+      label: "Data Remessa/Lote",
+      placeholder: "Data Remessa/Lote",
+      formControl,
+      defaultValue: vagaInfo?.remessaSec?.data_remessa
+        ? DateTime.fromISO(vagaInfo?.remessaSec?.data_remessa).toLocaleString(
+            DateTime.DATE_MED
+          )
+        : null,
+      readOnly: true,
+    },
+    // {
+    //   id: "mes_remessa",
+    //   label: "Mês Remessa/Lote",
+    //   placeholder: "Mês Remessa/Lote",
+    //   formControl,
+    //   defaultValue: vagaInfo?.remessaSec?.data_remessa
+    //     ? DateTime.fromISO(vagaInfo?.remessaSec?.data_remessa)
+    //         .setLocale("pt-BR")
+    //         .toFormat("MMMM 'de' yyyy")
+    //     : null,
+    //   readOnly: true,
+    // },
+    // {
+    //   id: "1",
+    //   label: "Data Envio da Situação",
+    //   placeholder: "Data Envio da Situação",
+    //   formControl,
+    //   readOnly: true,
+    // },
+    {
+      id: "publicadoDiarioOficial",
+      label: "Publicação no Diário Oficial",
+      formControl,
+      defaultValue: vagaInfo?.publicadoDiarioOficial,
+      type: "switch",
+      checkedLabel: {
+        true: "Sim",
+        false: "Não",
+      },
+    },
+  ];
+
+  useEffect(() => {
+    getDemandantes();
+    getFormacoes();
+    getMunicipios();
+    getUnidadesLotacao();
+    getSituacoesVaga();
+  }, []);
+
+  useEffect(() => {
+    //const [ultimaVaga] = data.vaga.reverse();
+    const [ultimaVaga] = data.vaga;
+    setVagaInfo(ultimaVaga);
+  }, [data.vaga]);
+
+  useEffect(() => {
+    getDistanciaVaga();
+  }, [vagaInfo]);
+
+  return (
+    &lt;>
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4} py={1}>
+          Dados da Vaga
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formVaga}
+        &lt;/FormMaker>
+      &lt;/Box>
+      &lt;Divider borderColor="gray.500" variant="dashed" />
+      &lt;Box>
+        &lt;Heading color="brand1.700" size="md" mb={4}>
+          Informações Secretaria do Trabalho
+        &lt;/Heading>
+        &lt;FormMaker inlineForm data={data} unlockEdit={unlockEdit}>
+          {formSec}
+        &lt;/FormMaker>
+      &lt;/Box>
+    &lt;/>
+  );
+};
+
+Beneficiarios.auth = true;
+Beneficiarios.dashboard = true;
+</code></pre></article></section><footer class="footer" id="PeOAagUepe"><div class="wrapper">Made with ☕️ by <a href="https://github.com/frtechdev">FR Technologies</a></div></footer></div></div></div><div class="search-container" id="PkfLWpAbet" style="display:none"><div class="wrapper" id="iCxFxjkHbP"><button class="icon-button search-close-button" id="VjLlGakifb" aria-label="close search"><svg><use xlink:href="#close-icon"></use></svg></button><div class="search-box-c"><svg><use xlink:href="#search-icon"></use></svg> <input type="text" id="vpcKVYIppa" class="search-input" placeholder="Search..." autofocus></div><div class="search-result-c" id="fWwVHRuDuN"><span class="search-result-c-text">Type anything to view search result</span></div></div></div><div class="mobile-menu-icon-container"><button class="icon-button" id="mobile-menu" data-isopen="false" aria-label="menu"><svg><use xlink:href="#menu-icon"></use></svg></button></div><div id="mobile-sidebar" class="mobile-sidebar-container"><div class="mobile-sidebar-wrapper"><a href="/" class="sidebar-title sidebar-title-anchor">FLEM PPE Frontend - Documentação</a><div class="mobile-nav-links"><div class="some-class navbar-item"><a id="some-id-mobile" href="https://frtechnologies.com.br" target="_blank">Website</a></div><div class="some-class navbar-item"><a id="some-id-mobile" href="https://github.com/frtechdev/flem-ppe-frontend/" target="_blank">Github</a></div></div><div class="mobile-sidebar-items-c"><div class="sidebar-section-title with-arrow" data-isopen="false" id="CN57_vBhoybX-eFzlqeh7"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-acoes.html">acoes</a></div><div class="sidebar-section-children"><a href="module-AnimatePresenceWrapper.html">AnimatePresenceWrapper</a></div><div class="sidebar-section-children"><a href="module-api.html">api</a></div><div class="sidebar-section-children"><a href="module-auth.html">auth</a></div><div class="sidebar-section-children"><a href="module-beneficiarios.html">beneficiarios</a></div><div class="sidebar-section-children"><a href="module-Breadcrumb.html">Breadcrumb</a></div><div class="sidebar-section-children"><a href="module-Buttons.html">Buttons</a></div><div class="sidebar-section-children"><a href="module-Cards.html">Cards</a></div><div class="sidebar-section-children"><a href="module-Charts.html">Charts</a></div><div class="sidebar-section-children"><a href="module-colaboradores-cr.html">colaboradores-cr</a></div><div class="sidebar-section-children"><a href="module-comunicados.html">comunicados</a></div><div class="sidebar-section-children"><a href="module-dashboard.html">dashboard</a></div><div class="sidebar-section-children"><a href="module-demandantes.html">demandantes</a></div><div class="sidebar-section-children"><a href="module-Dropzone.html">Dropzone</a></div><div class="sidebar-section-children"><a href="module-EmailEditor.html">EmailEditor</a></div><div class="sidebar-section-children"><a href="module-envio-oficios.html">envio-oficios</a></div><div class="sidebar-section-children"><a href="module-escritorios-regionais.html">escritorios-regionais</a></div><div class="sidebar-section-children"><a href="module-eventos.html">eventos</a></div><div class="sidebar-section-children"><a href="module-Form.html">Form</a></div><div class="sidebar-section-children"><a href="module-geral.html">geral</a></div><div class="sidebar-section-children"><a href="module-Icons.html">Icons</a></div><div class="sidebar-section-children"><a href="module-importar.html">importar</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Layout.html">Layout</a></div><div class="sidebar-section-children"><a href="module-LDAPService.html">LDAPService</a></div><div class="sidebar-section-children"><a href="module-Logo.html">Logo</a></div><div class="sidebar-section-children"><a href="module-materiais.html">materiais</a></div><div class="sidebar-section-children"><a href="module-Menus.html">Menus</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitores.html">monitores</a></div><div class="sidebar-section-children"><a href="module-Navbar.html">Navbar</a></div><div class="sidebar-section-children"><a href="module-Overlay.html">Overlay</a></div><div class="sidebar-section-children"><a href="module-por-beneficiario.html">por-beneficiario</a></div><div class="sidebar-section-children"><a href="module-relatorios-monitoramentos.html">relatorios-monitoramentos</a></div><div class="sidebar-section-children"><a href="module-Sidebar.html">Sidebar</a></div><div class="sidebar-section-children"><a href="module-sintese.html">sintese</a></div><div class="sidebar-section-children"><a href="module-situacoes-vaga.html">situacoes-vaga</a></div><div class="sidebar-section-children"><a href="module-Table.html">Table</a></div><div class="sidebar-section-children"><a href="module-TagInput.html">TagInput</a></div><div class="sidebar-section-children"><a href="module-templates-oficios.html">templates-oficios</a></div><div class="sidebar-section-children"><a href="module-TextEditor.html">TextEditor</a></div><div class="sidebar-section-children"><a href="module-TextViewer.html">TextViewer</a></div><div class="sidebar-section-children"><a href="module-tipos-historico.html">tipos-historico</a></div><div class="sidebar-section-children"><a href="module-Toast.html">Toast</a></div><div class="sidebar-section-children"><a href="module-unidades-lotacao.html">unidades-lotacao</a></div><div class="sidebar-section-children"><a href="module-utils.html">utils</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="Ohx0bpRBg7-xpqCleJhxN"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#allowCors">allowCors</a></div><div class="sidebar-section-children"><a href="global.html#authDb">authDb</a></div><div class="sidebar-section-children"><a href="global.html#authUserQa">authUserQa</a></div><div class="sidebar-section-children"><a href="global.html#axios">axios</a></div><div class="sidebar-section-children"><a href="global.html#axiosNoTimeout">axiosNoTimeout</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#filesAPIService">filesAPIService</a></div><div class="sidebar-section-children"><a href="global.html#filesAPIUpload">filesAPIUpload</a></div><div class="sidebar-section-children"><a href="global.html#getBackendRoute">getBackendRoute</a></div><div class="sidebar-section-children"><a href="global.html#GlobalStyle">GlobalStyle</a></div><div class="sidebar-section-children"><a href="global.html#mailService">mailService</a></div><div class="sidebar-section-children"><a href="global.html#MyApp">MyApp</a></div><div class="sidebar-section-children"><a href="global.html#toastData">toastData</a></div><div class="sidebar-section-children"><a href="global.html#variants">variants</a></div></div></div><div class="mobile-navbar-actions"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div></div></div><script type="text/javascript" src="scripts/core.min.js"></script><script src="scripts/search.min.js" defer="defer"></script><script src="scripts/third-party/fuse.js" defer="defer"></script><script type="text/javascript">function foo(){console.log("foo")}</script><script type="text/javascript">var tocbotInstance=tocbot.init({tocSelector:"#eed4d2a0bfd64539bb9df78095dec881",contentSelector:".main-content",headingSelector:"h1, h2, h3",hasInnerContainers:!0,scrollContainer:".main-content",headingsOffset:130,onClick:bringLinkToView})</script></body></html>

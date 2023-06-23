@@ -11,8 +11,8 @@ import NextLink from "next/link";
  * @param {Object} icon o ícone inicial do breadcrumb
  * @param {Object} href o caminho da rota
  * @param {Object} isCurrentPage repassa o tema de cor dependendo da página a ser carregada
- * 
- * @returns componente de Breadcrumb com o nome do caminho devidamente convertido e
+ *
+ * @returns {Component} componente de Breadcrumb com o nome do caminho devidamente convertido e
  * estilizado.
  */
 export const BreadcrumbItem = ({

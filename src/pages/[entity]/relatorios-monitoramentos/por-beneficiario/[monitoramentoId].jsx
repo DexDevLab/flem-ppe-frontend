@@ -1,22 +1,36 @@
+/**
+ * Componente de monitoramento por beneficiário
+ * @module por-beneficiario
+ */
+
 import {
   Box,
   Center,
   chakra,
-  Flex,
   Heading,
   Image,
   SimpleGrid,
+  useBreakpointValue,
+  useToast,
 } from "@chakra-ui/react";
 import { Logo } from "components/Logo";
-import { DateTime } from "luxon";
-import { useRouter } from "next/router";
-import { axios, filesAPIService } from "services/apiService";
 import _ from "lodash";
-import { Fragment, useEffect, useState } from "react";
+import { DateTime } from "luxon";
 import Head from "next/head";
-import { Document, Page, pdfjs } from "react-pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import { useRouter } from "next/router";
+import { Fragment, useEffect, useState } from "react";
+import { Document, Page } from "react-pdf";
+import { axios, filesAPIService, getBackendRoute } from "services/apiService";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Página de Relatórios de Monitoramentos por Beneficiário
+ * @method MonitoramentoPorBeneficiario
+ * @memberof module:por-beneficiario
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} monitoramento o monitoramento ao qual essa tela se refere
+ * @returns {Component} página renderizada
+ */
 export default function MonitoramentoPorBeneficiario({
   entity,
   monitoramento,
@@ -24,8 +38,9 @@ export default function MonitoramentoPorBeneficiario({
 }) {
   const router = useRouter();
   const { asPath } = router;
-
   const [monitoramentosComAnexos, setMonitoramentosComAnexos] = useState(null);
+  const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
+  const toast = useToast();
 
   const getAnexos = async (param) => {
     try {
@@ -43,7 +58,7 @@ export default function MonitoramentoPorBeneficiario({
 
       return { ...fileDetails, data: Buffer.from(data) };
     } catch (error) {
-      throw new Error(error.message);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -107,9 +122,10 @@ export default function MonitoramentoPorBeneficiario({
           onClick={() => window.print()}
           style={{ background: "pink" }}
         >
-          PRINT ME!
+          Clique para Imprimir
         </button>
         <Image
+          alt="LogoBA"
           src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
           h={50}
         />
@@ -781,6 +797,7 @@ export default function MonitoramentoPorBeneficiario({
                           ) && (
                             <Center pt={28}>
                               <Image
+                                alt="fileThumb"
                                 src={`data:${
                                   file_monitoramentoComprovacao.fileDetails
                                     .contentType
@@ -819,6 +836,7 @@ export default function MonitoramentoPorBeneficiario({
                           ) && (
                             <Center pt={28}>
                               <Image
+                                alt="fileThumb"
                                 src={`data:${
                                   file_autoAvaliacao.fileDetails.contentType
                                 };base64,${file_autoAvaliacao.data.toString(
@@ -856,6 +874,7 @@ export default function MonitoramentoPorBeneficiario({
                           ) && (
                             <Center pt={28}>
                               <Image
+                                alt="fileThumb"
                                 src={`data:${
                                   file_ambienteTrabalho.fileDetails.contentType
                                 };base64,${file_ambienteTrabalho.data.toString(
@@ -893,6 +912,7 @@ export default function MonitoramentoPorBeneficiario({
                           ) && (
                             <Center pt={28}>
                               <Image
+                                alt="fileThumb"
                                 src={`data:${
                                   file_benefPontoFocal.fileDetails.contentType
                                 };base64,${file_benefPontoFocal.data.toString(
@@ -931,11 +951,15 @@ export async function getServerSideProps(context) {
   const entities = ["ba", "to", "rj"];
 
   const entityCheck = entities.find((ent) => ent === entity || undefined);
-  const { data } = await axios.get(`/api/${entity}/monitoramento/realizados`, {
-    params: {
-      id: monitoramentoId,
-    },
-  });
+  //const { data } = await axios.get(`/api/${entity}/monitoramento/realizados`, {
+  const { data } = await axios.get(
+    getBackendRoute(entity, "monitoramentos/realizados"),
+    {
+      params: {
+        id: monitoramentoId,
+      },
+    }
+  );
 
   const monitoramento = data;
   monitoramento.beneficiario.vaga = data.beneficiario.vaga.shift();

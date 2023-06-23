@@ -38,13 +38,13 @@ export function Overlay({
   return (
     <>
       <Drawer onClose={onClose} isOpen={isOpen} size={size} {...props}>
-        <DrawerOverlay />
-        <DrawerContent shadow="2xl" transition={transition}>
+        <DrawerOverlay/>
+        <DrawerContent shadow="2xl" transition={transition} >
           {closeButton && <DrawerCloseButton zIndex="banner" />}
           <DrawerHeader shadow="md" zIndex="sticky">
             {header}
           </DrawerHeader>
-          <DrawerBody pt={6} >{children}</DrawerBody>
+          <DrawerBody pt={6}>{children}</DrawerBody>
         </DrawerContent>
       </Drawer>
     </>

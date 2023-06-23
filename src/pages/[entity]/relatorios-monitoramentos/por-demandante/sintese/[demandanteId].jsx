@@ -1,3 +1,8 @@
+/**
+ * Componente de monitoramento por demandante (síntese).
+ * @module sintese
+ */
+
 import {
   chakra,
   Flex,
@@ -12,12 +17,22 @@ import {
 } from "@chakra-ui/react";
 import { Logo } from "components/Logo";
 import { DateTime } from "luxon";
-import { useRouter } from "next/router";
-import { axios } from "services/apiService";
-import _ from "lodash";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { axios, getBackendRoute } from "services/apiService";
+import { exceptionHandler } from "utils/exceptionHandler";
 
-export default function MonitoramentoPorBeneficiario({
+/**
+ * Renderiza a Página de Relatórios de Monitoramentos por Demandante
+ * @method MonitoramentoPorDemandanteSintese
+ * @memberof module:sintese
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} monitoramento a lista de monitoramentos a serem carregados
+ * @param {Object} dataInicio data de inicio do monitoramento
+ * @param {Object} dataFim data de fim do monitoramento
+ * @returns {Component} página renderizada
+ */
+export default function MonitoramentoPorDemandanteSintese({
   entity,
   monitoramento,
   dataInicio,
@@ -53,9 +68,10 @@ export default function MonitoramentoPorBeneficiario({
           onClick={() => window.print()}
           style={{ background: "pink" }}
         >
-          PRINT ME!
+          Clique para Imprimir
         </button>
         <Image
+          alt="fileThumb"
           src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
           h={50}
         />
@@ -270,7 +286,8 @@ export async function getServerSideProps(context) {
   const entityCheck = entities.find((ent) => ent === entity || undefined);
   try {
     const { data } = await axios.get(
-      `/api/${entity}/monitoramento/realizados`,
+      //`/api/${entity}/monitoramento/realizados`,
+      getBackendRoute(entity, "monitoramentos/realizados"),
       {
         params: {
           demandanteId,
@@ -299,10 +316,11 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.log(error);
-    throw new Error(error);
+    // console.log(error);
+    // throw new Error(error);
+    throw exceptionHandler(error, 0);
   }
 }
 
-MonitoramentoPorBeneficiario.auth = false;
-MonitoramentoPorBeneficiario.dashboard = false;
+MonitoramentoPorDemandanteSintese.auth = false;
+MonitoramentoPorDemandanteSintese.dashboard = false;

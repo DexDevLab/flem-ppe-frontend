@@ -1,10 +1,15 @@
+
 /**
- * Máscara de CPF. Converte String no formato "12345678900" para o CPF
- * nacional ("123.456.789-00").
- * @param {String} cpf String contendo o CPF ou um array de CPFs
- * @returns CPF ou array de CPFs devidamente formatado.
+ * Organiza um conjunto de informações, sejam Strings ou Números.
+ * @method dynamicSort
+ * @memberof module:utils
+ * @param {Object} property o objeto a ser recebido
+ * @param {DateTime} valueType o tipo de valor a ser recebido. Como
+ * padrão, esperam Strings como parâmetros.
+ * @returns {*} A ordem dada do objeto, considerando seu tipo.
+ *
  */
-export function dynamicSort(property) {
+export function dynamicSort(property, valueType = String) {
   var sortOrder = 1;
   if (property[0] === "-") {
     sortOrder = -1;
@@ -12,9 +17,6 @@ export function dynamicSort(property) {
   }
   if (valueType === Number) {
     return function (a, b) {
-      /* next line works with strings and numbers,
-       * and you may want to customize it to your needs
-       */
       const param1 = a[property];
       const param2 = b[property];
       var result = param1 < param2 ? -1 : param1 > param2 ? 1 : 0;
@@ -22,9 +24,6 @@ export function dynamicSort(property) {
     };
   } else {
     return function (a, b) {
-      /* next line works with strings and numbers,
-       * and you may want to customize it to your needs
-       */
       const param1 = a[property]
         .toString()
         .normalize("NFD")

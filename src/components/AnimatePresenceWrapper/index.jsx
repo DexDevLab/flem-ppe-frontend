@@ -4,7 +4,7 @@
  */
 
 import { Box, Center, ScaleFade, Spinner } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Component } from "react";
 import { variants } from "styles/transitions";
 
@@ -15,8 +15,7 @@ import { variants } from "styles/transitions";
  * @param {Component} children componente-filho da animação
  * @param {Object} isLoaded define estado de transição da animação. Se o
  * componente já estiver renderizado, ele encerra a animação
- * @returns componente com animação dependendo do estado do componente-alvo
- *
+ * @returns {Component} componente com animação dependendo do estado do componente-alvo
  */
 export function AnimatePresenceWrapper({ children, isLoaded, router, p = 5 }) {
   return (

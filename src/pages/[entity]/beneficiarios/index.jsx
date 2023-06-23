@@ -1,3 +1,8 @@
+/**
+ * Componentes de página de gerenciamento de Beneficiários.
+ * @module beneficiarios
+ */
+
 import {
   Box,
   Button,
@@ -18,6 +23,7 @@ import {
   Tooltip,
   useBoolean,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { Dropzone } from "components/Dropzone";
@@ -30,7 +36,15 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiEye, FiFilter, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, filesAPIUpload, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de beneficiários com a listagem de todos os beneficiários e o uso de filtros.
+ * @method Beneficiarios
+ * @memberof module:beneficiarios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Beneficiarios({ entity, ...props }) {
   const fetchTableData = useDisclosure();
   const { isOpen, onToggle } = useDisclosure();
@@ -48,6 +62,7 @@ export default function Beneficiarios({ entity, ...props }) {
   const [formacoesFromBd, setFormacoesFromBd] = useState([]);
   const [tableRowsCount, setTableRowsCount] = useState(null);
   const [filtroAtivo, setFiltroAtivo] = useBoolean();
+  const toast = useToast();
 
   const onSubmit = async (data) => {
     formUpload.setLoading();
@@ -72,12 +87,12 @@ export default function Beneficiarios({ entity, ...props }) {
           );
         }
       })
-      .catch((err) => {
+      .catch((error) => {
         if (err.message === "canceled") {
           setController(new AbortController());
           return onToggle();
         }
-        return console.log(err);
+        throw exceptionHandler(error, 0);
       })
       .finally(formUpload.setLoaded);
   };
@@ -166,6 +181,7 @@ export default function Beneficiarios({ entity, ...props }) {
         Footer: false,
       },
     ],
+
     []
   );
 
@@ -175,7 +191,6 @@ export default function Beneficiarios({ entity, ...props }) {
     if (entity === null) {
       router.push("/ba/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -189,6 +204,9 @@ export default function Beneficiarios({ entity, ...props }) {
         }));
         setBenefFromBd(rows);
         setTableData(rows);
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
   }, []);
@@ -284,8 +302,7 @@ export default function Beneficiarios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
     filtroAvancadoForm.control.control._fields.municipios?._f.ref.clearValue();
   }, [escritoriosRegionais]);
@@ -315,8 +332,7 @@ export default function Beneficiarios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   }, [escritoriosRegionais, municipios]);
 
@@ -343,8 +359,7 @@ export default function Beneficiarios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
     filtroAvancadoForm.control.control._fields.demandantes?._f.ref.clearValue();
   }, [municipios]);
@@ -365,8 +380,7 @@ export default function Beneficiarios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   }, [filtroAvancadoForm.control.watch("")]);
 
@@ -384,8 +398,7 @@ export default function Beneficiarios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   }, [filtroAvancadoForm.control.watch("")]);
 

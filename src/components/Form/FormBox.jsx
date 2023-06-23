@@ -1,4 +1,3 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   FormControl,
   FormErrorMessage,
@@ -10,10 +9,29 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import _ from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import _ from "lodash";
 
+/**
+ * Componente de Caixa de Formulário
+ * @method FormBox
+ * @memberof module:Form
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Object} type tipo de input do objeto de formulário
+ * @param {Object} options options do seletor
+ * @param {Object} mask máscara de validação
+ * @param {Object} defaultValue valor default do objeto
+ * @param {Object} inputLeftElement valor do elemento de entrada da esquerda
+ * @param {Object} inputRightElement valor do elemento de entrada da direita
+ * @param {Object} customInputProps valores de input customizados
+ * @param {Object} inlineForm parâmetros internos de formulário
+ * @param {Function} onChange handler da mudança de dados do objeto
+ * @param {Boolean} disabled define se o componente está visualmente desativado
+ * @returns {Component} componente de objeto de Formulário
+ */
 export const FormBox = ({
   id,
   label,
@@ -147,8 +165,10 @@ export const FormBox = ({
           </Select>
         )}
         {type === "select" && !options && (
-          <Select variant={inlineForm && "flushed"} placeholder={placeholder}
-          {...rest}
+          <Select
+            variant={inlineForm && "flushed"}
+            placeholder={placeholder}
+            {...rest}
           >
             <option value="carregando">Carregando...</option>
           </Select>

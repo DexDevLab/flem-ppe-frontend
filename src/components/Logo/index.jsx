@@ -10,6 +10,7 @@ import { chakra, useColorModeValue } from "@chakra-ui/react";
  * @method Logo
  * @memberof module:Logo
  * @param {Object} props propriedades do arquivo que compõe o logo.
+ * @returns {Component} componente que monta o logo.
  */
 export const Logo = (props) => (
   <chakra.svg

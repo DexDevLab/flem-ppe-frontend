@@ -1,38 +1,48 @@
+/**
+ * Componente de página de Monitoramento
+ * @module monitoramento
+ */
+
 import {
   Box,
   Button,
   ButtonGroup,
-  chakra,
-  Flex,
-  Heading,
-  IconButton,
-  Stack,
-  Text,
-  Tooltip,
-  useBoolean,
-  HStack,
-  Icon,
+  Collapse,
   Divider,
+  Flex,
+  FormLabel,
+  HStack,
+  Heading,
+  Icon,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
   Tag,
   TagLabel,
+  Text,
+  Tooltip,
+  chakra,
+  useBoolean,
   useBreakpointValue,
   useToast,
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Collapse,
-  FormLabel,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { FormMaker } from "components/Form";
 import { SelectInputBox } from "components/Inputs/SelectInputBox";
 import { MenuIconButton } from "components/Menus/MenuIconButton";
 import { Overlay } from "components/Overlay";
 import { Table } from "components/Table";
+import { IndeterminateCheckbox } from "components/Table/components/IndeterminateCheckbox";
+import download from "downloadjs";
 import { useCustomForm } from "hooks";
+import _ from "lodash";
+import { DateTime, Interval } from "luxon";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -48,19 +58,23 @@ import {
   FiRefreshCw,
   FiTrash2,
 } from "react-icons/fi";
-import _ from "lodash";
 import {
   axios,
-  bdRhService,
   filesAPIService,
   filesAPIUpload,
+  getBackendRoute,
 } from "services/apiService";
+import { exceptionHandler } from "utils/exceptionHandler";
 import { calcularPeriodoMonitoramentoRealizado } from "utils/monitoramento";
-import { DateTime, Interval } from "luxon";
-import { FormMaker } from "components/Form";
-import { IndeterminateCheckbox } from "components/Table/components/IndeterminateCheckbox";
-import download from "downloadjs";
 
+/**
+ * Renderiza a Página de Monitoramentos
+ * @method Monitoramento
+ * @memberof module:monitoramento
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} timeFromNetwork o timestamp da hora atual provida pelo NTP
+ * @returns {Component} página renderizada
+ */
 export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
   const router = useRouter();
   const { asPath } = router;
@@ -1098,7 +1112,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
 
       if (!_.isEmpty(monitoramentoSelecionado)) {
         const { status } = await axios.put(
-          `/api/${entity}/monitoramento`,
+          getBackendRoute(entity, "monitoramentos"),
           restFormData,
           {
             params: {
@@ -1117,7 +1131,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
         }
       } else {
         const { status } = await axios.post(
-          `/api/${entity}/monitoramento`,
+          getBackendRoute(entity, "monitoramentos"),
           restFormData
         );
 
@@ -1131,7 +1145,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
         }
       }
     } catch (error) {
-      throw new Error(error);
+      toast(exceptionHandler(error));
     } finally {
       monitorarBeneficiarioForm.setLoaded();
     }
@@ -1159,7 +1173,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
       );
 
       const { status } = await axios.post(
-        `/api/${entity}/monitoramento/anexarComprovacao`,
+        getBackendRoute(entity, "monitoramentos/anexar-comprovacao"),
         restFormData
       );
 
@@ -1172,7 +1186,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
         anexarComprovacaoMonitoramentoForm.control.reset({});
       }
     } catch (error) {
-      throw new Error(error);
+      toast(exceptionHandler(error));
     } finally {
       anexarComprovacaoMonitoramentoForm.setLoaded();
     }
@@ -1371,7 +1385,8 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
       ? obterPeriodoSelecionado()
       : periodoSelecionado;
     axios
-      .get(`/api/${entity}/monitoramento`)
+      .get(getBackendRoute(entity, "monitoramentos"))
+      //.get(`/api/${entity}/monitoramento`)
       .then(({ data }) => {
         // bdRhService.get(`/funcionarios`);
         const rows = data
@@ -1422,7 +1437,8 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/escritorios-regionais`)
+      .get(getBackendRoute(entity, "escritorios-regionais"))
+      //.get(`/api/${entity}/escritorios-regionais`)
       .then((res) => {
         if (res.status === 200) {
           setEscritoriosFromBd(
@@ -1433,7 +1449,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.municipios?._f.ref.clearValue();
     _fields.demandantes?._f.ref.clearValue();
     _fields.unidadesLotacao?._f.ref.clearValue();
@@ -1443,7 +1459,8 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
   useEffect(() => {
     axios
       .get(
-        `/api/${entity}/municipios`,
+        getBackendRoute(entity, "municipios"),
+        //.get(`/api/${entity}/municipios`,
         _.isEmpty(escritoriosRegionais)
           ? {}
           : {
@@ -1464,14 +1481,15 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.demandantes?._f.ref.clearValue();
     _fields.unidadesLotacao?._f.ref.clearValue();
   }, [escritoriosRegionais, municipios]);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/demandantes`, {
+      .get(getBackendRoute(entity, "demandantes"), {
+        //.get(`/api/${entity}/demandantes`, {
         params: {
           municipio_Id: _.isEmpty(municipios)
             ? null
@@ -1491,14 +1509,15 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.demandantes?._f.ref.clearValue();
   }, [municipios]);
 
   useEffect(() => {
     axios
       .get(
-        `/api/${entity}/unidades-lotacao`,
+        getBackendRoute(entity, "unidades-lotacao"),
+        //`/api/${entity}/unidades-lotacao`,
         _.isEmpty(escritoriosRegionais) &&
           _.isEmpty(municipios) &&
           _.isEmpty(demandantes)
@@ -1529,13 +1548,14 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
   }, [demandantes, escritoriosRegionais, municipios]);
 
   useEffect(() => {
     axios
       .get(
-        `/api/${entity}/monitores`,
+        //`/api/${entity}/monitores`,
+        getBackendRoute(entity, "monitores"),
         _.isEmpty(escritoriosRegionais) && _.isEmpty(municipios)
           ? {}
           : {
@@ -1561,7 +1581,7 @@ export default function Monitoramento({ entity, timeFromNetwork, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
   }, [escritoriosRegionais, municipios]);
 
   useEffect(() => {
@@ -1960,7 +1980,8 @@ export async function getServerSideProps(context) {
 
   const entityCheck = entities.find((ent) => ent === entity || undefined);
   const { data: timeFromNetwork } = await axios.get(
-    `/api/${entity}/network-time`
+    //`/api/${entity}/network-time`
+    getBackendRoute(entity, "ext/time-ntp")
   );
 
   return {

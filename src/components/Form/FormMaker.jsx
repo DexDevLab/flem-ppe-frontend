@@ -2,6 +2,16 @@ import { Dropzone } from "components/Dropzone";
 import { FormBox } from ".";
 import { FormSwitch } from "./FormSwitch";
 
+/**
+ * Componente que monta o tipo de objeto de formulário dependendo da necessidade.
+ * @method FormMaker
+ * @memberof module:Form
+ * @param {Object} children define as propriedades do componente-filho de atribuem as props necessárias de composição do objeto
+ * @param {Object} unlockEdit define se é permitido editar o objeto
+ * @param {Object} data define o valor padrão (se existente)
+ * @param {Object} inlineForm parâmetros internos de formulário
+ * @returns {Component} componente de objeto de Formulário
+ */
 export const FormMaker = ({ children, unlockEdit, data, inlineForm }) => {
   return children.map(
     (

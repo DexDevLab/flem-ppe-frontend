@@ -16,9 +16,8 @@ import { Flex, Icon } from "@chakra-ui/react";
  * @param {Object} children definições de ícone
  * @param {Object} fontSize tamanho da fonte da label
  * do ícone
- * @returns {Container} contendo as propriedades do ícone
+ * @returns {Component} componente contendo as propriedades do ícone
  * e de sua respectivas label, passadas como props
- *
  */
 export default function IconBox(props) {
   const { children, fontSize, ...rest } = props;

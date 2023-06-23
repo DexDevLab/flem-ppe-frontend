@@ -1,8 +1,3 @@
-/**
- * Componente de Gráficos do Dashboard
- * @module Charts
- */
-
 import { Box, Heading, HStack } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
@@ -11,12 +6,15 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-/*************** WIP ******************/
 /**
- * Cria componente de gráfico.
+ * Componente de gráfico em barra
  * @method BarChart
  * @memberof module:Charts
- * @returns componente de card.
+ * @param {Object} chartData os dados do gráfico
+ * @param {Object} label o nome e rótulo do gráfico
+ * @param {Boolean} horizontal se o gráfico é horizontal ou vertical
+ * @param {Object} elementSelect define o elemento do gráfico em foco
+ * @returns {Component} componente de gráfico
  */
 export function BarChart({
   chartData,
@@ -29,7 +27,6 @@ export function BarChart({
 }) {
   const chartConfig = {
     series: chartData.series,
-
     chart: {
       height: 350,
       type: "bar",
@@ -88,8 +85,14 @@ export function BarChart({
     yaxis: {
       forceNiceScale: false,
       labels: {
+        // formatter: (value) =>
+        //   horizontal ? value : `${value}${percentage ? "%" : ""}`,
         formatter: (value) =>
-          horizontal ? value : `${value}${percentage ? "%" : ""}`,
+          horizontal
+            ? value
+            : `${value.toFixed(2).replace(/[.,]0+$/, "")}${
+                percentage ? "%" : ""
+              }`,
         style: {
           fontSize: horizontal ? "14px" : "12px",
           fontWeight: "bold",

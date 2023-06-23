@@ -1,6 +1,17 @@
-import { Checkbox, chakra } from "@chakra-ui/react";
+import { Checkbox } from "@chakra-ui/react";
 import { forwardRef, useEffect, useRef, useState } from "react";
 
+/**
+ * Componente de checkbox customizado.
+ * @method CellInput
+ * @memberof module:components
+ * @param {Boolean} indeterminate define o estado indeterminado do checkbox
+ * @param {Function} onChange handler da mudança de dados do objeto
+ * @param {Boolean} checked define o estado marcado ou não do objeto
+ * @param {Boolean} isDisabled define se o objeto está desativado ou não
+ * @param {Object} ref o ref do objeto
+ * @returns {Component} componente estilizado.
+ */
 export const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, onChange, checked, isDisabled, ...rest }, ref) => {
     const defaultRef = useRef();
@@ -43,3 +54,5 @@ export const IndeterminateCheckbox = forwardRef(
     );
   }
 );
+
+IndeterminateCheckbox.displayName = "IndeterminateCheckbox";

@@ -1,3 +1,8 @@
+/**
+ * Componente de página de Relatórios de Monitoramento
+ * @module relatorios-monitoramentos
+ */
+
 import {
   Box,
   Button,
@@ -11,23 +16,32 @@ import {
   Text,
   Tooltip,
   useBoolean,
+  useToast,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { Overlay } from "components/Overlay";
+import download from "downloadjs";
 import { useCustomForm } from "hooks";
+import _ from "lodash";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiDownload, FiFilter, FiTrash2 } from "react-icons/fi";
-import { axios } from "services/apiService";
-import _ from "lodash";
-import download from "downloadjs";
+import { axios, getBackendRoute } from "services/apiService";
 
-import { SelectInputBox } from "components/Inputs/SelectInputBox";
-import { DateTime } from "luxon";
-import { Table } from "components/Table";
 import { InputBox } from "components/Inputs/InputBox";
+import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import { Table } from "components/Table";
+import { DateTime } from "luxon";
+import { exceptionHandler } from "utils/exceptionHandler";
 
-export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
+/**
+ * Renderiza a Página de Ações da CR
+ * @method MonitoramentoRel
+ * @memberof module:relatorios-monitoramentos
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
+export default function MonitoramentoRel({ entity, ...props }) {
   const router = useRouter();
   const { asPath } = router;
   const [fetchTableMonitPorBenefData, setFetchTableMonitPorBenefData] =
@@ -54,6 +68,7 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
     []
   );
   const [tableMonitPorDemandData, setTableMonitPorDemandData] = useState([]);
+  const toast = useToast();
 
   const tableMonitBenefColumns = useMemo(
     () => [
@@ -141,6 +156,7 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
         Footer: false,
       },
     ],
+
     []
   );
 
@@ -225,6 +241,7 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
         Footer: false,
       },
     ],
+
     [tableMonitPorDemandRawData, tableMonitPorDemandData]
   );
 
@@ -407,7 +424,14 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
   const downloadRelatorio = ({ reportUrl, ...params }) => {
     // downloadingFile.onOpen();
     axios
-      .get(`/api/${entity}/reports`, {
+      // .get(`/api/${entity}/reports`, {
+      //   params: {
+      //     reportUrl,
+      //     ...params,
+      //   },
+      //   responseType: "blob",
+      // })
+      .get(getBackendRoute(entity, "reports"), {
         params: {
           reportUrl,
           ...params,
@@ -432,7 +456,7 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
           // downloadingFile.onClose();
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
   };
 
   useEffect(() => {
@@ -444,7 +468,8 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/escritorios-regionais`)
+      // .get(`/api/${entity}/escritorios-regionais`)
+      .get(getBackendRoute(entity, "escritorios-regionais"))
       .then((res) => {
         if (res.status === 200) {
           setEscritoriosFromBd(
@@ -455,7 +480,7 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.municipios?._f.ref.clearValue();
     _fields.demandantes?._f.ref.clearValue();
     _fields.unidadesLotacao?._f.ref.clearValue();
@@ -465,7 +490,8 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
   useEffect(() => {
     axios
       .get(
-        `/api/${entity}/municipios`,
+        //`/api/${entity}/municipios`,
+        getBackendRoute(entity, "municipios"),
         _.isEmpty(escritoriosRegionais)
           ? {}
           : {
@@ -486,14 +512,15 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.demandantes?._f.ref.clearValue();
     _fields.unidadesLotacao?._f.ref.clearValue();
   }, [escritoriosRegionais, municipios]);
 
   useEffect(() => {
     axios
-      .get(`/api/${entity}/demandantes`, {
+      //.get(`/api/${entity}/demandantes`, {
+      .get(getBackendRoute(entity, "demandantes"), {
         params: {
           municipio_Id: _.isEmpty(municipios)
             ? null
@@ -513,14 +540,15 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
     _fields.demandantes?._f.ref.clearValue();
   }, [municipios]);
 
   useEffect(() => {
     axios
       .get(
-        `/api/${entity}/unidades-lotacao`,
+        //`/api/${entity}/unidades-lotacao`,
+        getBackendRoute(entity, "unidades-lotacao"),
         _.isEmpty(escritoriosRegionais) &&
           _.isEmpty(municipios) &&
           _.isEmpty(demandantes)
@@ -551,13 +579,14 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
           );
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => toast(exceptionHandler(error)));
   }, [demandantes, escritoriosRegionais, municipios]);
 
   useEffect(() => {
     setFetchTableMonitPorBenefData.on();
     axios
-      .get(`/api/${entity}/monitoramento/realizados`, {
+      //.get(`/api/${entity}/monitoramento/realizados`, {
+      .get(getBackendRoute(entity, "monitoramentos/realizados"), {
         params: {
           ...periodoRelatorioMonitoramento,
         },
@@ -575,7 +604,8 @@ export default function MonitoramentoPorBeneficiario({ entity, ...props }) {
         setTableMonitPorBenefData(monitoramentosPorBenef);
         setTableRowsMonitPorDemandCount(monitoramentosPorBenef.length);
 
-        axios.get(`/api/${entity}/demandantes`).then((res) => {
+        //axios.get(`/api/${entity}/demandantes`).then((res) => {
+        axios.get(getBackendRoute(entity, "demandantes")).then((res) => {
           if (res.status === 200) {
             const rows = res.data.map((demand) => ({
               ...demand,
@@ -891,5 +921,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-MonitoramentoPorBeneficiario.auth = true;
-MonitoramentoPorBeneficiario.dashboard = true;
+MonitoramentoRel.auth = true;
+MonitoramentoRel.dashboard = true;

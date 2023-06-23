@@ -1,3 +1,8 @@
+/**
+ * Componentes de página de gerenciamento dos demandantes.
+ * @module demandantes
+ */
+
 import {
   Box,
   Button,
@@ -33,7 +38,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de demandantes
+ * @method Demandantes
+ * @memberof module:demandantes
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Demandantes({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -132,20 +145,30 @@ export default function Demandantes({ entity, ...props }) {
           }
         })
         .catch((error) => {
-          console.log("ERROR:", error.response.data);
-          if (error.response.status === 409) {
+          const exception = exceptionHandler(error);
+          if (exception.code == 409) {
             demandanteFormSubmit.onClose();
-            toast({
-              title: "Demandante já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error.response.data);
+            exception.title = "Demandante já existe";
+            exception.description = "";
+            exception.duration = 5000;
           }
+          toast(exception);
         });
+      // .catch((error) => {
+      //   console.log("ERROR:", error.response.data);
+      //   if (error.response.status === 409) {
+      //     demandanteFormSubmit.onClose();
+      //     toast({
+      //       title: "Demandante já existe",
+      //       status: "error",
+      //       duration: 5000,
+      //       isClosable: false,
+      //       position,
+      //     });
+      //   } else {
+      //     throw new Error(error.response.data);
+      //   }
+      // });
     }
     axios
       .post(getBackendRoute(entity, "demandantes"), formData)
@@ -165,20 +188,30 @@ export default function Demandantes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log("ERROR:", error.response.data);
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           demandanteFormSubmit.onClose();
-          toast({
-            title: "Demandante já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Demandante já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   console.log("ERROR:", error.response.data);
+    //   if (error.response.status === 409) {
+    //     demandanteFormSubmit.onClose();
+    //     toast({
+    //       title: "Demandante já existe",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const deleteDemandante = (formData) => {
@@ -204,9 +237,12 @@ export default function Demandantes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   };
 
   useEffect(() => {
@@ -215,7 +251,6 @@ export default function Demandantes({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -228,11 +263,13 @@ export default function Demandantes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addDemandante.isOpen, excluir.isOpen]);
 
   return (

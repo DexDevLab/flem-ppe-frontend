@@ -22,6 +22,7 @@ import {
   useBoolean,
   useBreakpointValue,
   useNumberInput,
+  useToast,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { FormMaker } from "components/Form";
@@ -49,7 +50,16 @@ import {
   getBackendRoute,
 } from "services";
 import { variants } from "styles/transitions";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de beneficiário com o detalhamento das informações
+ * @method Beneficiarios
+ * @memberof module:beneficiarios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} idBeneficiario o id do Beneficiário no banco de dados
+ * @returns {Component} página renderizada
+ */
 export default function Beneficiarios({ entity, idBeneficiario }) {
   const router = useRouter();
   const [unlockEdit, setUnlockEdit] = useBoolean();
@@ -60,6 +70,7 @@ export default function Beneficiarios({ entity, idBeneficiario }) {
   const [benefData, setBenefData] = useState([]);
   const [benefDataNotFound, setBenefDataNotFound] = useState(true);
   const formDadosBeneficiario = useCustomForm();
+  const toast = useToast();
 
   const fileUpload = async (data, params) => {
     const config = {
@@ -97,15 +108,13 @@ export default function Beneficiarios({ entity, idBeneficiario }) {
         axios
           .put(
             getBackendRoute(entity, `beneficiarios/${benefData.id}`),
-            {
-              params: {
-                id: benefData.id,
-              },
-            },
             formData
           )
           .then(({ data }) => console.log(data))
-          .catch((err) => console.log(err))
+          // .catch((err) => console.log(err))
+          .catch((error) => {
+            toast(exceptionHandler(error));
+          })
           .finally(() => {
             formDadosBeneficiario.setLoaded();
             setUnlockEdit.off();
@@ -113,17 +122,12 @@ export default function Beneficiarios({ entity, idBeneficiario }) {
       });
     } else {
       axios
-        .put(
-          getBackendRoute(entity, `beneficiarios/${benefData.id}`),
-          {
-            params: {
-              id: benefData.id,
-            },
-          },
-          formData
-        )
+        .put(getBackendRoute(entity, `beneficiarios/${benefData.id}`), formData)
         .then(({ data }) => console.log(data))
-        .catch((err) => console.log(err))
+        // .catch((err) => console.log(err))
+        .catch((error) => {
+          toast(exceptionHandler(error));
+        })
         .finally(() => {
           formDadosBeneficiario.setLoaded();
           setUnlockEdit.off();
@@ -258,11 +262,14 @@ export default function Beneficiarios({ entity, idBeneficiario }) {
       })
       .then(({ data }) => {
         if (data) {
-          setBenefData(data);
+          setBenefData(data[0]);
           setBenefDataNotFound(false);
         }
       })
-      .catch((err) => new Error(err))
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      // .catch((err) => new Error(err))
       .finally(() => {
         setBenefDataIsLoading.off();
         setBenefDataReloading.off();
@@ -461,6 +468,8 @@ export async function getServerSideProps(context) {
 }
 
 const Dados = ({ data, entity, formControl, unlockEdit }) => {
+  const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
+  const toast = useToast();
   const [etniasFromBd, setEtniasFromBd] = useState(null);
   const [tamanhosFromBd, setTamanhosFromBd] = useState(null);
   const [territorioIdentidade, setTerritorioIdentidade] = useState(null);
@@ -481,7 +490,7 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
       label: etnia,
     }));
     setEtniasFromBd(etniasOptions);
-  });
+  }, [entity]);
 
   const getTamanhoUniforme = useCallback(async () => {
     const { data } = await axios.get(
@@ -491,8 +500,9 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
       value: id,
       label: tamanho,
     }));
+
     setTamanhosFromBd(tamanhoOptions);
-  });
+  }, [entity]);
 
   const getTerritorioIdentidade = useCallback(async () => {
     const { data: municipios } = await axios.get(
@@ -501,8 +511,9 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
     const municipioFiltered = municipios.find(
       ({ nome }) => nome === data?.municipio
     );
+
     setTerritorioIdentidade(municipioFiltered?.territorioIdentidade);
-  });
+  }, []);
 
   const formDadosPessoais = [
     {
@@ -775,18 +786,73 @@ const Dados = ({ data, entity, formControl, unlockEdit }) => {
     ])
   );
 
+  // const consultaEndereco = async () => {
+  //   const cep = formControl.getValues("cep");
+  //   try {
+  //     setBuscaCep.on();
+  //     const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+  //       params: {
+  //         cep: cep,
+  //       },
+  //     });
+
+  //     setCepData(data);
+  //   } catch (error) {
+  //     setCepData({});
+  //   } finally {
+  //     setBuscaCep.off();
+  //   }
+  // };
+
   const consultaEndereco = async () => {
     const cep = formControl.getValues("cep");
     try {
       setBuscaCep.on();
+      // const { data } = await axios.get(
+      //   `https://brasilapi.com.br/api/cep/v2/${cep}`
+      // );
       const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
         params: {
           cep: cep,
         },
       });
       setCepData(data);
+      toast({
+        title: "Endereço localizado",
+        status: "success",
+        duration: 5000,
+        isClosable: false,
+        position,
+      });
     } catch (error) {
       setCepData({});
+      formControl.reset({
+        cep,
+      });
+      const exception = exceptionHandler(error);
+      if (exception.code == 404) {
+        exception.title = "Endereço não localizado";
+        exception.description =
+          "Verifique o CEP ou preencha o endereço manualmente.";
+        exception.status = "warning";
+        exception.duration = 5000;
+      }
+      toast(exception);
+      // setCepData({});
+      // formControl.reset({
+      //   cep,
+      // });
+      // toast({
+      //   title: "Endereço não localizado",
+      //   description: "Verifique o CEP ou preencha o endereço manualmente",
+      //   status: "warning",
+      //   duration: 5000,
+      //   isClosable: false,
+      //   position,
+      //   containerStyle: {
+      //     width: "300px",
+      //   },
+      // });
     } finally {
       setBuscaCep.off();
     }
@@ -895,10 +961,11 @@ const Formacao = ({ data, entity, formControl, unlockEdit }) => {
       value: id,
       label: nome,
     }));
+
     setFormacoesFromBd(data);
     setFormacoesOptions(formacoesOptions);
     setLoadingFormacoes.off();
-  });
+  }, []);
 
   const formFormacao = [
     {
@@ -1451,8 +1518,9 @@ const Pendencias = ({ data, formControl, entity, unlockEdit }) => {
     const { data } = await axios.get(
       getBackendRoute(entity, "pendencias/tipos")
     );
+
     setTiposPendenciasFromBd(data);
-  });
+  }, []);
 
   const formDocumentosPendentes = tiposPendenciasFromBd
     .filter(({ label }) => !label.includes("Vale"))
@@ -1535,6 +1603,7 @@ const Historico = ({
     const { data } = await axios.get(
       getBackendRoute(entity, "tipos-historico")
     );
+
     const tiposOptions = data
       .filter(({ sigiloso }) => !sigiloso)
       .filter(({ nome }) => !["Documento", "Documento Sigiloso"].includes(nome))
@@ -1543,7 +1612,7 @@ const Historico = ({
         label: nome,
       }));
     setTiposHistoricoFromBd(tiposOptions);
-  });
+  }, []);
 
   const tableHistoricoColumns = useMemo(
     () => [
@@ -1809,19 +1878,21 @@ const Materiais = ({
       value: id,
       label: nome,
     }));
+
     setMateriaisFromBd(materiaisOptions);
-  });
+  }, []);
 
   const getTamanhosUniforme = useCallback(async () => {
     const { data } = await axios.get(
       getBackendRoute(entity, "tamanhos-uniforme")
     );
+
     const tamanhosOptions = data.map(({ id, tamanho }) => ({
       value: id,
       label: tamanho,
     }));
     setTamanhosFromBd(tamanhosOptions);
-  });
+  }, []);
 
   useEffect(() => {
     getMateriais();
@@ -1905,6 +1976,7 @@ const InformacoesSigilosas = ({
     const { data } = await axios.get(
       getBackendRoute(entity, "tipos-historico")
     );
+
     const tiposOptions = data
       .filter(({ sigiloso }) => sigiloso)
       .filter(({ nome }) => !["Documento"].includes(nome))
@@ -1913,7 +1985,7 @@ const InformacoesSigilosas = ({
         label: nome,
       }));
     setTiposHistoricoFromBd(tiposOptions);
-  });
+  }, []);
 
   const downloadFile = async (id) => {
     const {
@@ -2215,8 +2287,9 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       value: id,
       label: `${sigla} - ${nome}`,
     }));
+
     setDemandantesFromBd(demandantesOptions);
-  });
+  }, []);
 
   const getFormacoes = useCallback(async () => {
     const { data } = await axios.get(getBackendRoute(entity, "formacoes"));
@@ -2224,8 +2297,9 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       value: id,
       label: nome,
     }));
+
     setFormacoesFromBd(formacoesOptions);
-  });
+  }, []);
 
   const getMunicipios = useCallback(async () => {
     const { data } = await axios.get(getBackendRoute(entity, "municipios"));
@@ -2233,8 +2307,9 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       value: id,
       label: nome,
     }));
+
     setMunicipiosFromBd(formacoesOptions);
-  });
+  }, []);
 
   const getUnidadesLotacao = useCallback(async () => {
     const { data } = await axios.get(
@@ -2245,7 +2320,7 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       label: nome,
     }));
     setUnidadesLotacaoFromBd(unidadesOptions);
-  });
+  }, []);
 
   const getSituacoesVaga = useCallback(async () => {
     const { data } = await axios.get(getBackendRoute(entity, "situacoes-vaga"));
@@ -2256,7 +2331,7 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       // disabled: ["Contratado", "Desligado"].includes(tipoSituacao.nome),
     }));
     setSituacoesVagaFromBd(unidadesOptions);
-  });
+  }, []);
 
   const getDistanciaVaga = useCallback(async () => {
     if (data.municipio && vagaInfo?.municipio?.nome) {
@@ -2274,7 +2349,7 @@ const Vaga = ({ data, entity, formControl, unlockEdit }) => {
       );
       setDistanciaVaga(response);
     }
-  });
+  }, []);
 
   const formVaga = [
     {

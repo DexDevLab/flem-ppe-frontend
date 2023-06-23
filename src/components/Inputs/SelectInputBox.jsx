@@ -1,15 +1,15 @@
 import {
   Box,
   FormControl,
-  FormLabel,
   FormErrorMessage,
-  Skeleton,
-  InputRightElement,
+  FormLabel,
   InputGroup,
+  InputRightElement,
+  Skeleton,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { useEffect } from "react";
 import _ from "lodash";
+import { useEffect } from "react";
 
 /**
  * Cria uma Inpux Box de senha.
@@ -92,7 +92,6 @@ export function SelectInputBox({
       setValue(id, defaultValue.value);
       trigger(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -125,6 +124,8 @@ export function SelectInputBox({
               isMulti={isMulti}
               noOptionsMessage={() => "Sem opções"}
               closeMenuOnSelect={!isMulti}
+              menuPortalTarget={document.body}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               chakraStyles={chakraStyles}
             />
 

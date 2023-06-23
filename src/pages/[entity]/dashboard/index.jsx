@@ -4,6 +4,8 @@
  */
 
 import {
+  Box,
+  Collapse,
   Heading,
   Input,
   Select,
@@ -11,16 +13,20 @@ import {
   Stack,
   useBoolean,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
 import { Card } from "components/Cards";
 import { BarChart, PieChart } from "components/Charts";
+import _ from "lodash";
 import { DateTime } from "luxon";
 import { useSession } from "next-auth/react";
-import { useMemo } from "react";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FiUsers } from "react-icons/fi";
-import { axios } from "services/apiService";
+import { axios, getBackendRoute } from "services/apiService";
 import { dynamicSort } from "utils/dynamicSort";
+import { exceptionHandler } from "utils/exceptionHandler";
 import { calcularPeriodoMonitoramentoRealizado } from "utils/monitoramento";
 
 /**
@@ -30,7 +36,6 @@ import { calcularPeriodoMonitoramentoRealizado } from "utils/monitoramento";
  * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
  * @returns {Component} página renderizada
  */
-
 export default function Dashboard({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const [benefGraphData, setBenefGraphData] = useState(null);
@@ -51,6 +56,7 @@ export default function Dashboard({ entity, ...props }) {
   const { asPath } = router;
   const [getheringData, setGetheringData] = useBoolean(true);
   const session = useSession();
+  const toast = useToast();
 
   const getDashboardData = useCallback(async () => {
     setGetheringData.on();
@@ -377,38 +383,97 @@ export default function Dashboard({ entity, ...props }) {
         ],
       };
 
+      // const { data: responseBeneficiarios } = await axios.get(
+      //   `/api/${entity}/beneficiarios/dashboard`,
+      //   {
+      //     params: queryParamsBeneficiarios,
+      //   }
+      // );
+
       const { data: responseBeneficiarios } = await axios.get(
-        `/api/${entity}/beneficiarios/dashboard`,
+        getBackendRoute(entity, "beneficiarios/dashboard"),
         {
           params: queryParamsBeneficiarios,
         }
       );
+
+      //console.log(396, JSON.stringify(responseBeneficiarios))
+
+      // const { data: responseFormacoes } = await axios.get(
+      //   `/api/${entity}/formacoes/dashboard`,
+      //   {
+      //     params: queryParamsFormacoes,
+      //   }
+      // );
+
       const { data: responseFormacoes } = await axios.get(
-        `/api/${entity}/formacoes/dashboard`,
+        getBackendRoute(entity, "formacoes/dashboard"),
         {
           params: queryParamsFormacoes,
         }
       );
 
-      const { data: monitRealizados } = await axios.get(
-        `/api/${entity}/monitoramento/dashboard`
+      //console.log(410, JSON.stringify(responseFormacoes))
+
+      // const { data: monitRealizados } = await axios.get(
+      //   `/api/${entity}/monitoramento/dashboard`
+      // );
+
+      const { data: networkTime } = await axios.get(
+        getBackendRoute(entity, "ext/time-ntp")
       );
 
+      const periodosMonitoramentos = calcularPeriodoMonitoramentoRealizado(
+        networkTime.toString()
+      );
+
+      const periodoMonitoramentoAtual = periodosMonitoramentos.find(
+        ({ startDate, endDate }) =>
+          startDate.toString() <= networkTime &&
+          endDate.toString() >= networkTime
+      );
+
+      const { data: monitRealizados } = await axios.get(
+        getBackendRoute(entity, "monitoramentos/dashboard"),
+        {
+          params: {
+            periodoMonitoramento: periodoMonitoramentoAtual,
+          },
+        }
+      );
+
+      //console.log(418, JSON.stringify(monitRealizados))
+
+      // const { data: responseTerrIdent } = await axios.get(
+      //   `/api/${entity}/territoriosIdentidade/dashboard`,
+      //   { params: queryParamsTerrIdent }
+      // );
+
       const { data: responseTerrIdent } = await axios.get(
-        `/api/${entity}/territoriosIdentidade/dashboard`,
+        getBackendRoute(entity, "territorios-identidade/dashboard"),
         { params: queryParamsTerrIdent }
       );
+
+      //console.log(428, JSON.stringify(responseTerrIdent))
 
       setBenefGraphData({
         ...responseBeneficiarios,
         ...responseFormacoes,
         ...responseTerrIdent,
       });
+
+      // console.log(444, {
+      //   ...responseBeneficiarios,
+      //   ...responseFormacoes,
+      //   ...responseTerrIdent,
+      // });
+
       setMonitRealizados(monitRealizados);
-    } catch (error) {
-      console.log(error);
-    } finally {
       setGetheringData.off();
+    } catch (error) {
+      toast(exceptionHandler(error));
+    } finally {
+      //setGetheringData.off();
     }
   }, []);
 
@@ -464,15 +529,23 @@ export default function Dashboard({ entity, ...props }) {
         ],
       };
 
+      // const { data: responseBeneficiarios } = await axios.get(
+      //   `/api/${entity}/beneficiarios/dashboard`,
+      //   {
+      //     params: queryParamsBeneficiarios,
+      //   }
+      // );
+
       const { data: responseBeneficiarios } = await axios.get(
-        `/api/${entity}/beneficiarios/dashboard`,
+        getBackendRoute(entity, "beneficiarios/dashboard"),
         {
           params: queryParamsBeneficiarios,
         }
       );
+
       setBenefContrVsDeslGraphData(responseBeneficiarios);
     } catch (error) {
-      console.log(error);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -641,14 +714,15 @@ export default function Dashboard({ entity, ...props }) {
         ],
       };
       const { data: responseBeneficiarios } = await axios.get(
-        `/api/${entity}/beneficiarios/dashboard`,
+        getBackendRoute(entity, "beneficiarios/dashboard"),
         {
           params: queryParamsBeneficiarios,
         }
       );
+
       setBenefContrVsDeslTrimGraphData(responseBeneficiarios);
     } catch (error) {
-      console.log(error);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -716,11 +790,12 @@ export default function Dashboard({ entity, ...props }) {
       };
 
       const { data: responseRemessasSec } = await axios.get(
-        `/api/${entity}/remessasSec/dashboard`,
+        getBackendRoute(entity, "remessas/dashboard"),
         {
           params: queryParamsBeneficiarios,
         }
       );
+
       const chartData = {
         series: [
           {
@@ -737,7 +812,7 @@ export default function Dashboard({ entity, ...props }) {
 
       setBenefPorRemessaPorTrimestre(chartData);
     } catch (error) {
-      console.log(error);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -799,11 +874,12 @@ export default function Dashboard({ entity, ...props }) {
       };
 
       const { data: responseSeminarios } = await axios.get(
-        `/api/${entity}/eventos/dashboard/presencas`,
+        getBackendRoute(entity, "eventos/dashboard"),
         {
           params: queryParams,
         }
       );
+
       const chartData = {
         series: [
           {
@@ -820,7 +896,7 @@ export default function Dashboard({ entity, ...props }) {
 
       setBenefAcolhimPorTrimestre(chartData);
     } catch (error) {
-      console.log(error);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -1010,28 +1086,64 @@ export default function Dashboard({ entity, ...props }) {
         ],
       };
 
+      const { data: networkTime } = await axios.get(
+        getBackendRoute(entity, "ext/time-ntp")
+      );
+
+      const periodosMonitoramentos = calcularPeriodoMonitoramentoRealizado(
+        networkTime.toString()
+      );
+
+      const periodoMonitoramentoAtual = periodosMonitoramentos.find(
+        ({ startDate, endDate }) =>
+          startDate.toString() <= networkTime &&
+          endDate.toString() >= networkTime
+      );
+
       const { data: responseQueryMonitTrimestreParams } = await axios.get(
-        `/api/${entity}/monitoramento/dashboard`,
+        getBackendRoute(entity, "monitoramentos/dashboard"),
         {
-          params: queryMonitTrimestreParams,
+          params: {
+            queryParams: queryMonitTrimestreParams,
+            periodoMonitoramento: periodoMonitoramentoAtual,
+          },
         }
       );
+
+      // const { data: responseQueryAutoAvalTrimestreParams } = await axios.get(
+      //   `/api/${entity}/monitoramento/dashboard`,
+      //   {
+      //     params: queryAutoAvalTrimestreParams,
+      //   }
+      // );
+
       const { data: responseQueryAutoAvalTrimestreParams } = await axios.get(
-        `/api/${entity}/monitoramento/dashboard`,
+        getBackendRoute(entity, "monitoramentos/dashboard"),
         {
-          params: queryAutoAvalTrimestreParams,
+          params: {
+            queryParams: queryMonitTrimestreParams,
+            periodoMonitoramento: periodoMonitoramentoAtual,
+          },
         }
       );
+
       const { data: responseQueryAvalAmbTrabTrimestreParams } = await axios.get(
-        `/api/${entity}/monitoramento/dashboard`,
+        getBackendRoute(entity, "monitoramentos/dashboard"),
         {
-          params: queryAvalAmbTrabTrimestreParams,
+          params: {
+            queryParams: queryMonitTrimestreParams,
+            periodoMonitoramento: periodoMonitoramentoAtual,
+          },
         }
       );
+
       const { data: responseQueryAvalPntFocTrimestreParams } = await axios.get(
-        `/api/${entity}/monitoramento/dashboard`,
+        getBackendRoute(entity, "monitoramentos/dashboard"),
         {
-          params: queryAvalPntFocTrimestreParams,
+          params: {
+            queryParams: queryMonitTrimestreParams,
+            periodoMonitoramento: periodoMonitoramentoAtual,
+          },
         }
       );
 
@@ -1100,7 +1212,7 @@ export default function Dashboard({ entity, ...props }) {
 
       setMonitDashboardData(chartData);
     } catch (error) {
-      console.log(error);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -1110,7 +1222,6 @@ export default function Dashboard({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -1150,6 +1261,7 @@ export default function Dashboard({ entity, ...props }) {
             metaType === "4.1"
         )
       ),
+
     []
   );
 
@@ -1196,27 +1308,27 @@ export default function Dashboard({ entity, ...props }) {
             data: [
               (benefGraphData.beneficiariosContratadosEtnNA /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
 
               (benefGraphData.beneficiariosContratadosEtnAm /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
 
               (benefGraphData.beneficiariosContratadosEtnBr /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
 
               (benefGraphData.beneficiariosContratadosEtnIn /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
 
               (benefGraphData.beneficiariosContratadosEtnPa /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
 
               (benefGraphData.beneficiariosContratadosEtnPr /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
             ],
           },
         ],
@@ -1249,7 +1361,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
               (benefGraphData.beneficiariosContratadosDataNasc.filter(
                 ({ dataNasc }) => {
                   const idadeAtual = Math.floor(
@@ -1259,7 +1371,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
               (benefGraphData.beneficiariosContratadosDataNasc.filter(
                 ({ dataNasc }) => {
                   const idadeAtual = Math.floor(
@@ -1269,7 +1381,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
               (benefGraphData.beneficiariosContratadosDataNasc.filter(
                 ({ dataNasc }) => {
                   const idadeAtual = Math.floor(
@@ -1279,7 +1391,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
               (benefGraphData.beneficiariosContratadosDataNasc.filter(
                 ({ dataNasc }) => {
                   const idadeAtual = Math.floor(
@@ -1289,7 +1401,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
               (benefGraphData.beneficiariosContratadosDataNasc.filter(
                 ({ dataNasc }) => {
                   const idadeAtual = Math.floor(
@@ -1300,7 +1412,7 @@ export default function Dashboard({ entity, ...props }) {
                 }
               ).length /
                 benefGraphData.beneficiariosAtivos) *
-                100,
+                100 || 0,
             ],
           },
         ],
@@ -1347,7 +1459,7 @@ export default function Dashboard({ entity, ...props }) {
                   ({ beneficiarios }) =>
                     (beneficiarios.length /
                       benefGraphData.beneficiariosAtivos) *
-                    100
+                      100 || 0
                 ),
               benefGraphData.beneficiariosContratadosPorFormacao
                 .sort(dynamicSort("beneficiarios", Number))
@@ -1357,7 +1469,7 @@ export default function Dashboard({ entity, ...props }) {
                   ({ beneficiarios }) =>
                     (beneficiarios.length /
                       benefGraphData.beneficiariosAtivos) *
-                    100
+                      100 || 0
                 )
                 .reduce((prev, curr) => prev + curr)
             ),
@@ -1395,10 +1507,19 @@ export default function Dashboard({ entity, ...props }) {
                     acc[cur.dataInicioAtividade] + cur._count || cur._count;
                   return acc;
                 }, {});
-              return Object.keys(qtdPorMes).map(
-                (key) =>
-                  (qtdPorMes[key] / benefGraphData.beneficiariosAtivos) * 100
-              );
+              return Object.keys(qtdPorMes).map((key) => {
+                const result =
+                  (qtdPorMes[key] / benefGraphData.beneficiariosAtivos) * 100 ||
+                  0;
+                if (
+                  result == Number.POSITIVE_INFINITY ||
+                  result == Number.NEGATIVE_INFINITY
+                ) {
+                  return 0;
+                } else {
+                  return result;
+                }
+              });
             })(),
           },
         ],
@@ -1454,12 +1575,22 @@ export default function Dashboard({ entity, ...props }) {
           {
             name: "Beneficiários",
             data: benefGraphData.benefAtivosPorTerrIdent.map(
-              ({ nome, municipios }) =>
-                (municipios
-                  .map(({ vagas }) => vagas.length)
-                  .reduce((acc, curr) => acc + curr) /
-                  benefGraphData.beneficiariosAtivos) *
-                100
+              ({ nome, municipios }) => {
+                const result =
+                  (municipios
+                    .map(({ vagas }) => vagas.length)
+                    .reduce((acc, curr) => acc + curr) /
+                    benefGraphData.beneficiariosAtivos) *
+                    100 || 0;
+                if (
+                  result == Number.POSITIVE_INFINITY ||
+                  result == Number.NEGATIVE_INFINITY
+                ) {
+                  return 0;
+                } else {
+                  return result;
+                }
+              }
             ),
           },
         ],
@@ -1556,23 +1687,27 @@ export default function Dashboard({ entity, ...props }) {
                 chartData={benefPorEtniaChartData}
                 label="Beneficiários contratados, por etnia"
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefPorFaixaEtariaChartData}
                 label="Beneficiários contratados, por faixa etária"
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefPorFormacaoChartData}
                 label="Beneficiários contratados, por formação"
                 horizontal
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefContrPorMesChartData}
                 label="Beneficiários contratados, mês a mês"
                 // horizontal
               />
+
               <PieChart
                 h={[300, 400]}
                 chartData={benefContrVsDeslChartData}
@@ -1589,11 +1724,13 @@ export default function Dashboard({ entity, ...props }) {
                   />
                 }
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefContrPorTerrChartData}
                 label="Beneficiários contratados, por território de identidade"
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefPorRemessaPorTrimestre}
@@ -1649,6 +1786,7 @@ export default function Dashboard({ entity, ...props }) {
                   </Select>
                 }
               />
+
               <BarChart
                 h={[300, 400]}
                 chartData={benefAcolhimPorTrimestreChartData}
@@ -1699,7 +1837,7 @@ export default function Dashboard({ entity, ...props }) {
                 benefGraphData &&
                 `${monitRealizados} (${(
                   (monitRealizados / benefGraphData.beneficiariosAtivos) *
-                  100
+                    100 || 0
                 ).toFixed(1)}%)`
               }
               isLoading={getheringData}

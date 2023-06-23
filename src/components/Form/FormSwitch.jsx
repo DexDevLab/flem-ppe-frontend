@@ -1,6 +1,18 @@
 import { FormControl, FormLabel, HStack, Switch } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
+/**
+ * Componente de Botão de Formulário
+ * @method FormSwitch
+ * @memberof module:Form
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} checkedLabel define a label do componente quando está marcado
+ * @param {Object} validate define as entradas de validação do formulário
+ * @param {Object} defaultValue valor default do objeto
+ * @param {Function} onChange handler da mudança de dados do objeto
+ * @returns {Component} componente de objeto de Formulário
+ */
 export const FormSwitch = ({
   id,
   label,

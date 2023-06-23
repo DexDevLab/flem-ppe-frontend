@@ -14,7 +14,7 @@ import { Component } from "react";
  * @memberof module:Cards
  * @param {Object} icon Ícone decorativo
  * @param {Component} children componente-filho do card
- * @returns componente de card.
+ * @returns {Component} componente de card.
  *
  */
 export function Card({ icon, children, label, value, isLoading, ...props }) {
@@ -42,12 +42,14 @@ export function Card({ icon, children, label, value, isLoading, ...props }) {
           </Heading>
         )}
         <Flex alignItems="center">
-          {isLoading && <Spinner 
+          {isLoading && (
+            <Spinner
               color="brand1.500"
               thickness="4px"
               speed=".5s"
               emptyColor="gray.200"
-          />}
+            />
+          )}
           {!isLoading && value && (
             <Heading as="h3" color="gray.700" size="md">
               {value}

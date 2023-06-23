@@ -1,3 +1,8 @@
+/**
+ * Componente de Dropzone para upload de arquivo
+ * @module Dropzone
+ */
+
 import {
   Badge,
   Box,
@@ -5,6 +10,7 @@ import {
   FormLabel,
   IconButton,
   Progress,
+  Spinner,
   Tag,
   TagLabel,
   Text,
@@ -26,6 +32,21 @@ const getColor = (props) => {
   return "gray.300";
 };
 
+/**
+ * Componente de Dropzone
+ * @method Dropzone
+ * @memberof module:Dropzone
+ * @param {Function} onSubmit handler de sumit
+ * @param {Object} onUploadProgress variável de hook para indicar progresso
+ * @param {Object} setUploadProgress setter de hook para indicar progresso
+ * @param {Object} uploadController controller para upload de arquivo
+ * @param {Object} label define o nome da label
+ * @param {Object} id define o id do componente
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Boolean} disabled define se o componente está visualmente desativado
+ * @param {Boolean} disabledText define se o texto do componente está visualmente desativado
+ * @returns {Component} componente de Dropzone
+ */
 export function Dropzone({
   colorScheme = "brand1",
   onSubmit,
@@ -49,9 +70,11 @@ export function Dropzone({
   ...rest
 }) {
   const [myFiles, setMyFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const onDrop = useCallback(
     (acceptedFiles) => {
+      setLoading(true);
       setMyFiles([...myFiles, ...acceptedFiles]);
       trigger(id);
     },
@@ -95,6 +118,7 @@ export function Dropzone({
   useEffect(() => {
     setValue(id, myFiles);
     trigger(id);
+    setLoading(false);
   }, [myFiles]);
 
   const files = myFiles.map((file) => (
@@ -206,7 +230,17 @@ export function Dropzone({
             ) : (
               <Text>Arquivos Anexados</Text>
             ))}
-          <Box>{files.length > 0 && <>{files}</>}</Box>
+          {loading ? (
+            <Spinner
+              boxSize={10}
+              color="brand1.500"
+              thickness="4px"
+              speed=".8s"
+              emptyColor="gray.200"
+            />
+          ) : (
+            <Box>{files.length > 0 && <>{files}</>}</Box>
+          )}
         </Flex>
         {onUploadProgress && (
           <Progress

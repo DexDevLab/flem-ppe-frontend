@@ -16,6 +16,13 @@ import { useQuill } from "react-quilljs";
 
 // const QuillMention = dynamic(() => import("quill-mention"), { ssr: false });
 
+/**
+ * Renderiza a ferramenta de impressão de dados dentro do Editor de Texto
+ * @method Print
+ * @memberof module:templates-oficios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Oficios({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -263,9 +270,10 @@ export default function Oficios({ entity, ...props }) {
             <Logo h={30} my={12} />
 
             <button type="button" onClick={() => window.print()}>
-              PRINT ME!
+              Clique para Imprimir
             </button>
             <Image
+              alt="LogoBA"
               src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
               h={50}
             />

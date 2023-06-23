@@ -1,3 +1,8 @@
+/**
+ *  Componentes de Editor de Texto
+ *  @module TextEditor
+ */
+
 import {
   Box,
   chakra,
@@ -7,18 +12,30 @@ import {
   FormLabel,
   Image,
   Input,
-  Skeleton,
   Text,
   VStack,
 } from "@chakra-ui/react";
 
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
 import "@deevotechvn/quill-mention/dist/quill.mention.min.css";
-import { useEffect } from "react";
 import { Logo } from "components/Logo";
 import _ from "lodash";
+import "quill/dist/quill.snow.css";
+import { useEffect } from "react";
+import { useQuill } from "react-quilljs";
 
+/**
+ * Componente de Editor de texto
+ * @method TextEditor
+ * @memberof module:TextEditor
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Function} setContent define o conteúdo do texto
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} placeholder placeholder do form interno
+ * @param {Object} loadOnEditor indica se será carregado ao editar
+ * @param {Object} parametros parâmetros utilizados para realizar sugestões e edições
+ * @returns {Component} componente de Editor de texto
+ */
 export function TextEditor({
   formControl: {
     trigger,
@@ -152,8 +169,9 @@ export function TextEditor({
               >
                 <Logo h={30} my={12} />
                 <Image
-                  src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
+                  src="https://www.bahia.ba.gov.br/wp-content/uploads/2023/01/LOGO-HEADER-COR_272x90px.png"
                   h={50}
+                  alt="BHGovLogo"
                 />
               </Flex>
               <Input

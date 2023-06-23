@@ -13,6 +13,7 @@ import {
   Th,
   Tr,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { Logo } from "components/Logo";
 import { DateTime } from "luxon";
@@ -21,14 +22,23 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { axios, getBackendRoute } from "services";
 import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
-export default function TemplateOficios({ entity, ...props }) {
+/**
+ * Renderiza o template de Lista de presença, baseado nos dados de evento
+ * @method ListaPresenca
+ * @memberof module:eventos
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
+export default function ListaPresenca({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
   const { asPath } = router;
   const session = useSession();
   const [eventoData, setEventoData] = useState([]);
   const { idEvento } = router.query;
+  const toast = useToast();
 
   useEffect(() => {
     if (idEvento) {
@@ -45,11 +55,9 @@ export default function TemplateOficios({ entity, ...props }) {
           }
         })
         .catch((error) => {
-          console.log(error.response.data);
-          throw new Error(error.response.data);
+          toast(exceptionHandler(error));
         });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idEvento]);
 
   return (
@@ -70,11 +78,12 @@ export default function TemplateOficios({ entity, ...props }) {
           onClick={() => window.print()}
           style={{ background: "pink" }}
         >
-          PRINT ME!
+          Clique para Imprimir
         </button>
         <Image
-          src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
+          src="https://www.bahia.ba.gov.br/wp-content/uploads/2023/01/LOGO-HEADER-COR_272x90px.png"
           h={50}
+          alt="BHGovLogo"
         />
       </chakra.div>
 
@@ -232,5 +241,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-TemplateOficios.auth = false;
-TemplateOficios.dashboard = false;
+ListaPresenca.auth = false;
+ListaPresenca.dashboard = false;

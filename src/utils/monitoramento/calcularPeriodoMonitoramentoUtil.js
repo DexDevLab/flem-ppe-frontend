@@ -1,6 +1,29 @@
 import { DateTime } from "luxon";
-import _ from "lodash";
 
+/**
+ * Calcula o Período de Monitoramento atual considerando a hora do sistema provida
+ * pelo Backend.
+ * @method calcularPeriodoMonitoramentoAtual
+ * @memberof module:monitoramento
+ * @param {DateTime} networkTime a hora atual do sistema provida pelo Backend.
+ * @returns {Object} Objeto contendo as informações sobre os períodos disponíveis e suas
+ * datas, baseado nas Regras de Negócio dos Trimestres do SMB:
+ *
+ * id - o ID do Objeto
+ *
+ * startDate - a data de início do período.
+ *
+ * cutDate - a Data de Corte para o período. Contratações até ANTES da Data de Corte devem ter
+ * seu monitoramento realizado dentro do período. Caso contrário, o primeiro monitoramento do
+ * beneficiário deve ser realizado no próximo período. O padrão da Data de Corte é o dia 10 do mês.
+ *
+ * endDate - a data de fim do período.
+ *
+ * label - como o período será exibido no Frontend.
+ *
+ * metaType - o tipo de submeta do SMB: 4.1 (Período Trimestral) ou 4.2 (Período Semestral).
+ *
+ */
 export const calcularPeriodoMonitoramentoAtual = (networkTime) => [
   {
     id: "1",
@@ -92,6 +115,32 @@ export const calcularPeriodoMonitoramentoAtual = (networkTime) => [
   },
 ];
 
+/**
+ * Calcula o Período de Monitoramento realizado considerando a hora do sistema provida
+ * pelo Backend.
+ * @method calcularPeriodoMonitoramentoRealizado
+ * @memberof module:monitoramento
+ * @param {DateTime} networkTime a hora atual do sistema provida pelo Backend.
+ * @param {DateTime} anoSelecionado o ano selecionado na interface. Como padrão, provê o ano atual
+ * baseado na hora e data atual do sistema provida pelo Backend.
+ * @returns {Object} Objeto contendo as informações sobre os períodos disponíveis e suas
+ * datas, baseado nas Regras de Negócio dos Trimestres do SMB:
+ *
+ * id - o ID do Objeto
+ *
+ * startDate - a data de início do período.
+ *
+ * cutDate - a Data de Corte para o período. Contratações até ANTES da Data de Corte devem ter
+ * seu monitoramento realizado dentro do período. Caso contrário, o primeiro monitoramento do
+ * beneficiário deve ser realizado no próximo período. O padrão da Data de Corte é o dia 10 do mês.
+ *
+ * endDate - a data de fim do período.
+ *
+ * label - como o período será exibido no Frontend.
+ *
+ * metaType - o tipo de submeta do SMB: 4.1 (Período Trimestral) ou 4.2 (Período Semestral).
+ *
+ */
 export const calcularPeriodoMonitoramentoRealizado = (
   networkTime,
   anoSelecionado = DateTime.fromISO(networkTime).year
@@ -104,24 +153,21 @@ export const calcularPeriodoMonitoramentoRealizado = (
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
         .startOf("day")
-        .plus({ year: todayDate.month === 12 ? -1 : 0 }),
+        .plus({ year: -1 }),
       cutDate: DateTime.fromFormat("10/12", "dd/MM")
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
         .endOf("day")
-        .plus({ year: todayDate.month === 12 ? -1 : 0 }),
+        .plus({ year: -1 }),
       endDate: DateTime.fromFormat("28/02", "dd/MM")
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
-        .endOf("day")
-        .plus({ year: todayDate.month === 12 ? 0 : 1 }),
-      label: `01/12/${
-        todayDate.month === 12 ? anoSelecionado - 1 : anoSelecionado
-      } a ${
+        .endOf("day"),
+      label: `01/12/${anoSelecionado - 1} a ${
         DateTime.fromISO(networkTime).setLocale("pt-BR").isInLeapYear
           ? "29/02"
           : "28/02"
-      }/${todayDate.month === 12 ? anoSelecionado : anoSelecionado + 1}`,
+      }/${anoSelecionado}`,
       metaType: "4.1",
     },
     {
@@ -181,22 +227,17 @@ export const calcularPeriodoMonitoramentoRealizado = (
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
         .startOf("day")
-        .plus({ year: todayDate.month === 12 ? -1 : 0 }),
+        .plus({ year: -1 }),
       cutDate: DateTime.fromFormat("10/12", "dd/MM")
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
         .endOf("day")
-        .plus({ year: todayDate.month === 12 ? -1 : 0 }),
+        .plus({ year: -1 }),
       endDate: DateTime.fromFormat("31/05", "dd/MM")
         .setLocale("pt-BR")
         .set({ year: anoSelecionado })
-        .plus({ year: todayDate.month === 12 ? 0 : 1 })
         .endOf("day"),
-      label: `01/12/${
-        todayDate.month === 12 ? anoSelecionado - 1 : anoSelecionado
-      } a 31/05/${
-        todayDate.month === 12 ? anoSelecionado : anoSelecionado + 1
-      }`,
+      label: `01/12/${anoSelecionado - 1} a 31/05/${anoSelecionado}`,
       metaType: "4.2",
     },
     {

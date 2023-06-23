@@ -1,3 +1,8 @@
+/**
+ * Componente de página de Modelos de Ofício
+ * @module templates-oficios
+ */
+
 import {
   Box,
   Button,
@@ -37,7 +42,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Página de Templates de Ofício
+ * @method TemplateOficios
+ * @memberof module:templates-oficios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function TemplateOficios({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -111,6 +124,7 @@ export default function TemplateOficios({ entity, ...props }) {
         Footer: false,
       },
     ],
+
     []
   );
 
@@ -153,19 +167,29 @@ export default function TemplateOficios({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Título já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Título de Ofício já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
           })
+        // .catch((error) => {
+        //   if (error.response.status === 409) {
+        //     formSubmit.onClose();
+        //     toast({
+        //       title: "Título já existe",
+        //       status: "error",
+        //       duration: 5000,
+        //       isClosable: false,
+        //       position,
+        //     });
+        //   } else {
+        //     throw new Error(error.response.data);
+        //   }
+        // })
       );
     }
     axios
@@ -187,19 +211,29 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           formSubmit.onClose();
-          toast({
-            title: "Título já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Título de Ofício já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   if (error.response.status === 409) {
+    //     formSubmit.onClose();
+    //     toast({
+    //       title: "Título já existe",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const onSubmitTipoOficio = (formData, e) => {
@@ -224,19 +258,29 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           tipoOficioFormSubmit.onClose();
-          toast({
-            title: `Tipo de ofício já existe`,
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Tipo de Ofício já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   if (error.response.status === 409) {
+    //     tipoOficioFormSubmit.onClose();
+    //     toast({
+    //       title: `Tipo de ofício já existe`,
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const deleteTemplateOficio = (formData) => {
@@ -267,9 +311,12 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   };
 
   useEffect(() => {
@@ -291,9 +338,12 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
 
     axios
       //.get(`/api/${entity}/editor-parametros`)
@@ -309,12 +359,13 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(fetchTableData.onClose);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     addTemplateOficio.isOpen,
     addTemplateOficio.isOpen,
@@ -337,9 +388,12 @@ export default function TemplateOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   }, [addTemplateOficio.isOpen, addTipoOficio.isOpen]);
 
   useEffect(() => {

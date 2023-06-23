@@ -1,23 +1,20 @@
-/**
- * Componente de Gráficos do Dashboard
- * @module Charts
- */
-
 import { Box, Center, Flex, Heading, HStack, Icon } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
-import { FiAlertCircle, FiAlertTriangle } from "react-icons/fi";
+import { FiAlertCircle } from "react-icons/fi";
 
 // Chama o import do gráfico sem Server-Side Render
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-/*************** WIP ******************/
 /**
- * Cria componente de gráfico.
+ * Componente tipo Pizza
  * @method PieChart
  * @memberof module:Charts
- * @returns componente de card.
+ * @param {Object} chartData os dados do gráfico
+ * @param {Object} label o nome e rótulo do gráfico
+ * @param {Object} elementSelect define o elemento do gráfico em foco
+ * @returns {Component} componente de gráfico
  */
 export function PieChart({
   chartData,

@@ -6,13 +6,23 @@ module.exports = (phase) => {
     async redirects() {
       return [
         {
-          source: "/:entity",
-          destination: "/:entity/dashboard",
+          source: "/index.html",
+          destination: "/api",
+          permanent: false,
+        },
+        {
+          source: "/docs",
+          destination: "/api",
           permanent: false,
         },
         {
           source: "/",
           destination: "/ba",
+          permanent: false,
+        },
+        {
+          source: "/:entity([a-z]{2})",
+          destination: "/:entity/dashboard",
           permanent: false,
         },
       ];

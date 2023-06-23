@@ -35,13 +35,14 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
 /**
  * Renderiza o cadastro de tipos de histórico
  * @method TipoHistorico
  * @memberof module:tipo-historico
  * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
- * @returns página renderizada
+ * @returns {Component} página renderizada
  */
 export default function TipoHistorico({ entity, ...props }) {
   const router = useRouter();
@@ -105,6 +106,7 @@ export default function TipoHistorico({ entity, ...props }) {
       id: "nome",
       label: "Nome",
       formControl: formTipoHistorico.control,
+      required: true,
     },
     {
       id: "tipoHist",
@@ -132,7 +134,7 @@ export default function TipoHistorico({ entity, ...props }) {
               formTipoHistorico.closeOverlay();
               setSelectedRow(null);
               toast({
-                title: "Tipo atualizado com sucesso",
+                title: "Tipo de Histórico atualizado com sucesso",
                 status: "success",
                 duration: 5000,
                 isClosable: false,
@@ -141,21 +143,31 @@ export default function TipoHistorico({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            console.log(error);
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Tipo já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              formTipoHistorico.setLoaded();
-              throw new Error(error.response.data);
+              exception.title = "Tipo de Histórico já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
           })
+        // .catch((error) => {
+        //   console.log(error);
+        //   if (error.response.status === 409) {
+        //     formSubmit.onClose();
+        //     toast({
+        //       title: "Tipo já existe",
+        //       status: "error",
+        //       duration: 5000,
+        //       isClosable: false,
+        //       position,
+        //     });
+        //   } else {
+        //     formTipoHistorico.setLoaded();
+        //     throw new Error(error.response.data);
+        //   }
+        // })
       );
     }
     axios
@@ -175,19 +187,28 @@ export default function TipoHistorico({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 409) {
-          toast({
-            title: "Tipo de Histórico já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          exception.title = "Tipo de Histórico já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       })
+      // .catch((error) => {
+      //   console.log(error);
+      //   if (error.response.status === 409) {
+      //     toast({
+      //       title: "Tipo de Histórico já existe",
+      //       status: "error",
+      //       duration: 5000,
+      //       isClosable: false,
+      //       position,
+      //     });
+      //   } else {
+      //     throw new Error(error.response.data);
+      //   }
+      // })
       .finally(formTipoHistorico.setLoaded);
   };
 
@@ -218,9 +239,12 @@ export default function TipoHistorico({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(formDeleteTipoHistorico.setLoaded);
   };
 
@@ -228,7 +252,6 @@ export default function TipoHistorico({ entity, ...props }) {
     if (entity === null) {
       router.push("/ba/dashboard");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -242,9 +265,12 @@ export default function TipoHistorico({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(fetchTableData.onClose);
   }, [formTipoHistorico.overlayIsOpen, formDeleteTipoHistorico.overlayIsOpen]);
 
@@ -364,9 +390,10 @@ export default function TipoHistorico({ entity, ...props }) {
 }
 
 /**
+ * Método de Contexto do Servidor. Visualiza e verifica a entity.
  * @method getServerSideProps
- * @param {*} context
- * @returns
+ * @param {*} context o contexto do SSR
+ * @returns {React.Props} Props
  */
 export async function getServerSideProps(context) {
   const {

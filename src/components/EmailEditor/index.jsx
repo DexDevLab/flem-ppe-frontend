@@ -1,25 +1,36 @@
+/**
+ * Componente de Editor de email
+ * @module EmailEditor
+ */
+
 import {
   Box,
-  chakra,
   Flex,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   Heading,
-  Image,
   Input,
-  Skeleton,
-  Text,
-  useBoolean,
-  VStack,
 } from "@chakra-ui/react";
 
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
 import "@deevotechvn/quill-mention/dist/quill.mention.min.css";
-import { useCallback, useEffect, useState } from "react";
 import { Logo } from "components/Logo";
+import "quill/dist/quill.snow.css";
+import { useEffect } from "react";
+import { useQuill } from "react-quilljs";
 
+/**
+ * Componente de Editor de Email
+ * @method EmailEditor
+ * @memberof module:EmailEditor
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Function} setContent define o conteúdo do email
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} placeholder placeholder do form interno
+ * @param {Object} loadOnEditor indica se será carregado ao editar
+ * @param {Object} parametros parâmetros utilizados para realizar sugestões e edições
+ * @returns {Component} componente de Editor de Email
+ */
 export function EmailEditor({
   formControl: {
     trigger,

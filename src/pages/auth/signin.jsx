@@ -9,8 +9,8 @@ import {
   Flex,
   Heading,
   Stack,
-  useBreakpointValue,
   useColorModeValue as mode,
+  useBreakpointValue,
   useToast,
 } from "@chakra-ui/react";
 import { InputBox } from "components/Inputs/InputBox";
@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { FiCheck } from "react-icons/fi";
 import { PulseLoader } from "react-spinners";
+import { exceptionHandler } from "utils/exceptionHandler";
 
 export default function Signin({ csrfToken, ...props }) {
   const [session, setSession] = useState({});
@@ -65,9 +66,12 @@ export default function Signin({ csrfToken, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(signInForm.setLoaded);
   };
 

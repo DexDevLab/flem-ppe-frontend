@@ -1,14 +1,19 @@
-import { forwardRef, useCallback, useEffect, useState } from "react";
+/**
+ * Componentes de TagInput
+ * @module TagInput
+ */
+
 import {
-  Input,
-  Wrap,
-  WrapItem,
-  useToken,
   Box,
   FormControl,
-  FormLabel,
   FormErrorMessage,
+  FormLabel,
+  Input,
+  useToken,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 
 import { maybeCall } from "./maybe";
 import ChakraTagInputTag from "./Tag";
@@ -76,6 +81,7 @@ export default forwardRef(function ChakraTagInput(
         )
       );
     },
+
     [tags, onTagsChange, onTagAdd]
   );
   const removeTag = useCallback(
@@ -96,6 +102,7 @@ export default forwardRef(function ChakraTagInput(
     [removeTag]
   );
   const onKeyDown = props.onKeyDown;
+
   const handleKeyDown = useCallback(
     (event) => {
       onKeyDown?.(event);
@@ -135,7 +142,6 @@ export default forwardRef(function ChakraTagInput(
       setValue(id, tags);
       trigger(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Box>

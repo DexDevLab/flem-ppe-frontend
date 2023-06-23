@@ -39,15 +39,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
 /**
- * Renderiza o cadastro de materiais
- * @method Cadastro
+ * Renderiza a tela de cadastro de materiais
+ * @method Materiais
  * @memberof module:materiais
  * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
- * @returns página renderizada
+ * @returns {Component} página renderizada
  */
-export default function Cadastro({ entity, ...props }) {
+export default function Materiais({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
   const { asPath } = router;
@@ -115,7 +116,7 @@ export default function Cadastro({ entity, ...props }) {
         Footer: false,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     []
   );
 
@@ -154,19 +155,27 @@ export default function Cadastro({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            console.log(error);
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Material já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Material já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
+            // console.log(error);
+            // if (error.response.status === 409) {
+            //   formSubmit.onClose();
+            //   toast({
+            //     title: "Material já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //     position,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
           })
       );
     }
@@ -189,19 +198,27 @@ export default function Cadastro({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error);
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           formSubmit.onClose();
-          toast({
-            title: "Material já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Material já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // console.log(error);
+        // if (error.response.status === 409) {
+        //   formSubmit.onClose();
+        //   toast({
+        //     title: "Material já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -233,8 +250,7 @@ export default function Cadastro({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -244,7 +260,6 @@ export default function Cadastro({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -258,11 +273,9 @@ export default function Cadastro({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addMaterial.isOpen, excluirMaterial.isOpen]);
 
   return (
@@ -406,9 +419,10 @@ export default function Cadastro({ entity, ...props }) {
 }
 
 /**
+ * Método de Contexto do Servidor. Visualiza e verifica a entity.
  * @method getServerSideProps
- * @param {*} context
- * @returns
+ * @param {*} context o contexto do SSR
+ * @returns Props
  */
 export async function getServerSideProps(context) {
   const {
@@ -433,5 +447,5 @@ export async function getServerSideProps(context) {
   };
 }
 
-Cadastro.auth = true;
-Cadastro.dashboard = true;
+Materiais.auth = true;
+Materiais.dashboard = true;

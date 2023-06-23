@@ -3,22 +3,21 @@
  *  @module Table
  */
 
-import { useEffect, useMemo } from "react";
 import {
-  Flex,
+  Box,
   Table as ChakraTable,
-  Thead,
-  Tr,
-  Th,
+  Flex,
   Tbody,
   Td,
   Tfoot,
-  Box,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-import _ from "lodash";
-import { useTable, useFilters, useRowSelect } from "react-table";
 import { FilterInput } from "components/Table/FilterInput";
-import { IndeterminateCheckbox } from "./components/IndeterminateCheckbox";
+import _ from "lodash";
+import { useEffect, useMemo } from "react";
+import { useFilters, useRowSelect, useTable } from "react-table";
 
 /**
  * Monta uma exibição de tabela.
@@ -27,7 +26,6 @@ import { IndeterminateCheckbox } from "./components/IndeterminateCheckbox";
  * @param {Object} columns colunas da tabela
  * @param {Object} data células e seus valores
  * @returns {Component} componente estilizado.
- *
  */
 export function Table({
   columns,
@@ -42,11 +40,13 @@ export function Table({
     }),
     []
   );
+
   /**
    * Monta o filtro da tabela. Um filtro que pode ser
    * usado em cada coluna para classificar ou buscar
    * informações
-   * @see FilterInput
+   * @method DefaultColumnFilter
+   * @memberof module:Table
    * @param {Object} filterValue valor de pesquisa do filtro
    * @param {Object} header nome do filtro
    * @param {Object} preFilteredRows define a quantidade de linhas
@@ -111,7 +111,7 @@ export function Table({
       updateMyData,
     },
     useFilters,
-    useRowSelect,
+    useRowSelect
     // (hooks) => {
     //   _.isFunction(setSelectedRows)
     //     ? hooks.visibleColumns.push((columns) => [
@@ -201,7 +201,7 @@ export function Table({
                 key={row.id}
                 {...row.getRowProps()}
                 bg={row.isSelected && "gray.200"}
-               transition="all .2s ease-in-out"
+                transition="all .2s ease-in-out"
               >
                 {row.cells.map((cell) => (
                   <Td

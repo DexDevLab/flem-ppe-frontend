@@ -1,5 +1,9 @@
+/**
+ * Componente de objetos de Menu
+ *  @module Menus
+ */
+
 import {
-  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -9,6 +13,14 @@ import {
 } from "@chakra-ui/react";
 import _ from "lodash";
 
+/**
+ * Componente de Botão de Menu
+ * @method MultipleSelectInput
+ * @memberof module:Inputs
+ * @param {Object} icon ícone para o Menu
+ * @param {Object} menuItems itens listados no Menu
+ * @returns {Component} componente de Botão de Menu
+ */
 export function MenuIconButton({ icon, menuItems, ...props }) {
   return (
     <Menu>

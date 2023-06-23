@@ -1,11 +1,33 @@
 import {
   PhoneNumberFormat,
-  PhoneNumberUtil,
   PhoneNumberType,
+  PhoneNumberUtil,
 } from "google-libphonenumber";
+import { exceptionHandler } from "./exceptionHandler";
 
 const phoneUtil = new PhoneNumberUtil();
 
+/**
+ * Utilitário que funciona como um handler para exceções tratadas
+ * e não-tratadas na aplicação. Realiza um console.log como padrão,
+ * tanto ao receber a Exceção quanto ao tratá-la e, no caso do Frontend,
+ * pode devolver intuitivamente ao usuário como um Toast (notificação).
+ * @method phoneNumberFixer
+ * @memberof module:utils
+ * @param {String} number o número de telefone
+ * @param {String} countryCode o código do país
+ * @returns {Object} Objeto contendo as informações sobre o número de
+ * telefone, como a seguir:
+ *
+ * formatted - o número com a formatação correta
+ *
+ * isValid - se o número é válido como número de telefone
+ *
+ * success - se a validação foi feita com sucesso ou houveram erros
+ *
+ * code - o código do país
+ *
+ */
 export const phoneNumberFixer = (number, countryCode) => {
   if (number === null) {
     return {
@@ -29,7 +51,7 @@ export const phoneNumberFixer = (number, countryCode) => {
         case PhoneNumberType.MOBILE && 13:
           return rawNumber.slice(3, 5) + 9 + rawNumber.slice(5, 14);
         default:
-          return rawNumber.slice(3)
+          return rawNumber.slice(3);
       }
       // if (phoneUtil.getNumberType(number) === PhoneNumberType.FIXED_LINE) {
       //   return rawNumber;
@@ -55,7 +77,7 @@ export const phoneNumberFixer = (number, countryCode) => {
     };
     return output;
   } catch (e) {
-    console.error(e);
+    exceptionHandler(e, 0);
     return { formatted: "", isValid: "", success: false, code: "" };
   }
 };

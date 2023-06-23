@@ -3,13 +3,13 @@
  * @module Breadcrumb
  */
 
-import { HStack, Icon } from "@chakra-ui/react";
-import { FiHome } from "react-icons/fi";
-import { useRouter } from "next/router";
 import { ChevronRightIcon } from "@chakra-ui/icons";
+import { HStack, Icon } from "@chakra-ui/react";
 import { BreadcrumbItem } from "components/Breadcrumb/BreadcrumbItem";
-import { useEffect, useState } from "react";
 import { breadcrumbData } from "data/breadcrumbData";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FiHome } from "react-icons/fi";
 
 /**
  * Cria uma Breadcrumb Bar. Ao observar as rotas, cria o mapeamento do caminho,
@@ -20,7 +20,7 @@ import { breadcrumbData } from "data/breadcrumbData";
  * @param {Object} divider Ícone utilizado como divisor do item de Breadcrumb
  * @param {String} entities Transmite a "entity" (divisão/localização do Projeto PPE)
  * para ser adicionada dentro da Breadcrumb como item de Breadcrumb
- * @returns componente da barra de Breadcrumb com itens de Breadcrumb já construídos
+ * @returns {Component} componente da barra de Breadcrumb com itens de Breadcrumb já construídos
  *
  */
 export const BreadcrumbBar = ({ divider = ChevronRightIcon, entities }) => {

@@ -1,8 +1,3 @@
-/**
- * Componente de Gráficos do Dashboard
- * @module Charts
- */
-
 import { Box, Flex, Heading, HStack } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
@@ -11,12 +6,15 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-/*************** WIP ******************/
 /**
- * Cria componente de gráfico.
+ * Componente de linha
  * @method LineChart
  * @memberof module:Charts
- * @returns componente de card.
+ * @param {Object} data os dados do gráfico
+ * @param {Object} label o nome e rótulo do gráfico
+ * @param {Boolean} horizontal se o gráfico é horizontal ou vertical
+ * @param {Object} elementSelect define o elemento do gráfico em foco
+ * @returns {Component} componente de gráfico
  */
 export function LineChart({
   data,

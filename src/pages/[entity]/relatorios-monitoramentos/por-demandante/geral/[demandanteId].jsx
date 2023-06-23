@@ -1,3 +1,8 @@
+/**
+ * Componente de monitoramento por demandante (geral).
+ * @module geral
+ */
+
 import {
   Box,
   Center,
@@ -6,25 +11,37 @@ import {
   Heading,
   Image,
   SimpleGrid,
-  Stack,
   Table,
   Tbody,
   Td,
   Text,
   Th,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { Logo } from "components/Logo";
-import { DateTime } from "luxon";
-import { useRouter } from "next/router";
-import { axios, filesAPIService } from "services/apiService";
 import _ from "lodash";
+import { DateTime } from "luxon";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import { Fragment, useEffect, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import { axios, filesAPIService, getBackendRoute } from "services/apiService";
+import { exceptionHandler } from "utils/exceptionHandler";
 
-export default function MonitoramentoPorBeneficiario({
+/**
+ * Renderiza a Página de Relatórios de Monitoramentos por Demandante
+ * @method MonitoramentoPorDemandanteGeral
+ * @memberof module:por-beneficiario
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @param {Object} monitoramentosFromBd a lista de monitoramentos a serem carregados
+ * @param {Object} demandInfo informações sobre o demandante
+ * @param {Object} dataInicio data de inicio do monitoramento
+ * @param {Object} dataFim data de fim do monitoramento
+ * @returns {Component} página renderizada
+ */
+export default function MonitoramentoPorDemandanteGeral({
   entity,
   monitoramentosFromBd,
   demandInfo,
@@ -37,6 +54,7 @@ export default function MonitoramentoPorBeneficiario({
   const router = useRouter();
   const { asPath } = router;
   const [monitoramentosComAnexos, setMonitoramentosComAnexos] = useState(null);
+  const toast = useToast();
 
   const getAnexos = async (param) => {
     try {
@@ -54,7 +72,7 @@ export default function MonitoramentoPorBeneficiario({
 
       return { ...fileDetails, data: Buffer.from(data) };
     } catch (error) {
-      throw new Error(error.message);
+      toast(exceptionHandler(error));
     }
   };
 
@@ -120,9 +138,10 @@ export default function MonitoramentoPorBeneficiario({
           onClick={() => window.print()}
           style={{ background: "pink" }}
         >
-          PRINT ME!
+          Clique para Imprimir
         </button>
         <Image
+          alt="LogoBA"
           src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
           h={50}
         />
@@ -167,30 +186,20 @@ export default function MonitoramentoPorBeneficiario({
                     {/* Capa Meta 4.1 */}
                     <chakra.div className="page">
                       <Box pt={20}>
-                      
-                          <Heading
-                            size="2xl"
-                            color="gray.700"
-                            textAlign="center"
-                          >
-                            Projeto Primeiro Emprego
-                          </Heading>
-                          <Heading
-                            size="xl"
-                            color="gray.700"
-                            py={12}
-                            textAlign="center"
-                          >
-                            Relatório de Monitoramento - Submeta 4.1
-                          </Heading>
-                          <Heading
-                            size="xl"
-                            color="gray.700"
-                            textAlign="center"
-                          >
-                            {`${demandInfo.sigla} - ${demandInfo.nome}`}
-                          </Heading>{" "}
-                    
+                        <Heading size="2xl" color="gray.700" textAlign="center">
+                          Projeto Primeiro Emprego
+                        </Heading>
+                        <Heading
+                          size="xl"
+                          color="gray.700"
+                          py={12}
+                          textAlign="center"
+                        >
+                          Relatório de Monitoramento - Submeta 4.1
+                        </Heading>
+                        <Heading size="xl" color="gray.700" textAlign="center">
+                          {`${demandInfo.sigla} - ${demandInfo.nome}`}
+                        </Heading>{" "}
                       </Box>
                     </chakra.div>
 
@@ -1152,6 +1161,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_monitoramentoComprovacao
                                                 .fileDetails.contentType
@@ -1201,6 +1211,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_autoAvaliacao.fileDetails
                                                 .contentType
@@ -1250,6 +1261,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_ambienteTrabalho.fileDetails
                                                 .contentType
@@ -1299,6 +1311,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_benefPontoFocal.fileDetails
                                                 .contentType
@@ -1329,28 +1342,20 @@ export default function MonitoramentoPorBeneficiario({
                     {/* Capa Meta 4.1 */}
                     <chakra.div className="page">
                       <Box pt={20}>
-                          <Heading
-                            size="2xl"
-                            color="gray.700"
-                            textAlign="center"
-                          >
-                            Projeto Primeiro Emprego
-                          </Heading>
-                          <Heading
-                            size="xl"
-                            color="gray.700"
-                            textAlign="center"
-                            py={12}
-                          >
-                            Relatório de Monitoramento - Submeta 4.2
-                          </Heading>
-                          <Heading
-                            size="xl"
-                            color="gray.700"
-                            textAlign="center"
-                          >
-                            {`${demandInfo.sigla} - ${demandInfo.nome}`}
-                          </Heading>
+                        <Heading size="2xl" color="gray.700" textAlign="center">
+                          Projeto Primeiro Emprego
+                        </Heading>
+                        <Heading
+                          size="xl"
+                          color="gray.700"
+                          textAlign="center"
+                          py={12}
+                        >
+                          Relatório de Monitoramento - Submeta 4.2
+                        </Heading>
+                        <Heading size="xl" color="gray.700" textAlign="center">
+                          {`${demandInfo.sigla} - ${demandInfo.nome}`}
+                        </Heading>
                       </Box>
                     </chakra.div>
 
@@ -2312,6 +2317,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_monitoramentoComprovacao
                                                 .fileDetails.contentType
@@ -2361,6 +2367,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_autoAvaliacao.fileDetails
                                                 .contentType
@@ -2410,6 +2417,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_ambienteTrabalho.fileDetails
                                                 .contentType
@@ -2459,6 +2467,7 @@ export default function MonitoramentoPorBeneficiario({
                                       ) && (
                                         <Center pt={28}>
                                           <Image
+                                            alt="fileThumb"
                                             src={`data:${
                                               file_benefPontoFocal.fileDetails
                                                 .contentType
@@ -2512,7 +2521,8 @@ export async function getServerSideProps(context) {
   const entityCheck = entities.find((ent) => ent === entity || undefined);
   try {
     const { data } = await axios.get(
-      `/api/${entity}/monitoramento/realizados`,
+      //`/api/${entity}/monitoramento/realizados`,
+      getBackendRoute(entity, "monitoramentos/realizados"),
       {
         params: {
           demandanteId,
@@ -2521,8 +2531,18 @@ export async function getServerSideProps(context) {
         },
       }
     );
+    // const { data: demandInfo } = await axios.get(
+    //   `/api/${entity}/demandantes/${demandanteId}`
+    // );
+
     const { data: demandInfo } = await axios.get(
-      `/api/${entity}/demandantes/${demandanteId}`
+      //`/api/${entity}/demandantes/`,
+      getBackendRoute(entity, "demandantes"),
+      {
+        params: {
+          demandanteId,
+        },
+      }
     );
 
     const monitoramentosFromBd = data.map(({ beneficiario, ...rest }) => ({
@@ -2545,10 +2565,9 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.log(error);
-    throw new Error(error);
+    throw exceptionHandler(error, 0);
   }
 }
 
-MonitoramentoPorBeneficiario.auth = false;
-MonitoramentoPorBeneficiario.dashboard = false;
+MonitoramentoPorDemandanteGeral.auth = false;
+MonitoramentoPorDemandanteGeral.dashboard = false;
