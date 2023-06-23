@@ -3,19 +3,18 @@
  */
 
 import { ChakraProvider, CSSReset } from "@chakra-ui/react";
-import { SessionProvider, useSession } from "next-auth/react";
-import { Global, css } from "@emotion/react";
-import Head from "next/head";
-import theme from "styles/theme";
+import { css, Global } from "@emotion/react";
 import { DashboardLayout } from "components/Layout/DashboardLayout";
+import { SessionProvider, useSession } from "next-auth/react";
+import Head from "next/head";
 import "styles/editor.css";
 import "styles/pagePrint.css";
-import { useRouter } from "next/router";
+import theme from "styles/theme";
 
 /**
  * Aplica estilo global sobre as páginas.
  * @param {Component}
- * @returns
+ * @returns {Component} componente de Estilo embutido no DOM.
  */
 const GlobalStyle = ({ children }) => (
   <>
@@ -78,10 +77,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps }, router }) {
 
 function Auth({ children }) {
   const env = process.env.NODE_ENV;
-  const { data: session, status } = useSession({ required: env  === "production" });
+  const { data: session, status } = useSession({
+    required: env === "production",
+  });
   const isUser = !!session?.user;
-  
-  if (isUser || env  === "development") {
+
+  if (isUser || env === "development") {
     return children;
   }
 

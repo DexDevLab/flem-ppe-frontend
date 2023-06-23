@@ -1,7 +1,11 @@
+/**
+ * Componente de página de Monitores
+ * @module monitores
+ */
+
 import {
   Box,
   Button,
-  Center,
   chakra,
   Divider,
   Flex,
@@ -13,8 +17,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  ScaleFade,
-  Spinner,
   Stack,
   Text,
   useBreakpointValue,
@@ -27,14 +29,24 @@ import { SelectInputBox } from "components/Inputs/SelectInputBox";
 import { MenuIconButton } from "components/Menus/MenuIconButton";
 import { Overlay } from "components/Overlay";
 import { Table } from "components/Table";
+import _ from "lodash";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
-import { axios, getBackendRoute } from "services";
+import { getBackendRoute } from "services";
+import { axios, axiosNoTimeout } from "services/apiService";
 import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Página de Cadastramento de Monitores
+ * @method Monitores
+ * @memberof module:monitores
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Monitores({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -44,12 +56,270 @@ export default function Monitores({ entity, ...props }) {
   const [monitoresFromBd, setMonitoresFromBd] = useState([]);
   const [colaboradoresFromRh, setColaboradoresFromRh] = useState([]);
   const [escritoriosFromBd, setEscritoriosFromBd] = useState([]);
+  const [demandantesFromBd, setDemandantesFromBd] = useState([]);
   const addMonitor = useDisclosure();
   const monitorFormSubmit = useDisclosure();
   const excluirMonitor = useDisclosure();
   const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
   const fetchTableData = useDisclosure();
+  const fetchRhApiData = useDisclosure();
   const toast = useToast();
+
+  const formMonitor = useForm({
+    mode: "onChange",
+  });
+
+  const { isValid: formMonitorValidation } = useFormState({
+    control: formMonitor.control,
+  });
+
+  const data = useMemo(() => monitoresFromBd, [monitoresFromBd]);
+
+  const colaboradoresOptions = useMemo(
+    () =>
+      _.isArray(colaboradoresFromRh) &&
+      colaboradoresFromRh.map(({ matriculaDominio, nome }) => ({
+        value: matriculaDominio.toString(),
+        label: `${matriculaDominio} - ${maskCapitalize(nome)}`,
+        isDisabled: monitoresFromBd.find(
+          ({ matricula }) => matricula === matriculaDominio
+        ),
+      })),
+    [colaboradoresFromRh, monitoresFromBd]
+  );
+
+  const demandantesOptions = useMemo(
+    () =>
+      demandantesFromBd
+        .filter(({ vagas }) => {
+          const escritoriosRegionaisIds = vagas.map(
+            ({ municipio: { escritorio_RegionalId } }) => escritorio_RegionalId
+          );
+          const idsEscritoriosSelecionados = formMonitor
+            .getValues("erAssoc")
+            ?.map(({ value }) => value);
+
+          return !_.isEmpty(
+            escritoriosRegionaisIds?.filter((id) =>
+              idsEscritoriosSelecionados?.includes(id)
+            )
+          );
+        })
+        .map(({ id, nome, sigla }) => ({
+          value: id,
+          label: `${sigla} - ${nome}`,
+        })),
+
+    [demandantesFromBd, selectedRow, formMonitor.watch("erAssoc")]
+  );
+
+  const onSubmitMonitor = (formData, e) => {
+    monitorFormSubmit.onOpen();
+    e.preventDefault();
+    if (selectedRow) {
+      formData.id = selectedRow.id;
+      return (
+        axios
+          //.put(`/api/${entity}/monitores`, formData)
+          .put(getBackendRoute(entity, "monitores"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              monitorFormSubmit.onClose();
+              addMonitor.onClose();
+              setSelectedRow(null);
+              formMonitor.reset({});
+              toast({
+                title: "Monitor(a) aualizado(a) com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+                position,
+              });
+            }
+          })
+          .catch((error) => {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
+              monitorFormSubmit.onClose();
+              exception.title = "Monitor(a) já existe";
+              exception.description = "";
+              exception.duration = 5000;
+            }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   monitorFormSubmit.onClose();
+            //   toast({
+            //     title: "Monitor(a) já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //     position,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
+          })
+      );
+    }
+
+    formData.monitor = colaboradoresFromRh.find(
+      ({ matriculaDominio }) => matriculaDominio === parseInt(formData.monitor)
+    );
+    axios
+      //.post(`/api/${entity}/monitores`, formData)
+      .post(getBackendRoute(entity, "monitores"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          monitorFormSubmit.onClose();
+          addMonitor.onClose();
+          setSelectedRow(null);
+          formMonitor.reset({});
+          toast({
+            title: "Monitor(a) adicionado(a) com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        }
+      })
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          monitorFormSubmit.onClose();
+          exception.title = "Monitor(a) já existe";
+          exception.description = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   monitorFormSubmit.onClose();
+        //   toast({
+        //     title: "Monitor(a) já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
+      });
+  };
+
+  const deleteMonitor = (formData) => {
+    monitorFormSubmit.onOpen();
+    axios
+      // .delete(`/api/${entity}/monitores`, {
+      //   params: {
+      //     id: formData.id,
+      //   },
+      // })
+      .delete(getBackendRoute(entity, "monitores"), {
+        params: {
+          id: formData.id,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          excluirMonitor.onClose();
+          monitorFormSubmit.onClose();
+          setSelectedRow(null);
+          toast({
+            title: "Monitor(a) excluído(a) com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  };
+
+  useEffect(() => {
+    if (entity === null) {
+      router.push("/ba/dashboard");
+    } else {
+      setTimeout(onLoad, 1000);
+    }
+  }, [asPath]);
+
+  useEffect(() => {
+    fetchRhApiData.onOpen();
+    // const deptosToExclude = [
+    //   1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010,
+    // ];
+    const deptosToGetColab = [125, 131];
+    axiosNoTimeout
+      // .get(`/api/${entity}/funcionarios/rh`, {
+      //   params: {
+      //     id_situacao: 1,
+      //     condition: "AND",
+      //   },
+      // })
+      .get(getBackendRoute(entity, "funcionarios"), {
+        params: {
+          codDepto: JSON.stringify(deptosToGetColab),
+          condition: "AND",
+          ativo: true,
+        },
+      })
+      .then(({ data: { query } }) => setColaboradoresFromRh(query))
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      .finally(fetchRhApiData.onClose);
+    axios
+      //.get(`/api/${entity}/escritorios-regionais`)
+      .get(getBackendRoute(entity, "escritorios-regionais"))
+      .then((res) => {
+        if (res.status === 200) {
+          setEscritoriosFromBd(
+            res.data.map(({ id, nome }) => ({
+              value: id,
+              label: nome,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+    axios
+      //.get(`/api/${entity}/demandantes`)
+      .get(getBackendRoute(entity, "demandantes"))
+      .then((res) => {
+        if (res.status === 200) {
+          // setDemandantesFromBd(
+          //   res.data.map(({ id, sigla, nome }) => ({
+          //     value: id,
+          //     label: `${sigla} - ${nome}`,
+          //   }))
+          // );
+          setDemandantesFromBd(res.data);
+        }
+      })
+      .catch((error) => toast(exceptionHandler(error)));
+  }, []);
+
+  useEffect(() => {
+    fetchTableData.onOpen();
+    axios
+      //.get(`/api/${entity}/monitores`)
+      .get(getBackendRoute(entity, "monitores"))
+      .then((res) => {
+        if (res.status === 200) {
+          setMonitoresFromBd(res.data);
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      .finally(fetchTableData.onClose);
+  }, [monitorFormSubmit.isOpen]);
 
   const columns = useMemo(
     () => [
@@ -91,6 +361,36 @@ export default function Monitores({ entity, ...props }) {
         Footer: false,
       },
       {
+        Header: "Demandantes Atribuídos",
+        accessor: ({ demandantes }) =>
+          demandantes.map(({ id, sigla, nome }) => ({
+            id,
+            nome: `${sigla} - ${nome}`,
+          })),
+        Cell: ({ value }) => (
+          <Box minW={200}>
+            {value.map(({ id, nome }, idx, arr) => {
+              if (idx < 3) {
+                return (
+                  <Text noOfLines={1} fontSize="sm" key={id}>
+                    {nome}
+                  </Text>
+                );
+              }
+              if (idx === 3) {
+                return (
+                  <Text noOfLines={1} fontSize="sm" key={id} as="i">
+                    e outros {arr.length - idx}...
+                  </Text>
+                );
+              }
+            })}
+          </Box>
+          // <>{JSON.stringify(value)}</>
+        ),
+        Footer: false,
+      },
+      {
         Header: "Ações",
         Cell: (props) => (
           <MenuIconButton
@@ -124,220 +424,16 @@ export default function Monitores({ entity, ...props }) {
         Footer: false,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     []
   );
 
-  const data = useMemo(() => monitoresFromBd, [monitoresFromBd]);
-
-  const formMonitor = useForm({
-    mode: "onChange",
-  });
-
-  const { isValid: formMonitorValidation } = useFormState({
-    control: formMonitor.control,
-  });
-
-  const onSubmitDemandante = (formData, e) => {
-    monitorFormSubmit.onOpen();
-    e.preventDefault();
-    if (selectedRow) {
-      formData.id = selectedRow.id;
-      return (
-        axios
-          //.put(`/api/${entity}/monitores`, formData)
-          .put(getBackendRoute(entity, "monitores"), formData)
-          .then((res) => {
-            if (res.status === 200) {
-              monitorFormSubmit.onClose();
-              addMonitor.onClose();
-              setSelectedRow(null);
-              formMonitor.reset({});
-              toast({
-                title: "Monitor(a) aualizado(a) com sucesso",
-                status: "success",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            }
-          })
-          .catch((error) => {
-            if (error.response.status === 409) {
-              monitorFormSubmit.onClose();
-              toast({
-                title: "Monitor(a) já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
-            }
-          })
-      );
-    }
-    axios
-      //.post(`/api/${entity}/monitores`, formData)
-      .post(getBackendRoute(entity, "monitores"), formData)
-      .then((res) => {
-        if (res.status === 200) {
-          monitorFormSubmit.onClose();
-          addMonitor.onClose();
-          setSelectedRow(null);
-          formMonitor.reset({});
-          toast({
-            title: "Monitor(a) adicionado(a) com sucesso",
-            status: "success",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 409) {
-          monitorFormSubmit.onClose();
-          toast({
-            title: "Monitor(a) já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
-        }
-      });
-  };
-
-  const deleteMonitor = (formData) => {
-    monitorFormSubmit.onOpen();
-    axios
-      // .delete(`/api/${entity}/monitores`, {
-      //   params: {
-      //     id: formData.id,
-      //   },
-      // })
-      .delete(getBackendRoute(entity, "monitores"), {
-        params: {
-          id: formData.id,
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          excluirMonitor.onClose();
-          monitorFormSubmit.onClose();
-          setSelectedRow(null);
-          toast({
-            title: "Monitor(a) excluído(a) com sucesso",
-            status: "success",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
-      });
-  };
-
-  useEffect(() => {
-    if (entity === null) {
-      router.push("/ba/dashboard");
-    } else {
-      setTimeout(onLoad, 1000);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [asPath]);
-
-  useEffect(() => {
-    fetchTableData.onOpen();
-    axios
-      //.get(`/api/${entity}/monitores`)
-      .get(getBackendRoute(entity, "monitores"))
-      .then((res) => {
-        if (res.status === 200) {
-          setMonitoresFromBd(res.data);
-          console.log(res.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
-      })
-      .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addMonitor.isOpen, excluirMonitor.isOpen]);
-
-  useEffect(() => {
-    const deptosToExclude = [
-      1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010,
-    ];
-    axios
-      // .get(`/api/${entity}/funcionarios/rh`, {
-      //   params: {
-      //     id_situacao: 1,
-      //     condition: "AND",
-      //   },
-      // })
-      .get(getBackendRoute(entity, "funcionarios"), {
-        params: {
-          id_situacao: 1,
-          condition: "AND",
-        },
-      })
-      .then((res) => {
-        if (res.status === 200) {
-          setColaboradoresFromRh(
-            res.data
-              .filter(
-                ({ func_id_departamento }) =>
-                  !deptosToExclude.includes(func_id_departamento)
-              )
-              .map(({ func_matricula, func_nome, ...func }) => ({
-                value: `${func_matricula}`,
-                label: `${func_matricula} - ${maskCapitalize(func_nome)}`,
-                ...func,
-                isDisabled: monitoresFromBd.find(
-                  ({ matricula }) => matricula === func_matricula
-                ),
-              }))
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
-      });
-    axios
-      //.get(`/api/${entity}/escritorios-regionais`)
-      .get(getBackendRoute(entity, "escritorios-regionais"))
-      .then((res) => {
-        if (res.status === 200) {
-          setEscritoriosFromBd(
-            res.data.map(({ id, nome, ...esc }) => ({
-              id: id,
-              value: id,
-              label: nome,
-              ...esc,
-            }))
-          );
-        }
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
-      });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [monitoresFromBd]);
-
   return (
     <>
-      <AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
+      <AnimatePresenceWrapper
+        router={router}
+        isLoaded={!fetchTableData.isOpen && !fetchRhApiData.isOpen}
+      >
         <Flex justifyContent="space-between" alignItems="center" pb={5}>
           <Heading fontSize="1.4rem">Monitores</Heading>
           <Button
@@ -349,20 +445,7 @@ export default function Monitores({ entity, ...props }) {
             Adicionar
           </Button>
         </Flex>
-        <ScaleFade in={fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
-          <Center h="90vh">
-            <Spinner
-              boxSize={20}
-              color="brand1.500"
-              thickness="4px"
-              speed=".5s"
-              emptyColor="gray.200"
-            />
-          </Center>
-        </ScaleFade>
-        <ScaleFade in={!fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
-          <Table data={data} columns={columns} />
-        </ScaleFade>
+        <Table data={data} columns={columns} />
       </AnimatePresenceWrapper>
 
       {/* Adicionar/Editor monitor Overlay  */}
@@ -379,7 +462,7 @@ export default function Monitores({ entity, ...props }) {
         closeButton
       >
         <chakra.form
-          onSubmit={formMonitor.handleSubmit(onSubmitDemandante)}
+          onSubmit={formMonitor.handleSubmit(onSubmitMonitor)}
           w="100%"
         >
           <Stack spacing={4}>
@@ -387,14 +470,16 @@ export default function Monitores({ entity, ...props }) {
               id="monitor"
               label="Colaborador"
               formControl={formMonitor}
-              options={colaboradoresFromRh}
+              options={colaboradoresOptions}
               defaultValue={
-                selectedRow &&
-                colaboradoresFromRh.filter(
-                  ({ value }) => parseInt(value) === selectedRow?.matricula
+                !_.isEmpty(selectedRow) &&
+                !_.isEmpty(colaboradoresOptions) &&
+                colaboradoresOptions.find(
+                  ({ value }) => parseInt(value) === selectedRow.matricula
                 )
               }
               isDisabled={selectedRow}
+              required={!selectedRow}
             />
             <SelectInputBox
               id="erAssoc"
@@ -409,7 +494,26 @@ export default function Monitores({ entity, ...props }) {
                   )
                 )
               }
-              required={false}
+              required={!selectedRow}
+              isMulti
+            />
+            <SelectInputBox
+              id="demandantesAssociados"
+              label="Demandantes Associados"
+              formControl={formMonitor}
+              options={demandantesOptions}
+              defaultValue={
+                selectedRow &&
+                Object.assign(
+                  Array.from(selectedRow.demandantes).map(
+                    ({ id, nome, sigla }) => ({
+                      value: id,
+                      label: `${sigla} - ${nome}`,
+                    })
+                  )
+                )
+              }
+              required={!selectedRow}
               isMulti
             />
           </Stack>

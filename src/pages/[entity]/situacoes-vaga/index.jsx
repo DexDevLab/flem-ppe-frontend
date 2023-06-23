@@ -1,3 +1,8 @@
+/**
+ * Componente de página de Situações de Vaga
+ * @module situacoes-vaga
+ */
+
 import {
   Box,
   Button,
@@ -34,7 +39,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Página de Ações da CR
+ * @method SituacoesDeVaga
+ * @memberof module:acoes
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function SituacoesDeVaga({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -107,7 +120,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         Footer: false,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     []
   );
 
@@ -154,19 +167,29 @@ export default function SituacoesDeVaga({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               situacaoFormSubmit.onClose();
-              toast({
-                title: "Situação de vaga já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Situação de Vaga já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
           })
+        // .catch((error) => {
+        //   if (error.response.status === 409) {
+        //     situacaoFormSubmit.onClose();
+        //     toast({
+        //       title: "Situação de vaga já existe",
+        //       status: "error",
+        //       duration: 5000,
+        //       isClosable: false,
+        //       position,
+        //     });
+        //   } else {
+        //     throw new Error(error.response.data);
+        //   }
+        // })
       );
     }
     axios
@@ -188,19 +211,29 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           situacaoFormSubmit.onClose();
-          toast({
-            title: "Situação de vaga já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Situação de Vaga já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   if (error.response.status === 409) {
+    //     situacaoFormSubmit.onClose();
+    //     toast({
+    //       title: "Situação de vaga já existe",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const onSubmitTipoSituacao = (formData, e) => {
@@ -225,19 +258,29 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           tipoSituacaoFormSubmit.onClose();
-          toast({
-            title: "Tipo de situação já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Tipo de situação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   if (error.response.status === 409) {
+    //     tipoSituacaoFormSubmit.onClose();
+    //     toast({
+    //       title: "Tipo de situação já existe",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const deleteSituacaoVaga = (formData) => {
@@ -268,9 +311,12 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   };
 
   useEffect(() => {
@@ -279,7 +325,6 @@ export default function SituacoesDeVaga({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -293,11 +338,13 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addSituacao.isOpen, addSituacao.isOpen, excluir.isOpen]);
 
   useEffect(() => {
@@ -305,7 +352,6 @@ export default function SituacoesDeVaga({ entity, ...props }) {
       //.get(`/api/${entity}/situacoes-vaga/tipos`)
       .get(getBackendRoute(entity, "situacoes-vaga/tipos"))
       .then((res) => {
-        console.log(res.data);
         if (res.status === 200) {
           setTiposSituacoesFromBd(
             res.data.map((eixo) => ({
@@ -317,9 +363,12 @@ export default function SituacoesDeVaga({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   }, [addSituacao.isOpen, addTipoSituacao.isOpen]);
 
   return (
@@ -389,7 +438,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
                   }
                 />
               </Box>
-              <Box alignSelf="flex-start">
+              {/* <Box alignSelf="flex-start">
                 <Button
                   p={2}
                   mt={8}
@@ -399,7 +448,7 @@ export default function SituacoesDeVaga({ entity, ...props }) {
                 >
                   <Icon as={FiPlus} boxSize={6} />
                 </Button>
-              </Box>
+              </Box> */}
             </HStack>
             <InputBox
               id="situacao"

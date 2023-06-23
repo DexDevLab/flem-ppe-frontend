@@ -1,9 +1,13 @@
+/**
+ *  Componentes de Visualizador de Texto
+ *  @module TextViewer
+ */
+
 import {
   Box,
   chakra,
   Flex,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   Image,
   Input,
@@ -12,12 +16,25 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.bubble.css";
 import "@deevotechvn/quill-mention/dist/quill.mention.min.css";
-import { useEffect } from "react";
 import { Logo } from "components/Logo";
+import "quill/dist/quill.bubble.css";
+import { useEffect } from "react";
+import { useQuill } from "react-quilljs";
 
+/**
+ * Componente de Visualizador de Texto
+ * @method TextViewer
+ * @memberof module:TextViewer
+ * @param {Function} setContent define o conteúdo do texto
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} placeholder placeholder do form interno
+ * @param {Object} validate parâmetros de validação da entrada
+ * @param {Function} onChange indica mudança de estado ao alterar o valor
+ * @param {Object} value valor do objeto
+ * @returns {Component} componente estilizado
+ */
 export function TextViewer({
   setContent,
   id,
@@ -104,6 +121,7 @@ export function TextViewer({
               >
                 <Logo h={30} my={12} />
                 <Image
+                  alt="LogoBA"
                   src="https://www.planserv.ba.gov.br/wp-content/uploads/2022/07/Brasa%E2%95%A0ao-Horizontal_Cor.png"
                   h={50}
                 />

@@ -1,0 +1,1457 @@
+<!DOCTYPE html><html lang="en" style="font-size:16px"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="author" content="https://github.com/DexDevLab"><meta name="author" content="https://github.com/rodsl"><meta name="description" content="Aplicação FrontEnd para o Portal Projeto Primeiro Emprego, da FLEM"><script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"><title>Source: pages/[entity]/eventos/index.jsx</title><!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]--><script src="scripts/third-party/hljs.js" defer="defer"></script><script src="scripts/third-party/hljs-line-num.js" defer="defer"></script><script src="scripts/third-party/popper.js" defer="defer"></script><script src="scripts/third-party/tippy.js" defer="defer"></script><script src="scripts/third-party/tocbot.min.js"></script><script>var baseURL="/",locationPathname="";baseURL=(locationPathname=document.location.pathname).substr(0,locationPathname.lastIndexOf("/")+1)</script><link rel="stylesheet" href="styles/clean-jsdoc-theme.min.css"><svg aria-hidden="true" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display:none"><defs><symbol id="copy-icon" viewbox="0 0 488.3 488.3"><g><path d="M314.25,85.4h-227c-21.3,0-38.6,17.3-38.6,38.6v325.7c0,21.3,17.3,38.6,38.6,38.6h227c21.3,0,38.6-17.3,38.6-38.6V124    C352.75,102.7,335.45,85.4,314.25,85.4z M325.75,449.6c0,6.4-5.2,11.6-11.6,11.6h-227c-6.4,0-11.6-5.2-11.6-11.6V124    c0-6.4,5.2-11.6,11.6-11.6h227c6.4,0,11.6,5.2,11.6,11.6V449.6z"/><path d="M401.05,0h-227c-21.3,0-38.6,17.3-38.6,38.6c0,7.5,6,13.5,13.5,13.5s13.5-6,13.5-13.5c0-6.4,5.2-11.6,11.6-11.6h227    c6.4,0,11.6,5.2,11.6,11.6v325.7c0,6.4-5.2,11.6-11.6,11.6c-7.5,0-13.5,6-13.5,13.5s6,13.5,13.5,13.5c21.3,0,38.6-17.3,38.6-38.6    V38.6C439.65,17.3,422.35,0,401.05,0z"/></g></symbol><symbol id="search-icon" viewBox="0 0 512 512"><g><g><path d="M225.474,0C101.151,0,0,101.151,0,225.474c0,124.33,101.151,225.474,225.474,225.474    c124.33,0,225.474-101.144,225.474-225.474C450.948,101.151,349.804,0,225.474,0z M225.474,409.323    c-101.373,0-183.848-82.475-183.848-183.848S124.101,41.626,225.474,41.626s183.848,82.475,183.848,183.848    S326.847,409.323,225.474,409.323z"/></g></g><g><g><path d="M505.902,476.472L386.574,357.144c-8.131-8.131-21.299-8.131-29.43,0c-8.131,8.124-8.131,21.306,0,29.43l119.328,119.328    c4.065,4.065,9.387,6.098,14.715,6.098c5.321,0,10.649-2.033,14.715-6.098C514.033,497.778,514.033,484.596,505.902,476.472z"/></g></g></symbol><symbol id="font-size-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11.246 15H4.754l-2 5H.6L7 4h2l6.4 16h-2.154l-2-5zm-.8-2L8 6.885 5.554 13h4.892zM21 12.535V12h2v8h-2v-.535a4 4 0 1 1 0-6.93zM19 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></symbol><symbol id="add-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M11 11V5h2v6h6v2h-6v6h-2v-6H5v-2z"/></symbol><symbol id="minus-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M5 11h14v2H5z"/></symbol><symbol id="dark-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></symbol><symbol id="light-theme-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></symbol><symbol id="reset-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.537 19.567A9.961 9.961 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10c0 2.136-.67 4.116-1.81 5.74L17 12h3a8 8 0 1 0-2.46 5.772l.997 1.795z"/></symbol><symbol id="down-icon" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.7803 6.21967C13.0732 6.51256 13.0732 6.98744 12.7803 7.28033L8.53033 11.5303C8.23744 11.8232 7.76256 11.8232 7.46967 11.5303L3.21967 7.28033C2.92678 6.98744 2.92678 6.51256 3.21967 6.21967C3.51256 5.92678 3.98744 5.92678 4.28033 6.21967L8 9.93934L11.7197 6.21967C12.0126 5.92678 12.4874 5.92678 12.7803 6.21967Z"></path></symbol><symbol id="codepen-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M16.5 13.202L13 15.535v3.596L19.197 15 16.5 13.202zM14.697 12L12 10.202 9.303 12 12 13.798 14.697 12zM20 10.869L18.303 12 20 13.131V10.87zM19.197 9L13 4.869v3.596l3.5 2.333L19.197 9zM7.5 10.798L11 8.465V4.869L4.803 9 7.5 10.798zM4.803 15L11 19.131v-3.596l-3.5-2.333L4.803 15zM4 13.131L5.697 12 4 10.869v2.262zM2 9a1 1 0 0 1 .445-.832l9-6a1 1 0 0 1 1.11 0l9 6A1 1 0 0 1 22 9v6a1 1 0 0 1-.445.832l-9 6a1 1 0 0 1-1.11 0l-9-6A1 1 0 0 1 2 15V9z"/></symbol><symbol id="close-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></symbol><symbol id="menu-icon" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0z"/><path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z"/></symbol></defs></svg></head><body class="dark" data-theme="dark"><div class="sidebar-container"><div class="sidebar" id="sidebar"><a href="/" class="sidebar-title sidebar-title-anchor">FLEM PPE Frontend - Documentação</a><div class="sidebar-items-container"><div class="sidebar-section-title with-arrow" data-isopen="false" id="MpaAFMAiYRORNJnab3u9O"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-acoes.html">acoes</a></div><div class="sidebar-section-children"><a href="module-AnimatePresenceWrapper.html">AnimatePresenceWrapper</a></div><div class="sidebar-section-children"><a href="module-api.html">api</a></div><div class="sidebar-section-children"><a href="module-auth.html">auth</a></div><div class="sidebar-section-children"><a href="module-beneficiarios.html">beneficiarios</a></div><div class="sidebar-section-children"><a href="module-Breadcrumb.html">Breadcrumb</a></div><div class="sidebar-section-children"><a href="module-Buttons.html">Buttons</a></div><div class="sidebar-section-children"><a href="module-Cards.html">Cards</a></div><div class="sidebar-section-children"><a href="module-Charts.html">Charts</a></div><div class="sidebar-section-children"><a href="module-colaboradores-cr.html">colaboradores-cr</a></div><div class="sidebar-section-children"><a href="module-comunicados.html">comunicados</a></div><div class="sidebar-section-children"><a href="module-dashboard.html">dashboard</a></div><div class="sidebar-section-children"><a href="module-demandantes.html">demandantes</a></div><div class="sidebar-section-children"><a href="module-Dropzone.html">Dropzone</a></div><div class="sidebar-section-children"><a href="module-EmailEditor.html">EmailEditor</a></div><div class="sidebar-section-children"><a href="module-envio-oficios.html">envio-oficios</a></div><div class="sidebar-section-children"><a href="module-escritorios-regionais.html">escritorios-regionais</a></div><div class="sidebar-section-children"><a href="module-eventos.html">eventos</a></div><div class="sidebar-section-children"><a href="module-Form.html">Form</a></div><div class="sidebar-section-children"><a href="module-geral.html">geral</a></div><div class="sidebar-section-children"><a href="module-Icons.html">Icons</a></div><div class="sidebar-section-children"><a href="module-importar.html">importar</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Layout.html">Layout</a></div><div class="sidebar-section-children"><a href="module-LDAPService.html">LDAPService</a></div><div class="sidebar-section-children"><a href="module-Logo.html">Logo</a></div><div class="sidebar-section-children"><a href="module-materiais.html">materiais</a></div><div class="sidebar-section-children"><a href="module-Menus.html">Menus</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitores.html">monitores</a></div><div class="sidebar-section-children"><a href="module-Navbar.html">Navbar</a></div><div class="sidebar-section-children"><a href="module-Overlay.html">Overlay</a></div><div class="sidebar-section-children"><a href="module-por-beneficiario.html">por-beneficiario</a></div><div class="sidebar-section-children"><a href="module-relatorios-monitoramentos.html">relatorios-monitoramentos</a></div><div class="sidebar-section-children"><a href="module-Sidebar.html">Sidebar</a></div><div class="sidebar-section-children"><a href="module-sintese.html">sintese</a></div><div class="sidebar-section-children"><a href="module-situacoes-vaga.html">situacoes-vaga</a></div><div class="sidebar-section-children"><a href="module-Table.html">Table</a></div><div class="sidebar-section-children"><a href="module-TagInput.html">TagInput</a></div><div class="sidebar-section-children"><a href="module-templates-oficios.html">templates-oficios</a></div><div class="sidebar-section-children"><a href="module-TextEditor.html">TextEditor</a></div><div class="sidebar-section-children"><a href="module-TextViewer.html">TextViewer</a></div><div class="sidebar-section-children"><a href="module-tipos-historico.html">tipos-historico</a></div><div class="sidebar-section-children"><a href="module-Toast.html">Toast</a></div><div class="sidebar-section-children"><a href="module-unidades-lotacao.html">unidades-lotacao</a></div><div class="sidebar-section-children"><a href="module-utils.html">utils</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="fUaN3yy2iestnezcsv-O8"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#allowCors">allowCors</a></div><div class="sidebar-section-children"><a href="global.html#authDb">authDb</a></div><div class="sidebar-section-children"><a href="global.html#authUserQa">authUserQa</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#GlobalStyle">GlobalStyle</a></div><div class="sidebar-section-children"><a href="global.html#MyApp">MyApp</a></div><div class="sidebar-section-children"><a href="global.html#normalizeString">normalizeString</a></div><div class="sidebar-section-children"><a href="global.html#toastData">toastData</a></div><div class="sidebar-section-children"><a href="global.html#variants">variants</a></div></div></div></div></div><div class="navbar-container" id="VuAckcnZhf"><nav class="navbar"><div class="navbar-left-items"><div class="some-class navbar-item"><a id="some-id" href="https://frtechnologies.com.br" target="_blank">Website</a></div><div class="some-class navbar-item"><a id="some-id" href="https://github.com/frtechdev/flem-ppe-frontend/" target="_blank">Github</a></div></div><div class="navbar-right-items"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div><nav></nav></nav></div><div class="toc-container"><div class="toc-content"><span class="bold">On this page</span><div id="eed4d2a0bfd64539bb9df78095dec881"></div></div></div><div class="body-wrapper"><div class="main-content"><div class="main-wrapper"><section id="source-page" class="source-page"><header><h1 id="title" class="has-anchor">pages_[entity]_eventos_index.jsx</h1></header><article><pre class="prettyprint source lang-js"><code>/**
+ * Componente de página de eventos
+ * @module eventos
+ */
+
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Box,
+  Button,
+  Center,
+  chakra,
+  Collapse,
+  Divider,
+  Fade,
+  Flex,
+  FormLabel,
+  Heading,
+  HStack,
+  Icon,
+  InputRightElement,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  ScaleFade,
+  Spinner,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+  useToast,
+  VStack,
+} from "@chakra-ui/react";
+import { AnimatePresenceWrapper } from "components/AnimatePresenceWrapper";
+import { SwitchButton } from "components/Buttons/SwitchButton";
+import { EmailEditor } from "components/EmailEditor";
+import { CheckboxInput } from "components/Inputs/CheckboxInput";
+import { InputBox } from "components/Inputs/InputBox";
+import { MaskedInputBox } from "components/Inputs/MaskedInputBox";
+import { SelectInputBox } from "components/Inputs/SelectInputBox";
+import ChakraTagInput from "components/Inputs/TagInput";
+import { MenuIconButton } from "components/Menus/MenuIconButton";
+import { Overlay } from "components/Overlay";
+import { Table } from "components/Table";
+import download from "downloadjs";
+import { useCustomForm } from "hooks";
+import { DateTime } from "luxon";
+import { cepMask, cpfMask } from "masks-br";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { useForm, useFormState } from "react-hook-form";
+import { BsClipboardCheck } from "react-icons/bs";
+import {
+  FiEdit,
+  FiMoreHorizontal,
+  FiPlus,
+  FiTrash2,
+  FiUserCheck,
+} from "react-icons/fi";
+import { axios, getBackendRoute } from "services";
+import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
+
+/**
+ * Renderiza a tela de Eventos e permite seu gerenciamento
+ * @memberof module:eventos
+ * @method Eventos
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
+export default function Eventos({ entity, ...props }) {
+  const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
+  const router = useRouter();
+  const { asPath } = router;
+  const session = useSession();
+  const [selectedRow, setSelectedRow] = useState();
+  const [cepData, setCepData] = useState([]);
+  const [eventosFromBd, setEventosFromBd] = useState([]);
+  const [locaisEventosFromBd, setLocaisEventosFromBd] = useState([]);
+  const [tiposEventoFromBd, setTiposEventoFromBd] = useState([]);
+  const [municipiosFromBd, setMunicipiosFromBd] = useState([]);
+  const [demandantesFromBd, setDemandantesFromBd] = useState([]);
+  const [colaboradoresFromRh, setColaboradoresFromRh] = useState([]);
+  const [beneficiariosFromRh, setBeneficiariosFromRh] = useState([]);
+  const [parametrosFromBd, setParametrosFromBd] = useState([]);
+  const [emailsRemetentesFromBd, setEmailsRemetentesFromBd] = useState([]);
+  const [emailAlerts, emailAlertsState] = useState(false);
+  const [criarAcaoCR, setCriarAcaoCR] = useState(false);
+  const [benefLote, setBenefLote] = useState(false);
+  const [modalidade, setModalidade] = useState("");
+  const [nomeEvento, setNomeEvento] = useState("");
+  const tipoEventoFormSubmit = useDisclosure();
+  const downloadingFile = useDisclosure();
+  const addEvento = useDisclosure();
+  const formSubmit = useDisclosure();
+  const localEventoFormSubmit = useDisclosure();
+  const addLocalFormSubmit = useDisclosure();
+  const addLoca = useDisclosure();
+  const excluirEventoModal = useDisclosure();
+  const addTipoEvento = useDisclosure();
+  const addLocalEvento = useDisclosure();
+  const buscaCep = useDisclosure();
+  const position = useBreakpointValue({ base: "bottom", sm: "top-right" });
+  const fetchTableData = useDisclosure();
+  const toast = useToast({
+    position,
+  });
+  const informarPresenca = useCustomForm();
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: "Nome",
+        accessor: "nome",
+        Cell: ({ value }) => &lt;Box minW={200}>{value}&lt;/Box>,
+        Footer: false,
+      },
+      {
+        Header: "Data",
+        accessor: "data",
+        Cell: ({ value }) => (
+          &lt;Box minW={150}>
+            {DateTime.fromISO(value).toLocaleString(DateTime.DATETIME_MED)}
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "Beneficiários associados",
+        accessor: "benefAssoc",
+        Cell: ({ value }) => (
+          &lt;Box minW={200}>
+            {value.map((benef, idx, arr) => {
+              if (idx &lt; 3) {
+                return (
+                  &lt;Text noOfLines={1} fontSize="sm" key={benef.id}>
+                    {maskCapitalize(benef.nome)}
+                  &lt;/Text>
+                );
+              }
+              if (idx === 3) {
+                return (
+                  &lt;Text noOfLines={1} fontSize="sm" key={benef.id} as="i">
+                    e outros {arr.length - idx}...
+                  &lt;/Text>
+                );
+              }
+            })}
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "Local",
+        accessor: "modalidade",
+        Cell: ({ row: { original }, value }) => (
+          &lt;Box minW={200}>
+            {value === "videoconferencia" &amp;&amp; "Videoconferência"}
+            {value === "presencial" &amp;&amp; original.localEvento.nome}
+          &lt;/Box>
+        ),
+        Footer: false,
+      },
+      {
+        Header: "Ações",
+        Cell: (props) => (
+          &lt;MenuIconButton
+            icon={&lt;FiMoreHorizontal />}
+            menuItems={[
+              {
+                menuGroupLabel: null,
+                menuGroupButtons: [
+                  {
+                    text: "Gerar Lista de Presença",
+                    icon: &lt;BsClipboardCheck />,
+                    onClick: () => {
+                      downloadListaPresenca(props.row.original);
+                    },
+                    disabled: props.row.original.benefAssoc.length === 0,
+                  },
+                  {
+                    text: "Informar presença",
+                    icon: &lt;FiUserCheck />,
+                    onClick: () => {
+                      setSelectedRow(props.row.original);
+                      informarPresenca.openOverlay();
+                    },
+                    disabled: props.row.original.benefAssoc.length === 0,
+                  },
+
+                  {
+                    text: "Editar",
+                    icon: &lt;FiEdit />,
+                    onClick: () => {
+                      setSelectedRow(props.row.original);
+                      addEvento.onOpen();
+                    },
+                  },
+                  {
+                    text: "Excluir",
+                    icon: &lt;FiTrash2 />,
+                    onClick: () => {
+                      setSelectedRow(props.row.original);
+                      excluirEventoModal.onOpen();
+                    },
+                  },
+                ],
+              },
+            ]}
+            colorScheme="brand1"
+          />
+        ),
+        Footer: false,
+      },
+    ],
+
+    []
+  );
+
+  const data = useMemo(() => eventosFromBd, [eventosFromBd]);
+
+  const formAddEvento = useForm({
+    mode: "onChange",
+  });
+
+  const formLocalEvento = useForm({
+    mode: "onChange",
+  });
+
+  const formTipoEvento = useForm({
+    mode: "onChange",
+  });
+
+  const { isValid: formAddEventoValidation } = useFormState({
+    control: formAddEvento.control,
+  });
+
+  const { isValid: formLocalEventoValidation } = useFormState({
+    control: formLocalEvento.control,
+  });
+
+  const { isValid: formTipoEventoValidation } = useFormState({
+    control: formTipoEvento.control,
+  });
+
+  const onSubmitAddEvento = (formData, e) => {
+    formSubmit.onOpen();
+    e.preventDefault();
+    if (selectedRow) {
+      formData.id = selectedRow.id;
+      formData.acao_CrId = selectedRow.acao_Cr[0]?.id;
+      formData.comunicado_Id = selectedRow.comunicado[0]?.id;
+
+      return (
+        axios
+          //.put(`/api/${entity}/eventos`, formData)
+          .put(getBackendRoute(entity, "eventos"), formData)
+          .then((res) => {
+            if (res.status === 200) {
+              formSubmit.onClose();
+              addEvento.onClose();
+              setSelectedRow(null);
+              formAddEvento.reset({});
+              toast({
+                title: "Evento atualizado com sucesso",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+              });
+            }
+          })
+          .catch((error) => {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
+              formSubmit.onClose();
+              exception.title = "Evento já existe";
+              exception.description = "";
+              exception.duration = 5000;
+            }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   formSubmit.onClose();
+            //   toast({
+            //     title: "Evento já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
+          })
+      );
+    }
+    axios
+      //.post(`/api/${entity}/eventos`, formData)
+      .post(getBackendRoute(entity, "eventos"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          formSubmit.onClose();
+          addEvento.onClose();
+          setSelectedRow(null);
+          formAddEvento.reset({});
+          toast({
+            title: "Evento adicionado com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+        }
+      })
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          formSubmit.onClose();
+          exception.title = "Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
+      });
+  };
+
+  const onSubmitLocalEvento = (formData, e) => {
+    e.preventDefault();
+    localEventoFormSubmit.onOpen();
+    axios
+      //.post(`/api/${entity}/eventos/locais`, formData)
+      .post(getBackendRoute(entity, "eventos/locais"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          localEventoFormSubmit.onClose();
+          addLocalEvento.onClose();
+          formLocalEvento.reset({});
+          toast({
+            title: "Local de Evento adicionado com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+        }
+      })
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          localEventoFormSubmit.onClose();
+          exception.title = "Local de Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   localEventoFormSubmit.onClose();
+        //   toast({
+        //     title: `Local já existe`,
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
+      });
+  };
+
+  const onSubmitTipoEvento = (formData, e) => {
+    e.preventDefault();
+    tipoEventoFormSubmit.onOpen();
+    axios
+      //.post(`/api/${entity}/eventos/tipos`, formData)
+      .post(getBackendRoute(entity, "eventos/tipos"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          tipoEventoFormSubmit.onClose();
+          addTipoEvento.onClose();
+          setSelectedRow(null);
+          formTipoEvento.reset({});
+          toast({
+            title: "Tipo de evento adicionado com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+        }
+      })
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          tipoEventoFormSubmit.onClose();
+          exception.title = "Tipo de Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   tipoEventoFormSubmit.onClose();
+        //   toast({
+        //     title: "Tipo já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
+      });
+  };
+
+  const onSubmitInformarPresenca = (formData, e) => {
+    e.preventDefault();
+    informarPresenca.setLoading();
+    formData.eventoId = selectedRow.id;
+    axios
+      //.post(`/api/${entity}/eventos/presenca`, formData)
+      .post(getBackendRoute(entity, "eventos/presenca"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          informarPresenca.closeOverlay();
+          setSelectedRow(null);
+          toast({
+            title: "Presença em evento informada com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      .finally(informarPresenca.setLoaded);
+  };
+
+  const excluirEvento = (formData) => {
+    formSubmit.onOpen();
+    axios
+      // .delete(`/api/${entity}/oficios`, {
+      //   params: {
+      //     id: formData.id,
+      //   },
+      // })
+      .delete(getBackendRoute(entity, "oficios"), {
+        params: {
+          id: formData.id,
+        },
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          excluirEventoModal.onClose();
+          formSubmit.onClose();
+          setSelectedRow(null);
+          toast({
+            title: "Evento excluído com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  };
+
+  const downloadListaPresenca = ({ id, nome }) => {
+    downloadingFile.onOpen();
+    axios
+      // .get(`/api/${entity}/reports`, {
+      //   params: {
+      //     id,
+      //     reportUrl: "/eventos/lista-presenca",
+      //   },
+      //   responseType: "blob",
+      // })
+      .get(getBackendRoute(entity, "reports"), {
+        params: {
+          idEvento: id,
+          reportUrl: "eventos/lista-presenca",
+        },
+        responseType: "blob",
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          const content = res.headers["content-type"];
+          toast({
+            title: "Lista gerada com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+          });
+          download(res.data, `PPE_LISTA_PRESENCA_${nome}.pdf`, content);
+          downloadingFile.onClose();
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  };
+
+  useEffect(() => {
+    if (entity === null) {
+      router.push("/ba/dashboard");
+    } else {
+      setTimeout(onLoad, 1000);
+    }
+  }, [asPath]);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/colaboradores-cr`)
+      .get(getBackendRoute(entity, "colaboradores-cr"))
+      .then((res) => {
+        if (res.status === 200) {
+          setColaboradoresFromRh(
+            res.data.map(({ id, nome }) => ({
+              value: id,
+              label: maskCapitalize(nome),
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/beneficiarios`)
+      .get(getBackendRoute(entity, "beneficiarios"))
+      .then((res) => {
+        if (res.status === 200) {
+          setBeneficiariosFromRh(
+            res.data
+              .map(({ matriculaFlem, nome, cpf }) => ({
+                value: matriculaFlem,
+                label: `${matriculaFlem} - ` + maskCapitalize(nome),
+                cpf: cpf,
+              }))
+              .filter((item) => !_.isNull(item.value))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchTableData.onOpen();
+    axios
+      //.get(`/api/${entity}/eventos`)
+      .get(getBackendRoute(entity, "eventos"))
+      .then((res) => {
+        if (res.status === 200) {
+          setEventosFromBd(res.data);
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+    axios
+      //.get(`/api/${entity}/editor-parametros`)
+      .get(getBackendRoute(entity, "editor-parametros"))
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setParametrosFromBd(
+            data.map(({ id, rotulo }) => ({
+              id,
+              value: rotulo,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
+      .finally(fetchTableData.onClose);
+  }, [addEvento.isOpen, excluirEventoModal.isOpen]);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/municipios`)
+      .get(getBackendRoute(entity, "municipios"))
+      .then((res) => {
+        if (res.status === 200) {
+          setMunicipiosFromBd(
+            res.data.map((munic) => ({
+              id: munic.id,
+              value: munic.id,
+              label: munic.nome,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, [addEvento.isOpen, addLoca.isOpen]);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/eventos/tipos`)
+      .get(getBackendRoute(entity, "eventos/tipos"))
+      .then((res) => {
+        if (res.status === 200) {
+          setTiposEventoFromBd(
+            res.data.map((tipo) => ({
+              id: tipo.id,
+              value: tipo.id,
+              label: tipo.nome,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, [addEvento.isOpen, addTipoEvento.isOpen]);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/eventos/locais`)
+      .get(getBackendRoute(entity, "eventos/locais"))
+      .then((res) => {
+        if (res.status === 200) {
+          setLocaisEventosFromBd(
+            res.data.map((eixo) => ({
+              id: eixo.id,
+              value: eixo.id,
+              label: eixo.nome,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, [addEvento.isOpen, addLocalEvento.isOpen]);
+
+  useEffect(() => {
+    axios
+      //.get(`/api/${entity}/comunicados/remetentes`)
+      .get(getBackendRoute(entity, "comunicados/remetentes"))
+      .then((res) => {
+        if (res.status === 200) {
+          setEmailsRemetentesFromBd(
+            res.data.map(({ id, email, nome }) => ({
+              value: id,
+              id,
+              label: `${nome} - ${email}`,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+    axios
+      //.get(`/api/${entity}/demandantes`)
+      .get(getBackendRoute(entity, "demandantes"))
+      .then((res) => {
+        if (res.status === 200) {
+          setDemandantesFromBd(
+            res.data.map(({ id, sigla, nome }) => ({
+              value: id,
+              id,
+              label: `${sigla} - ${nome}`,
+            }))
+          );
+        }
+      })
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
+  }, []);
+  const cepInput = formLocalEvento.watch("cep");
+  const filtroParticipantes = formAddEvento.watch("filtro");
+  const nomeEventoForm = formAddEvento.watch("nome");
+  const modalidadeForm = formAddEvento.watch("modalidade");
+  const emailAlertsForm = formAddEvento.watch("emailAlerts");
+  const criarAcaoCRForm = formAddEvento.watch("criarAcaoCR");
+  const benefLoteInput = formAddEvento.watch("benefType");
+
+  const consultaEndereco = async () => {
+    const cep = formLocalEvento.getValues("cep");
+    try {
+      buscaCep.onOpen();
+      // const { data } = await axios.get(
+      //   `https://brasilapi.com.br/api/cep/v2/${cep}`
+      // );
+      const { data } = await axios.get(getBackendRoute(entity, "ext/cep"), {
+        params: {
+          cep: cep,
+        },
+      });
+      setCepData(data);
+      toast({
+        title: "Endereço localizado",
+        status: "success",
+        duration: 5000,
+        isClosable: false,
+      });
+    } catch (error) {
+      setCepData(null);
+      formLocalEvento.reset({
+        cep,
+      });
+      const exception = exceptionHandler(error);
+      if (exception.code == 404) {
+        exception.title = "Endereço não localizado";
+        exception.description =
+          "Verifique o CEP ou preencha o endereço manualmente.";
+        exception.status = "warning";
+        exception.duration = 5000;
+      }
+      toast(exception);
+      // toast({
+      //   title: "Endereço não localizado",
+      //   description: "Verifique o CEP ou preencha o endereço manualmente",
+      //   status: "warning",
+      //   duration: 5000,
+      //   isClosable: false,
+      //   containerStyle: {
+      //     width: "300px",
+      //   },
+      // });
+    } finally {
+      buscaCep.onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (addLocalEvento.isOpen &amp;&amp; cepInput?.length === 9 &amp;&amp; !selectedRow) {
+      consultaEndereco();
+    }
+  }, [addLocalEvento.isOpen, cepInput]);
+
+  useEffect(() => {
+    emailAlertsState(emailAlertsForm);
+    if (!emailAlertsForm) {
+      formAddEvento.unregister("conteudoEmail");
+    }
+  }, [emailAlertsForm]);
+
+  useEffect(() => {
+    setCriarAcaoCR(criarAcaoCRForm);
+    if (!criarAcaoCRForm) {
+      formAddEvento.unregister("colabAcaoCR");
+    }
+  }, [criarAcaoCRForm]);
+
+  useEffect(() => {
+    setNomeEvento(nomeEventoForm);
+  }, [nomeEventoForm]);
+
+  useEffect(() => {
+    setModalidade(modalidadeForm);
+    if (modalidadeForm === "videoconferencia") {
+      formAddEvento.unregister("local");
+    }
+  }, [modalidadeForm]);
+
+  useEffect(() => {
+    switch (filtroParticipantes) {
+      case "municDemand":
+        formAddEvento.unregister("benefAssoc");
+        break;
+
+      case "benef":
+        formAddEvento.unregister("filtroMunicipios");
+        formAddEvento.unregister("filtroDemandantes");
+        break;
+    }
+  }, [filtroParticipantes]);
+
+  useEffect(() => {
+    setBenefLote(benefLoteInput);
+  }, [benefLoteInput]);
+
+  return (
+    &lt;>
+      &lt;AnimatePresenceWrapper router={router} isLoaded={isLoaded}>
+        &lt;Flex justifyContent="space-between" alignItems="center" pb={5}>
+          &lt;Heading fontSize="1.4rem">Eventos&lt;/Heading>
+          &lt;Button
+            colorScheme="brand1"
+            shadow="md"
+            leftIcon={&lt;FiPlus />}
+            onClick={addEvento.onOpen}
+          >
+            Adicionar
+          &lt;/Button>
+        &lt;/Flex>
+        &lt;ScaleFade in={fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
+          &lt;Center h="90vh">
+            &lt;Spinner
+              boxSize={20}
+              color="brand1.500"
+              thickness="4px"
+              speed=".5s"
+              emptyColor="gray.200"
+            />
+          &lt;/Center>
+        &lt;/ScaleFade>
+        &lt;ScaleFade in={!fetchTableData.isOpen} initialScale={0.9} unmountOnExit>
+          &lt;Table data={data} columns={columns} />
+        &lt;/ScaleFade>
+      &lt;/AnimatePresenceWrapper>
+
+      {/* Adicionar Evento Overlay  */}
+      &lt;Overlay
+        onClose={() => {
+          addEvento.onClose();
+          formAddEvento.reset({});
+          if (selectedRow) {
+            setSelectedRow(null);
+          }
+        }}
+        isOpen={
+          addEvento.isOpen &amp;&amp; !(addTipoEvento.isOpen || addLocalEvento.isOpen)
+        }
+        header={selectedRow ? "Editar Evento" : "Adicionar Evento"}
+        closeButton
+        size={emailAlerts ? "lg" : "md"}
+        transition="max-width ease-in-out .2s"
+      >
+        &lt;chakra.form
+          onSubmit={formAddEvento.handleSubmit(onSubmitAddEvento)}
+          w="100%"
+        >
+          &lt;Stack spacing={4}>
+            &lt;InputBox
+              id="nome"
+              label="Nome"
+              formControl={formAddEvento}
+              defaultValue={selectedRow?.nome}
+            />
+            &lt;InputBox
+              id="data"
+              label="Data"
+              type="datetime-local"
+              formControl={formAddEvento}
+              defaultValue={
+                selectedRow?.data &amp;&amp;
+                DateTime.fromISO(selectedRow.data)
+                  .setZone("UTC-3")
+                  .toFormat("yyyy-MM-dd'T'HH:mm")
+              }
+              validate={(dataSelecionada) =>
+                DateTime.now()
+                  .diff(DateTime.fromISO(dataSelecionada), "days")
+                  .toObject().days &lt; 1 || "Informe uma data válida"
+              }
+            />
+            &lt;CheckboxInput
+              id="modalidade"
+              label="Modalidade"
+              formControl={formAddEvento}
+              defaultValue={selectedRow?.modalidade}
+              options={[
+                { id: "presencial", label: "Presencial" },
+                { id: "videoconferencia", label: "Videoconferência" },
+              ]}
+            />
+            &lt;Fade in={modalidade === "presencial"} unmountOnExit>
+              &lt;HStack justifyContent="space-between">
+                &lt;Box w="100%">
+                  &lt;SelectInputBox
+                    id="local"
+                    formControl={formAddEvento}
+                    label="Local"
+                    options={locaisEventosFromBd}
+                    placeholder="Selecione..."
+                    defaultValue={
+                      selectedRow &amp;&amp;
+                      locaisEventosFromBd.filter(
+                        ({ value }) => value === selectedRow.local_EventoId
+                      )
+                    }
+                  />
+                &lt;/Box>
+                &lt;Box alignSelf="flex-start">
+                  &lt;Button
+                    p={2}
+                    mt={8}
+                    shadow="md"
+                    colorScheme="brand1"
+                    onClick={addLocalEvento.onOpen}
+                  >
+                    &lt;Icon as={FiPlus} boxSize={6} />
+                  &lt;/Button>
+                &lt;/Box>
+              &lt;/HStack>
+            &lt;/Fade>
+            &lt;HStack justifyContent="space-between">
+              &lt;Box w="100%">
+                &lt;SelectInputBox
+                  id="tipo"
+                  label="Tipo "
+                  placeholder="Selecione..."
+                  formControl={formAddEvento}
+                  options={tiposEventoFromBd}
+                  defaultValue={
+                    selectedRow &amp;&amp;
+                    tiposEventoFromBd.filter(
+                      ({ value }) => value === selectedRow.tipo_eventoId
+                    )
+                  }
+                />
+              &lt;/Box>
+              &lt;Box alignSelf="flex-start">
+                &lt;Button
+                  p={2}
+                  mt={8}
+                  shadow="md"
+                  colorScheme="brand1"
+                  onClick={addTipoEvento.onOpen}
+                >
+                  &lt;Icon as={FiPlus} boxSize={6} />
+                &lt;/Button>
+              &lt;/Box>
+            &lt;/HStack>
+            &lt;Divider pt={2} />
+            &lt;HStack justifyContent="space-between" py={2}>
+              &lt;Heading size="sm" textAlign="center" color="gray.500">
+                Participantes
+              &lt;/Heading>
+              &lt;CheckboxInput
+                id="filtro"
+                options={[
+                  { id: "municDemand", label: "Municipios/Demandantes" },
+                  { id: "benef", label: "Beneficiários" },
+                ]}
+                size="xs"
+                formControl={formAddEvento}
+                defaultValue={
+                  selectedRow &amp;&amp;
+                  Array.isArray(selectedRow.benefAssoc) &amp;&amp;
+                  "benef"
+                }
+              />
+            &lt;/HStack>
+            &lt;Fade
+              in={filtroParticipantes === "municDemand"}
+              pt={2}
+              unmountOnExit
+            >
+              &lt;Stack spacing={4} py={2}>
+                &lt;SelectInputBox
+                  id="filtroMunicipios"
+                  label="Filtrar por Municípios"
+                  placeholder="Selecione..."
+                  options={municipiosFromBd}
+                  formControl={formAddEvento}
+                />
+                &lt;SelectInputBox
+                  id="filtroDemandantes"
+                  label="Filtrar por Demandantes"
+                  placeholder="Selecione..."
+                  options={demandantesFromBd}
+                  formControl={formAddEvento}
+                />
+              &lt;/Stack>
+            &lt;/Fade>
+            &lt;Fade
+              in={
+                filtroParticipantes === "benef" ||
+                (selectedRow &amp;&amp;
+                  Array.isArray(selectedRow.benefAssoc) &amp;&amp;
+                  "benef")
+              }
+              pt={2}
+              unmountOnExit
+            >
+              &lt;Box>
+                &lt;Flex justifyContent="space-between" flex="0 0 1%" mb={2}>
+                  &lt;FormLabel ps={0.5} m={0}>
+                    Beneficiários Associados
+                  &lt;/FormLabel>
+                  &lt;Box alignSelf="center">
+                    &lt;SwitchButton
+                      id="benefType"
+                      formControl={formAddEvento}
+                      label="Selecionar em Lote"
+                      size="sm"
+                    />
+                  &lt;/Box>
+                &lt;/Flex>
+                {!benefLote &amp;&amp; (
+                  &lt;SelectInputBox
+                    id="benefAssoc"
+                    formControl={formAddEvento}
+                    options={beneficiariosFromRh}
+                    isMulti
+                    defaultValue={
+                      selectedRow &amp;&amp;
+                      beneficiariosFromRh.filter((benef) =>
+                        selectedRow.benefAssoc.find(
+                          (selec) => selec.cpf === benef.cpf
+                        )
+                      )
+                    }
+                  />
+                )}
+                {benefLote &amp;&amp; (
+                  &lt;ChakraTagInput
+                    id="benefAssoc"
+                    formControl={formAddEvento}
+                    placeholder="Matrículas ou CPFs separados por vírgula"
+                    mask={cpfMask}
+                    required="Digite e pressione ENTER para adicionar"
+                  />
+                )}
+              &lt;/Box>
+            &lt;/Fade>
+            &lt;Divider pt={1} />
+            &lt;HStack justifyContent="space-between" py={2}>
+              &lt;Heading size="sm" textAlign="center" color="gray.500">
+                Notificações e Ações
+              &lt;/Heading>
+            &lt;/HStack>
+            &lt;Box
+              bg={criarAcaoCR &amp;&amp; "gray.50"}
+              p={criarAcaoCR &amp;&amp; 2}
+              shadow={criarAcaoCR &amp;&amp; "inner"}
+              rounded="lg"
+              transition="all ease-in-out .2s"
+            >
+              &lt;SwitchButton
+                id="criarAcaoCR"
+                label="Criar ação na CR?"
+                formControl={formAddEvento}
+                defaultChecked={
+                  selectedRow &amp;&amp; selectedRow?.acao_Cr[0]?.excluido === false
+                }
+              />
+              &lt;Fade in={criarAcaoCR} unmountOnExit>
+                &lt;Box py={4}>
+                  &lt;SelectInputBox
+                    id="colabAcaoCR"
+                    label="Atribuir ação a"
+                    placeholder="Selecione..."
+                    options={colaboradoresFromRh}
+                    formControl={formAddEvento}
+                    defaultValue={
+                      selectedRow &amp;&amp;
+                      selectedRow?.acao_Cr.reverse()[0]?.excluido === false &amp;&amp;
+                      colaboradoresFromRh.filter(({ value }) =>
+                        selectedRow.acao_Cr[0]?.colabCr.find(
+                          ({ id }) => id === value
+                        )
+                      )
+                    }
+                    bg="white"
+                    isMulti
+                  />
+                &lt;/Box>
+              &lt;/Fade>
+            &lt;/Box>
+            &lt;Box
+              bg={emailAlerts &amp;&amp; "gray.50"}
+              p={emailAlerts &amp;&amp; 2}
+              shadow={emailAlerts &amp;&amp; "inner"}
+              rounded="lg"
+              transition="all ease-in-out .2s"
+            >
+              &lt;SwitchButton
+                id="emailAlerts"
+                label="Notificar participantes por e-mail?"
+                formControl={formAddEvento}
+                defaultChecked={
+                  selectedRow &amp;&amp; selectedRow?.comunicado[0]?.excluido === false
+                }
+              />
+              &lt;Fade in={emailAlerts} unmountOnExit>
+                &lt;Box mt={4} mb={2}>
+                  &lt;SelectInputBox
+                    id="emailRemetente"
+                    formControl={formAddEvento}
+                    label="E-mail Rementente"
+                    colorScheme="brand1"
+                    options={emailsRemetentesFromBd}
+                    placeholder="Selecione..."
+                    defaultValue={
+                      selectedRow
+                        ? emailsRemetentesFromBd &amp;&amp;
+                          emailsRemetentesFromBd.filter(
+                            ({ id }) =>
+                              id ===
+                              selectedRow.comunicado[0]?.remetenteComunicado_Id
+                          )
+                        : null
+                    }
+                  />
+                &lt;/Box>
+                &lt;EmailEditor
+                  id="conteudoEmail"
+                  title={nomeEvento ? nomeEvento : "Nome do Evento"}
+                  formControl={formAddEvento}
+                  loadOnEditor={selectedRow?.comunicado[0]?.conteudoEmail}
+                  parametros={parametrosFromBd}
+                />
+              &lt;/Fade>
+            &lt;/Box>
+          &lt;/Stack>
+          &lt;HStack py={6} justifyContent="flex-end">
+            &lt;Button
+              colorScheme="brand1"
+              type="submit"
+              isLoading={formSubmit.isOpen}
+              isDisabled={!formAddEventoValidation}
+              loadingText="Salvando"
+              shadow="md"
+            >
+              {selectedRow ? "Salvar" : "Cadastrar"}
+            &lt;/Button>
+          &lt;/HStack>
+        &lt;/chakra.form>
+      &lt;/Overlay>
+
+      {/* Adicionar local de evento Overlay */}
+      &lt;Overlay
+        isOpen={addLocalEvento.isOpen}
+        onClose={() => {
+          addLocalEvento.onClose();
+          formLocalEvento.reset({});
+        }}
+        closeButton
+        header="Adicionar Local de Evento"
+      >
+        &lt;chakra.form
+          onSubmit={formLocalEvento.handleSubmit(onSubmitLocalEvento)}
+          w="100%"
+        >
+          &lt;Stack spacing={4}>
+            &lt;InputBox id="nome" label="Nome" formControl={formLocalEvento} />
+            &lt;MaskedInputBox
+              id="cep"
+              label="CEP"
+              placeholder="12345-678"
+              formControl={formLocalEvento}
+              validate={(value) =>
+                value.length === 9 || "Informe um CEP válido"
+              }
+              setMask={cepMask}
+              pr={8}
+              inputrightelement={
+                &lt;Fade in={selectedRow &amp;&amp; cepInput?.length === 9}>
+                  &lt;InputRightElement w="auto" pr={1.5}>
+                    &lt;Button h="1.75rem" size="sm" onClick={consultaEndereco}>
+                      Atualizar Endereço
+                    &lt;/Button>
+                  &lt;/InputRightElement>
+                &lt;/Fade>
+              }
+            />
+            &lt;Collapse
+              in={cepInput &amp;&amp; cepInput.length === 9}
+              animateOpacity
+              unmountOnExit
+            >
+              &lt;Stack spacing={4}>
+                &lt;InputBox
+                  id="logradouro"
+                  formControl={formLocalEvento}
+                  label="Logradouro"
+                  isLoaded={!buscaCep.isOpen}
+                  defaultValue={
+                    (cepData &amp;&amp; cepData.street) || selectedRow?.logradouro
+                  }
+                />
+                &lt;InputBox
+                  id="complemento"
+                  formControl={formLocalEvento}
+                  label="Complemento"
+                  required={false}
+                />
+                &lt;InputBox
+                  id="bairro"
+                  formControl={formLocalEvento}
+                  label="Bairro"
+                  defaultValue={
+                    selectedRow?.bairro || (cepData &amp;&amp; cepData.neighborhood)
+                  }
+                  isLoaded={!buscaCep.isOpen}
+                />
+                &lt;InputBox
+                  id="cidade"
+                  formControl={formLocalEvento}
+                  label="Cidade"
+                  defaultValue={
+                    selectedRow?.cidade || (cepData &amp;&amp; cepData.city)
+                  }
+                  isLoaded={!buscaCep.isOpen}
+                />
+                &lt;InputBox
+                  id="uf"
+                  formControl={formLocalEvento}
+                  label="UF"
+                  defaultValue={selectedRow?.uf || (cepData &amp;&amp; cepData.state)}
+                  isLoaded={!buscaCep.isOpen}
+                />
+              &lt;/Stack>
+            &lt;/Collapse>
+          &lt;/Stack>
+          &lt;HStack py={6} justifyContent="flex-end">
+            &lt;Button
+              colorScheme="brand1"
+              type="submit"
+              isLoading={addLocalFormSubmit.isOpen}
+              isDisabled={!formLocalEventoValidation}
+              loadingText="Salvando"
+              shadow="md"
+            >
+              {selectedRow ? "Salvar" : "Cadastrar"}
+            &lt;/Button>
+          &lt;/HStack>
+        &lt;/chakra.form>
+      &lt;/Overlay>
+
+      {/*  Adicionar tipo de evento Overlay  */}
+      &lt;Overlay
+        isOpen={addTipoEvento.isOpen}
+        onClose={() => {
+          addTipoEvento.onClose();
+          formTipoEvento.reset({});
+        }}
+        closeButton
+        header="Adicionar Tipo de Evento"
+      >
+        &lt;chakra.form
+          onSubmit={formTipoEvento.handleSubmit(onSubmitTipoEvento)}
+          w="100%"
+        >
+          &lt;Stack spacing={4}>
+            &lt;InputBox id="nome" label="Nome" formControl={formTipoEvento} />
+          &lt;/Stack>
+          &lt;HStack py={6} justifyContent="flex-end">
+            &lt;Button
+              colorScheme="brand1"
+              type="submit"
+              isLoading={tipoEventoFormSubmit.isOpen}
+              isDisabled={!formTipoEventoValidation}
+              loadingText="Salvando"
+              shadow="md"
+            >
+              {selectedRow ? "Salvar" : "Cadastrar"}
+            &lt;/Button>
+          &lt;/HStack>
+        &lt;/chakra.form>
+      &lt;/Overlay>
+
+      {/* Excluir evento Modal  */}
+      &lt;Modal
+        closeOnOverlayClick={false}
+        closeOnEsc={false}
+        isOpen={excluirEventoModal.isOpen}
+        isCentered
+        size="lg"
+        trapFocus={false}
+        onClose={excluirEventoModal.onClose}
+        onCloseComplete={() => setSelectedRow(null)}
+      >
+        &lt;ModalOverlay />
+        &lt;ModalContent>
+          &lt;ModalHeader
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            &lt;Box>Excluir Evento&lt;/Box>
+            &lt;Icon
+              as={FiTrash2}
+              color="white"
+              bg="red.500"
+              rounded="lg"
+              shadow="lg"
+              boxSize={10}
+              p={2}
+            />
+          &lt;/ModalHeader>
+          &lt;Divider />
+          &lt;ModalBody pb={6}>
+            &lt;VStack my={3} spacing={6}>
+              &lt;Heading size="md">Deseja excluir o seguinte evento?&lt;/Heading>
+              &lt;Text fontSize="xl" align="center">
+                {selectedRow?.nome} -{" "}
+                {DateTime.fromISO(selectedRow?.data).toLocaleString(
+                  DateTime.DATETIME_SHORT
+                )}
+                h
+              &lt;/Text>
+              &lt;HStack>
+                &lt;Button
+                  colorScheme="red"
+                  variant="outline"
+                  onClick={() => {
+                    excluirEvento(selectedRow);
+                  }}
+                  isLoading={formSubmit.isOpen}
+                  loadingText="Aguarde"
+                >
+                  Excluir
+                &lt;/Button>
+                &lt;Button
+                  colorScheme="brand1"
+                  variant="outline"
+                  onClick={() => {
+                    excluirEventoModal.onClose();
+                    setSelectedRow(null);
+                  }}
+                >
+                  Cancelar
+                &lt;/Button>
+              &lt;/HStack>
+            &lt;/VStack>
+          &lt;/ModalBody>
+        &lt;/ModalContent>
+      &lt;/Modal>
+
+      {/* Gerar lista de presença modal */}
+      &lt;AlertDialog
+        isOpen={downloadingFile.isOpen}
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+        isCentered
+      >
+        &lt;AlertDialogOverlay>
+          &lt;AlertDialogContent>
+            &lt;AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Gerar lista de presença
+            &lt;/AlertDialogHeader>
+
+            &lt;AlertDialogBody display="flex" alignItems="center">
+              Aguarde, o download do arquivo comecará em breve...
+              &lt;Box>
+                &lt;Spinner color="brand1.500" size="lg" />
+              &lt;/Box>
+            &lt;/AlertDialogBody>
+          &lt;/AlertDialogContent>
+        &lt;/AlertDialogOverlay>
+      &lt;/AlertDialog>
+
+      {/* Informar presença modal */}
+      &lt;AlertDialog
+        isOpen={informarPresenca.overlayIsOpen}
+        closeOnEsc={false}
+        closeOnOverlayClick={false}
+        isCentered
+      >
+        &lt;AlertDialogOverlay>
+          &lt;AlertDialogContent>
+            &lt;AlertDialogHeader fontSize="lg" fontWeight="bold" pb={0}>
+              Informar presença
+            &lt;/AlertDialogHeader>
+
+            &lt;AlertDialogBody
+              display="flex"
+              alignItems="center"
+              flexDir="column"
+              justifyContent="space-between"
+            >
+              &lt;Text pb={2}>
+                Informar lista de beneficiários presentes no evento abaixo:
+              &lt;/Text>
+              &lt;Stack py={4} bg="gray.200" w="full" mb={4} rounded="md">
+                &lt;Text textAlign="center">{selectedRow?.nome}&lt;/Text>
+                &lt;Text textAlign="center">
+                  Realizado em:{" "}
+                  {DateTime.fromISO(selectedRow?.data).toLocaleString(
+                    DateTime.DATETIME_SHORT
+                  )}
+                  h
+                &lt;/Text>
+              &lt;/Stack>
+              &lt;Stack
+                as={chakra.form}
+                onSubmit={informarPresenca.handleSubmit(
+                  onSubmitInformarPresenca
+                )}
+                w="full"
+              >
+                &lt;ChakraTagInput
+                  id="benefAssoc"
+                  formControl={informarPresenca.control}
+                  placeholder="Matrículas ou CPFs separados por vírgula"
+                  mask={cpfMask}
+                  required="Digite e pressione ENTER para adicionar"
+                />
+                &lt;Flex alignSelf="flex-end" pb={4}>
+                  &lt;HStack>
+                    &lt;Button
+                      colorScheme="red"
+                      variant="outline"
+                      onClick={() => {
+                        informarPresenca.closeOverlay();
+                        setSelectedRow(null);
+                      }}
+                    >
+                      Cancelar
+                    &lt;/Button>
+                    &lt;Button
+                      type="submit"
+                      colorScheme="brand1"
+                      variant="outline"
+                      isDisabled={!informarPresenca.validation}
+                      isLoading={informarPresenca.isLoading}
+                      loadingText="Aguarde..."
+                    >
+                      Salvar
+                    &lt;/Button>
+                  &lt;/HStack>
+                &lt;/Flex>
+              &lt;/Stack>
+            &lt;/AlertDialogBody>
+          &lt;/AlertDialogContent>
+        &lt;/AlertDialogOverlay>
+      &lt;/AlertDialog>
+    &lt;/>
+  );
+}
+
+export async function getServerSideProps(context) {
+  const {
+    params: { entity },
+  } = context;
+  const entities = ["ba", "to", "rj"];
+
+  // const posts = await api.getContentList({
+  //   referenceName: "posts",
+  //   languageCode: "en-us"
+  // });
+  // const page = posts.items.find((post) => {
+  //   return post.fields.slug === ctx.params.slug.join("/");
+  // });
+
+  const entityCheck = entities.find((ent) => ent === entity || undefined);
+
+  return {
+    props: {
+      entity: entityCheck || null,
+    },
+  };
+}
+
+Eventos.auth = true;
+Eventos.dashboard = true;
+</code></pre></article></section><footer class="footer" id="PeOAagUepe"><div class="wrapper">Made with ☕️ by <a href="https://github.com/frtechdev">FR Technologies</a></div></footer></div></div></div><div class="search-container" id="PkfLWpAbet" style="display:none"><div class="wrapper" id="iCxFxjkHbP"><button class="icon-button search-close-button" id="VjLlGakifb" aria-label="close search"><svg><use xlink:href="#close-icon"></use></svg></button><div class="search-box-c"><svg><use xlink:href="#search-icon"></use></svg> <input type="text" id="vpcKVYIppa" class="search-input" placeholder="Search..." autofocus></div><div class="search-result-c" id="fWwVHRuDuN"><span class="search-result-c-text">Type anything to view search result</span></div></div></div><div class="mobile-menu-icon-container"><button class="icon-button" id="mobile-menu" data-isopen="false" aria-label="menu"><svg><use xlink:href="#menu-icon"></use></svg></button></div><div id="mobile-sidebar" class="mobile-sidebar-container"><div class="mobile-sidebar-wrapper"><a href="/" class="sidebar-title sidebar-title-anchor">FLEM PPE Frontend - Documentação</a><div class="mobile-nav-links"><div class="some-class navbar-item"><a id="some-id-mobile" href="https://frtechnologies.com.br" target="_blank">Website</a></div><div class="some-class navbar-item"><a id="some-id-mobile" href="https://github.com/frtechdev/flem-ppe-frontend/" target="_blank">Github</a></div></div><div class="mobile-sidebar-items-c"><div class="sidebar-section-title with-arrow" data-isopen="false" id="MpaAFMAiYRORNJnab3u9O"><div>Modules</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="module-acoes.html">acoes</a></div><div class="sidebar-section-children"><a href="module-AnimatePresenceWrapper.html">AnimatePresenceWrapper</a></div><div class="sidebar-section-children"><a href="module-api.html">api</a></div><div class="sidebar-section-children"><a href="module-auth.html">auth</a></div><div class="sidebar-section-children"><a href="module-beneficiarios.html">beneficiarios</a></div><div class="sidebar-section-children"><a href="module-Breadcrumb.html">Breadcrumb</a></div><div class="sidebar-section-children"><a href="module-Buttons.html">Buttons</a></div><div class="sidebar-section-children"><a href="module-Cards.html">Cards</a></div><div class="sidebar-section-children"><a href="module-Charts.html">Charts</a></div><div class="sidebar-section-children"><a href="module-colaboradores-cr.html">colaboradores-cr</a></div><div class="sidebar-section-children"><a href="module-comunicados.html">comunicados</a></div><div class="sidebar-section-children"><a href="module-dashboard.html">dashboard</a></div><div class="sidebar-section-children"><a href="module-demandantes.html">demandantes</a></div><div class="sidebar-section-children"><a href="module-Dropzone.html">Dropzone</a></div><div class="sidebar-section-children"><a href="module-EmailEditor.html">EmailEditor</a></div><div class="sidebar-section-children"><a href="module-envio-oficios.html">envio-oficios</a></div><div class="sidebar-section-children"><a href="module-escritorios-regionais.html">escritorios-regionais</a></div><div class="sidebar-section-children"><a href="module-eventos.html">eventos</a></div><div class="sidebar-section-children"><a href="module-Form.html">Form</a></div><div class="sidebar-section-children"><a href="module-geral.html">geral</a></div><div class="sidebar-section-children"><a href="module-Icons.html">Icons</a></div><div class="sidebar-section-children"><a href="module-importar.html">importar</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Inputs.html">Inputs</a></div><div class="sidebar-section-children"><a href="module-Layout.html">Layout</a></div><div class="sidebar-section-children"><a href="module-LDAPService.html">LDAPService</a></div><div class="sidebar-section-children"><a href="module-Logo.html">Logo</a></div><div class="sidebar-section-children"><a href="module-materiais.html">materiais</a></div><div class="sidebar-section-children"><a href="module-Menus.html">Menus</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitoramento.html">monitoramento</a></div><div class="sidebar-section-children"><a href="module-monitores.html">monitores</a></div><div class="sidebar-section-children"><a href="module-Navbar.html">Navbar</a></div><div class="sidebar-section-children"><a href="module-Overlay.html">Overlay</a></div><div class="sidebar-section-children"><a href="module-por-beneficiario.html">por-beneficiario</a></div><div class="sidebar-section-children"><a href="module-relatorios-monitoramentos.html">relatorios-monitoramentos</a></div><div class="sidebar-section-children"><a href="module-Sidebar.html">Sidebar</a></div><div class="sidebar-section-children"><a href="module-sintese.html">sintese</a></div><div class="sidebar-section-children"><a href="module-situacoes-vaga.html">situacoes-vaga</a></div><div class="sidebar-section-children"><a href="module-Table.html">Table</a></div><div class="sidebar-section-children"><a href="module-TagInput.html">TagInput</a></div><div class="sidebar-section-children"><a href="module-templates-oficios.html">templates-oficios</a></div><div class="sidebar-section-children"><a href="module-TextEditor.html">TextEditor</a></div><div class="sidebar-section-children"><a href="module-TextViewer.html">TextViewer</a></div><div class="sidebar-section-children"><a href="module-tipos-historico.html">tipos-historico</a></div><div class="sidebar-section-children"><a href="module-Toast.html">Toast</a></div><div class="sidebar-section-children"><a href="module-unidades-lotacao.html">unidades-lotacao</a></div><div class="sidebar-section-children"><a href="module-utils.html">utils</a></div></div><div class="sidebar-section-title with-arrow" data-isopen="false" id="fUaN3yy2iestnezcsv-O8"><div>Global</div><svg><use xlink:href="#down-icon"></use></svg></div><div class="sidebar-section-children-container"><div class="sidebar-section-children"><a href="global.html#allowCors">allowCors</a></div><div class="sidebar-section-children"><a href="global.html#authDb">authDb</a></div><div class="sidebar-section-children"><a href="global.html#authUserQa">authUserQa</a></div><div class="sidebar-section-children"><a href="global.html#Button">Button</a></div><div class="sidebar-section-children"><a href="global.html#GlobalStyle">GlobalStyle</a></div><div class="sidebar-section-children"><a href="global.html#MyApp">MyApp</a></div><div class="sidebar-section-children"><a href="global.html#normalizeString">normalizeString</a></div><div class="sidebar-section-children"><a href="global.html#toastData">toastData</a></div><div class="sidebar-section-children"><a href="global.html#variants">variants</a></div></div></div><div class="mobile-navbar-actions"><div class="navbar-right-item"><button class="icon-button search-button" aria-label="open-search"><svg><use xlink:href="#search-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button theme-toggle" aria-label="toggle-theme"><svg><use class="theme-svg-use" xlink:href="#light-theme-icon"></use></svg></button></div><div class="navbar-right-item"><button class="icon-button font-size" aria-label="change-font-size"><svg><use xlink:href="#font-size-icon"></use></svg></button></div></div></div></div><script type="text/javascript" src="scripts/core.min.js"></script><script src="scripts/search.min.js" defer="defer"></script><script src="scripts/third-party/fuse.js" defer="defer"></script><script type="text/javascript">function foo(){console.log("foo")}</script><script type="text/javascript">var tocbotInstance=tocbot.init({tocSelector:"#eed4d2a0bfd64539bb9df78095dec881",contentSelector:".main-content",headingSelector:"h1, h2, h3",hasInnerContainers:!0,scrollContainer:".main-content",headingsOffset:130,onClick:bringLinkToView})</script></body></html>

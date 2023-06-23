@@ -14,24 +14,20 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuGroup,
   MenuItem,
   MenuList,
   SimpleGrid,
   Spinner,
-  Text,
   useControllableState,
 } from "@chakra-ui/react";
 
-import { FiChevronDown, FiLogOut, FiMenu } from "react-icons/fi";
+import { Logo } from "components/Logo";
 import { EntitiesChange } from "components/Navbar/EntitiesChange";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Component, useEffect } from "react";
-import { Logo } from "components/Logo";
-import { EditIcon } from "@chakra-ui/icons";
-import { IconBox } from "components/Icons/IconBox";
-import { useSession, signOut } from "next-auth/react";
+import { FiChevronDown, FiLogOut, FiMenu } from "react-icons/fi";
 
 /**
  * Monta a Navbar.

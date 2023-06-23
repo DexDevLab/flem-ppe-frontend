@@ -34,7 +34,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Fila de Formações
+ * @memberof module:formacoes
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Formacoes({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -146,18 +153,26 @@ export default function Formacoes({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Formação já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Formação já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   formSubmit.onClose();
+            //   toast({
+            //     title: "Formação já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //     position,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
           })
       );
     }
@@ -180,18 +195,26 @@ export default function Formacoes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           formSubmit.onClose();
-          toast({
-            title: "Formação já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Formação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   formSubmit.onClose();
+        //   toast({
+        //     title: "Formação já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -217,18 +240,26 @@ export default function Formacoes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           eixoFormacaoFormSubmit.onClose();
-          toast({
-            title: "Eixo já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Eixo de Formação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   eixoFormacaoFormSubmit.onClose();
+        //   toast({
+        //     title: "Eixo já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -260,8 +291,7 @@ export default function Formacoes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -271,7 +301,6 @@ export default function Formacoes({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -285,12 +314,10 @@ export default function Formacoes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addFormacao.isOpen, addFormacao.isOpen, excluirFormacao.isOpen]);
+  }, [addFormacao.isOpen, addEixoFormacao.isOpen, excluirFormacao.isOpen]);
 
   useEffect(() => {
     axios
@@ -308,11 +335,9 @@ export default function Formacoes({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addFormacao.isOpen, addEixoFormacao.isOpen]);
+  }, [addFormacao.isOpen, addEixoFormacao.isOpen, excluirFormacao.isOpen]);
 
   return (
     <>
@@ -383,11 +408,21 @@ export default function Formacoes({ entity, ...props }) {
               </Box>
               <Box alignSelf="flex-start">
                 <Button
+                  // REMOVIDO O BOTÃO DE ADICIONAR EIXO DE FORMAÇÃO.
+                  // CONSIDERANDO QUE EIXOS DE FORMAÇÃO NÃO SÃO ALTERADOS
+                  // COM FREQUÊNCIA, PERMITIR A ADIÇÃO DE UM EIXO DE FORMAÇÃO
+                  // MAS NÃO HAVER COMO EXCLUI-LO PODE FACILITAR FALHAS HUMANAS.
+                  // EM CASO DE NECESSIDADE, EIXOS DE FORMAÇÃO PODEM SER ADICIONADOS
+                  // PELA EQUIPE DE DESENVOLVIMENTO DENTRO DO BANCO DE DADOS.
+                  // PARA REMOVER ESSA REGRA DE NEGÓCIO, COMENTE A LINHA ABAIXO.
+                  display={"none"}
                   p={2}
                   mt={8}
                   shadow="md"
                   colorScheme="brand1"
-                  onClick={addEixoFormacao.onOpen}
+                  onClick={
+                    addEixoFormacao.onOpen && console.log(process.env.NODE_ENV)
+                  }
                 >
                   <Icon as={FiPlus} boxSize={6} />
                 </Button>

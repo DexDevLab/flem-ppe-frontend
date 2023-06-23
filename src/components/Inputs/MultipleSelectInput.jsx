@@ -1,18 +1,22 @@
 import {
   Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
   Skeleton,
   useDisclosure,
 } from "@chakra-ui/react";
 import Select from "react-select";
 
 /**
- * Cria uma Inpux Box multiuso.
+ * Input Box multiuso.
  * @method MultipleSelectInput
  * @memberof module:Inputs
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} options as opções do input para o select
+ * @returns {Component} componente de Input Box
  */
 export function MultipleSelectInput({
   id,

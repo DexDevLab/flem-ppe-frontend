@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
+/**
+ * Componente de entrada na tabela
+ * @method CellInput
+ * @memberof module:components
+ * @param {Object} mask máscara de validação
+ * @param {Boolean} required torna o input obrigatório
+ * @param {Function} updateMyData função handler para atualizar
+ * @returns {Component} componente estilizado.
+ */
 export function CellInput({
   value: initialValue,
   row: { index },

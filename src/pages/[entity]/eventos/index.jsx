@@ -1,3 +1,8 @@
+/**
+ * Componente de página de eventos
+ * @module eventos
+ */
+
 import {
   AlertDialog,
   AlertDialogBody,
@@ -60,7 +65,15 @@ import {
 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
 import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de Eventos e permite seu gerenciamento
+ * @memberof module:eventos
+ * @method Eventos
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Eventos({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -206,6 +219,7 @@ export default function Eventos({ entity, ...props }) {
         Footer: false,
       },
     ],
+
     []
   );
 
@@ -262,17 +276,25 @@ export default function Eventos({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Evento já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Evento já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   formSubmit.onClose();
+            //   toast({
+            //     title: "Evento já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
           })
       );
     }
@@ -294,17 +316,14 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           formSubmit.onClose();
-          toast({
-            title: "Evento já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
   };
 
@@ -328,17 +347,25 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           localEventoFormSubmit.onClose();
-          toast({
-            title: `Local já existe`,
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Local de Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   localEventoFormSubmit.onClose();
+        //   toast({
+        //     title: `Local já existe`,
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -363,17 +390,25 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           tipoEventoFormSubmit.onClose();
-          toast({
-            title: "Tipo já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Tipo de Evento já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   tipoEventoFormSubmit.onClose();
+        //   toast({
+        //     title: "Tipo já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -397,14 +432,13 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(informarPresenca.setLoaded);
   };
 
   const excluirEvento = (formData) => {
     formSubmit.onOpen();
-    console.log(formData);
     axios
       // .delete(`/api/${entity}/oficios`, {
       //   params: {
@@ -430,8 +464,7 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -445,16 +478,13 @@ export default function Eventos({ entity, ...props }) {
       //   },
       //   responseType: "blob",
       // })
-      .get(
-        getBackendRoute(entity, "reports"),
-        {
-          params: {
-            id: id,
-            reportUrl: "eventos/lista-presenca",
-          },
-        responseType: "blob"
-        }
-      )
+      .get(getBackendRoute(entity, "reports"), {
+        params: {
+          idEvento: id,
+          reportUrl: "eventos/lista-presenca",
+        },
+        responseType: "blob",
+      })
       .then((res) => {
         if (res.status === 200) {
           const content = res.headers["content-type"];
@@ -469,8 +499,7 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -480,7 +509,6 @@ export default function Eventos({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -498,10 +526,8 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -511,19 +537,19 @@ export default function Eventos({ entity, ...props }) {
       .then((res) => {
         if (res.status === 200) {
           setBeneficiariosFromRh(
-            res.data.map(({ matriculaFlem, nome, cpf }) => ({
-              value: matriculaFlem,
-              label: `${matriculaFlem} - ` + maskCapitalize(nome),
-              cpf: cpf,
-            }))
+            res.data
+              .map(({ matriculaFlem, nome, cpf }) => ({
+                value: matriculaFlem,
+                label: `${matriculaFlem} - ` + maskCapitalize(nome),
+                cpf: cpf,
+              }))
+              .filter((item) => !_.isNull(item.value))
           );
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -537,8 +563,7 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
     axios
       //.get(`/api/${entity}/editor-parametros`)
@@ -554,11 +579,9 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, excluirEventoModal.isOpen]);
 
   useEffect(() => {
@@ -577,10 +600,8 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addLoca.isOpen]);
 
   useEffect(() => {
@@ -599,10 +620,8 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addTipoEvento.isOpen]);
 
   useEffect(() => {
@@ -621,10 +640,8 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEvento.isOpen, addLocalEvento.isOpen]);
 
   useEffect(() => {
@@ -643,8 +660,7 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
     axios
       //.get(`/api/${entity}/demandantes`)
@@ -661,8 +677,7 @@ export default function Eventos({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   }, []);
   const cepInput = formLocalEvento.watch("cep");
@@ -697,16 +712,25 @@ export default function Eventos({ entity, ...props }) {
       formLocalEvento.reset({
         cep,
       });
-      toast({
-        title: "Endereço não localizado",
-        description: "Verifique o CEP ou preencha o endereço manualmente",
-        status: "warning",
-        duration: 5000,
-        isClosable: false,
-        containerStyle: {
-          width: "300px",
-        },
-      });
+      const exception = exceptionHandler(error);
+      if (exception.code == 404) {
+        exception.title = "Endereço não localizado";
+        exception.description =
+          "Verifique o CEP ou preencha o endereço manualmente.";
+        exception.status = "warning";
+        exception.duration = 5000;
+      }
+      toast(exception);
+      // toast({
+      //   title: "Endereço não localizado",
+      //   description: "Verifique o CEP ou preencha o endereço manualmente",
+      //   status: "warning",
+      //   duration: 5000,
+      //   isClosable: false,
+      //   containerStyle: {
+      //     width: "300px",
+      //   },
+      // });
     } finally {
       buscaCep.onClose();
     }
@@ -716,7 +740,6 @@ export default function Eventos({ entity, ...props }) {
     if (addLocalEvento.isOpen && cepInput?.length === 9 && !selectedRow) {
       consultaEndereco();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addLocalEvento.isOpen, cepInput]);
 
   useEffect(() => {
@@ -724,7 +747,6 @@ export default function Eventos({ entity, ...props }) {
     if (!emailAlertsForm) {
       formAddEvento.unregister("conteudoEmail");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [emailAlertsForm]);
 
   useEffect(() => {
@@ -732,7 +754,6 @@ export default function Eventos({ entity, ...props }) {
     if (!criarAcaoCRForm) {
       formAddEvento.unregister("colabAcaoCR");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [criarAcaoCRForm]);
 
   useEffect(() => {
@@ -744,7 +765,6 @@ export default function Eventos({ entity, ...props }) {
     if (modalidadeForm === "videoconferencia") {
       formAddEvento.unregister("local");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalidadeForm]);
 
   useEffect(() => {
@@ -758,7 +778,6 @@ export default function Eventos({ entity, ...props }) {
         formAddEvento.unregister("filtroDemandantes");
         break;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtroParticipantes]);
 
   useEffect(() => {
@@ -922,9 +941,9 @@ export default function Eventos({ entity, ...props }) {
                 size="xs"
                 formControl={formAddEvento}
                 defaultValue={
-                  selectedRow 
-                  && Array.isArray(selectedRow.benefAssoc) 
-                  && "benef"
+                  selectedRow &&
+                  Array.isArray(selectedRow.benefAssoc) &&
+                  "benef"
                 }
               />
             </HStack>
@@ -996,6 +1015,7 @@ export default function Eventos({ entity, ...props }) {
                     formControl={formAddEvento}
                     placeholder="Matrículas ou CPFs separados por vírgula"
                     mask={cpfMask}
+                    required="Digite e pressione ENTER para adicionar"
                   />
                 )}
               </Box>
@@ -1372,6 +1392,7 @@ export default function Eventos({ entity, ...props }) {
                   formControl={informarPresenca.control}
                   placeholder="Matrículas ou CPFs separados por vírgula"
                   mask={cpfMask}
+                  required="Digite e pressione ENTER para adicionar"
                 />
                 <Flex alignSelf="flex-end" pb={4}>
                   <HStack>

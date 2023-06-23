@@ -32,12 +32,12 @@ yarn-error.log*
 
 # vercel
 .vercel
-yarn.lock
 src/controllers/authController/authDb.js
 .env.development
 .env.production
 .env
 
-src\services\auth\authDb.js
-src\services\auth\authDb.js
 src/services/auth/authDb.js
+/.vscode
+/public/resources/portalppe_template_planilha_de_importacao.xlsx
+/public/resources/portalppe_especificacao_de_melhoria_tecnologica.pdf

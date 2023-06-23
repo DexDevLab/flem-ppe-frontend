@@ -3,21 +3,21 @@
  *  @module Table
  */
 
-import { useEffect, useMemo } from "react";
 import {
-  Flex,
+  Box,
   Table as ChakraTable,
-  Thead,
-  Tr,
-  Th,
+  Flex,
   Tbody,
   Td,
   Tfoot,
-  Box,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-import _ from "lodash";
-import { useTable, useFilters } from "react-table";
 import { FilterInput } from "components/Table/FilterInput";
+import _ from "lodash";
+import { useEffect, useMemo } from "react";
+import { useFilters, useRowSelect, useTable } from "react-table";
 
 /**
  * Monta uma exibição de tabela.
@@ -26,20 +26,27 @@ import { FilterInput } from "components/Table/FilterInput";
  * @param {Object} columns colunas da tabela
  * @param {Object} data células e seus valores
  * @returns {Component} componente estilizado.
- *
  */
-export function Table({ columns, data, updateMyData, setRowsCount }) {
+export function Table({
+  columns,
+  data,
+  updateMyData,
+  setRowsCount,
+  setSelectedRows,
+}) {
   const defaultColumn = useMemo(
     () => ({
       Filter: DefaultColumnFilter,
     }),
     []
   );
+
   /**
    * Monta o filtro da tabela. Um filtro que pode ser
    * usado em cada coluna para classificar ou buscar
    * informações
-   * @see FilterInput
+   * @method DefaultColumnFilter
+   * @memberof module:Table
    * @param {Object} filterValue valor de pesquisa do filtro
    * @param {Object} header nome do filtro
    * @param {Object} preFilteredRows define a quantidade de linhas
@@ -47,7 +54,7 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
    * @param {Object} setFilter define dinamicamente a busca
    * @returns {Component} componente de filtro
    */
-   function DefaultColumnFilter({
+  function DefaultColumnFilter({
     column: { filterValue, Header, preFilteredRows, setFilter, ...rest },
   }) {
     const count = preFilteredRows.length;
@@ -83,7 +90,6 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
             : true;
         });
       },
-
     }),
     []
   );
@@ -95,6 +101,7 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
     footerGroups,
     rows,
     prepareRow,
+    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -103,7 +110,34 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
       filterTypes,
       updateMyData,
     },
-    useFilters
+    useFilters,
+    useRowSelect
+    // (hooks) => {
+    //   _.isFunction(setSelectedRows)
+    //     ? hooks.visibleColumns.push((columns) => [
+    //         // Let's make a column for selection
+    //         {
+    //           id: "selection",
+    //           // The header can use the table's getToggleAllRowsSelectedProps method
+    //           // to render a checkbox
+    //           Header: ({ getToggleAllRowsSelectedProps }) => (
+    //             <div>
+    //               <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+    //             </div>
+    //           ),
+    //           // The cell can use the individual row's getToggleRowSelectedProps method
+    //           // to the render a checkbox
+    //           Cell: ({ row }) => (
+    //             <div>
+    //               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+    //             </div>
+    //           ),
+    //           Footer: false,
+    //         },
+    //         ...columns,
+    //       ])
+    //     : null;
+    // }
   );
 
   useEffect(() => {
@@ -111,6 +145,12 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
       setRowsCount(rows.length);
     }
   }, [rows]);
+
+  useEffect(() => {
+    if (_.isFunction(setSelectedRows)) {
+      setSelectedRows(selectedFlatRows);
+    }
+  }, [selectedFlatRows]);
 
   // Render the UI for your table
   return (
@@ -157,7 +197,12 @@ export function Table({ columns, data, updateMyData, setRowsCount }) {
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <Tr key={row.id} {...row.getRowProps()}>
+              <Tr
+                key={row.id}
+                {...row.getRowProps()}
+                bg={row.isSelected && "gray.200"}
+                transition="all .2s ease-in-out"
+              >
                 {row.cells.map((cell) => (
                   <Td
                     key={cell.id}

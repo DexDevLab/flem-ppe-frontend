@@ -7,30 +7,24 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import IconBox from "components/Icons/IconBox";
-import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { useRouter } from "next/router";
-import { SidebarSubItem } from "./SidebarSubItem";
 import { useEffect } from "react";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { SidebarSubItem } from "./SidebarSubItem";
 
 /**
-   * Item de Sidebar.
-   * @method SidebarItem
-   * @memberof module:Sidebar
-   * @param {Object} icon ícone do SidebarItem
-   * @param {Object} title texto do SidebarItem
-   * @param {Object} subItems sub ítens do SidebarItem
-   * @param {Object} href caminho referente ao item
-   * @param {Object} sidebarClose função ao fechar o SidebarItem
-   * @returns {Component} Sidebar Item estilizado
-   * 
-   */
-export function SidebarItem({
-  icon,
-  title,
-  subItems,
-  href,
-  sidebarClose,
-}) {
+ * Item de Sidebar.
+ * @method SidebarItem
+ * @memberof module:Sidebar
+ * @param {Object} icon ícone do SidebarItem
+ * @param {Object} title texto do SidebarItem
+ * @param {Object} subItems sub ítens do SidebarItem
+ * @param {Object} href caminho referente ao item
+ * @param {Object} sidebarClose função ao fechar o SidebarItem
+ * @returns {Component} Sidebar Item estilizado
+ *
+ */
+export function SidebarItem({ icon, title, subItems, href, sidebarClose }) {
   const { isOpen, onToggle } = useDisclosure();
   const router = useRouter();
   const linkPath = router.asPath.split("/");

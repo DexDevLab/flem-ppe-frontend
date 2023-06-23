@@ -6,9 +6,9 @@
 import {
   Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
 } from "@chakra-ui/react";
 import CurrencyFormat from "react-currency-format";
 import { Controller } from "react-hook-form";
@@ -19,7 +19,7 @@ import { Controller } from "react-hook-form";
  * @method ChakraCurrencyInput
  * @memberof module:Inputs
  * @param {Object} props parâmetros do componente
- * @returns componente personalizado do Chakra
+ * @returns {Component} componente personalizado do Chakra
  */
 function ChakraCurrencyInput(props) {
   return <CurrencyFormat {...props} customInput={Input} />;

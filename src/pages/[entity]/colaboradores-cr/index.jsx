@@ -1,3 +1,8 @@
+/**
+ * Componentes de tela de gerenciamento de colaboradores da CR
+ * @module colaboradores-cr
+ */
+
 import {
   Box,
   Button,
@@ -30,7 +35,15 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela contendo a lista de colaboradores da Central de Ações
+ * @method ColaboradoresCR
+ * @memberof module:colaboradores-cr
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function ColaboradoresCR({ entity }) {
   const router = useRouter();
   const { asPath } = router;
@@ -126,8 +139,7 @@ export default function ColaboradoresCR({ entity }) {
               params: {
                 id: selectedRow.id,
               },
-            },
-            formData
+            }
           );
       if (status === 200) {
         toast({
@@ -138,15 +150,22 @@ export default function ColaboradoresCR({ entity }) {
         });
         formAddColabCr.closeOverlay();
       }
-    } catch (err) {
-      if (err.response.status === 409) {
-        toast({
-          title: "Colaborador já existe",
-          status: "error",
-        });
-      } else {
-        throw new Error(error.response.data);
+    } catch (error) {
+      // if (err.response.status === 409) {
+      //   toast({
+      //     title: "Colaborador já existe",
+      //     status: "error",
+      //   });
+      // } else {
+      //   throw new Error(err.response.data);
+      // }
+      const exception = exceptionHandler(error);
+      if (exception.code == 409) {
+        exception.title = "Colaborador já existe";
+        exception.description = "";
+        exception.duration = 5000;
       }
+      toast(exception);
     } finally {
       formAddColabCr.setLoaded();
     }
@@ -176,8 +195,9 @@ export default function ColaboradoresCR({ entity }) {
         });
         formDeleteColabCr.closeOverlay();
       }
-    } catch (err) {
-      throw new Error(error.response.data);
+    } catch (error) {
+      // throw new Error(error.response.data);
+      toast(exceptionHandler(error));
     } finally {
       formDeleteColabCr.setLoaded();
     }
@@ -208,9 +228,12 @@ export default function ColaboradoresCR({ entity }) {
           setColaboradoresFromBd(res.data);
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(setLoadingPageData.off);
   }, [formAddColabCr.overlayIsOpen, formDeleteColabCr.overlayIsOpen]);

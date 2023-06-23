@@ -1,3 +1,8 @@
+/**
+ * Componente de importação de arquivo
+ * @module importar
+ */
+
 import {
   Box,
   Button,
@@ -39,6 +44,7 @@ import { celularMask, cpfMask } from "masks-br";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import { BsFillArrowLeftCircleFill } from "react-icons/bs";
 import {
   FiAlertCircle,
   FiCheckCircle,
@@ -46,7 +52,15 @@ import {
   FiInfo,
 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza o PopOver para importação de arquivo
+ * @method Importar
+ * @memberof module:beneficiarios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Importar({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure(false);
   const remessaModal = useDisclosure();
@@ -79,17 +93,32 @@ export default function Importar({ entity, ...props }) {
 
   useEffect(() => {
     axios
-      .get(getBackendRoute(entity, "upload-sheets"), {
+      .get(getBackendRoute(entity, "beneficiarios/files/sheets"), {
         params: {
           fileId,
         },
       })
       .then(({ status, data }) => {
-        setSheet(data.output2);
-        console.log(data.output2);
+        setSheet(data.output);
+        console.log(data.output);
         setFileDetails(data.fileDetails);
       })
-      .catch((err) => console.log(err.response))
+      // .catch((err) => console.log(err.response))
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 400) {
+          exception.title = (
+            <Stack spacing={0} alignItems="flex-end">
+              <Text>Ocorreu um erro na importação</Text>
+              <Text fontSize="sm">Tente novamente mais tarde</Text>
+            </Stack>
+          );
+          exception.description = "";
+          exception.containerStyle = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
+      })
       .finally(setTimeout(onLoad, 3000));
 
     axios
@@ -120,7 +149,10 @@ export default function Importar({ entity, ...props }) {
           }))
         );
       })
-      .catch((err) => console.log(err));
+      // .catch((err) => console.log(err));
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      });
     // axios
     //   //.get(getBackendRoute("demandantes")
     //   .get(`/api/${entity}/demandantes`)
@@ -220,8 +252,13 @@ export default function Importar({ entity, ...props }) {
                   <>
                     {props.value.includes("*") || props.value === "" ? (
                       <PopoverTrigger>
-                        <Box bg="red.200" p={2} rounded="lg">
-                          {props.value.replace("*", "")}
+                        <Box
+                          bg="red.200"
+                          p={2}
+                          rounded="lg"
+                          _hover={{ cursor: "pointer" }}
+                        >
+                          {props.value.replaceAll("*", "")}
                         </Box>
                       </PopoverTrigger>
                     ) : (
@@ -234,7 +271,7 @@ export default function Importar({ entity, ...props }) {
                       <PopoverBody m={2}>
                         <Stack spacing={4}>
                           <Box>
-                            Valor informado: {props.value.replace("*", "")}
+                            Valor informado: {props.value.replaceAll("*", "")}
                           </Box>
                           <HStack justifyContent="space-between">
                             <Text>Alterar para:</Text>
@@ -303,8 +340,13 @@ export default function Importar({ entity, ...props }) {
                 <>
                   {props.value.includes("*") || props.value === "" ? (
                     <PopoverTrigger>
-                      <Box bg="red.200" p={2} rounded="lg">
-                        {props.value.replace("*", "")}
+                      <Box
+                        bg="red.200"
+                        p={2}
+                        rounded="lg"
+                        _hover={{ cursor: "pointer" }}
+                      >
+                        {props.value.replaceAll("*", "")}
                       </Box>
                     </PopoverTrigger>
                   ) : (
@@ -317,7 +359,7 @@ export default function Importar({ entity, ...props }) {
                     <PopoverBody m={2}>
                       <Stack spacing={4}>
                         <Box>
-                          Valor informado: {props.value.replace("*", "")}
+                          Valor informado: {props.value.replaceAll("*", "")}
                         </Box>
                         <HStack justifyContent="space-between">
                           <Text>Alterar para:</Text>
@@ -370,8 +412,13 @@ export default function Importar({ entity, ...props }) {
                 <>
                   {props.value.includes("*") || props.value === "" ? (
                     <PopoverTrigger>
-                      <Box bg="red.200" p={2} rounded="lg">
-                        {props.value.replace("*", "")}
+                      <Box
+                        bg="red.200"
+                        p={2}
+                        rounded="lg"
+                        _hover={{ cursor: "pointer" }}
+                      >
+                        {props.value.replaceAll("*", "")}
                       </Box>
                     </PopoverTrigger>
                   ) : (
@@ -384,7 +431,7 @@ export default function Importar({ entity, ...props }) {
                     <PopoverBody m={2}>
                       <Stack spacing={4}>
                         <Box>
-                          Valor informado: {props.value.replace("*", "")}
+                          Valor informado: {props.value.replaceAll("*", "")}
                         </Box>
                         <HStack justifyContent="space-between">
                           <Text>Alterar para:</Text>
@@ -437,8 +484,13 @@ export default function Importar({ entity, ...props }) {
                 <>
                   {props.value.includes("*") || props.value === "" ? (
                     <PopoverTrigger>
-                      <Box bg="red.200" p={2} rounded="lg">
-                        {props.value.replace("*", "")}
+                      <Box
+                        bg="red.200"
+                        p={2}
+                        rounded="lg"
+                        _hover={{ cursor: "pointer" }}
+                      >
+                        {props.value.replaceAll("*", "")}
                       </Box>
                     </PopoverTrigger>
                   ) : (
@@ -451,7 +503,7 @@ export default function Importar({ entity, ...props }) {
                     <PopoverBody m={2}>
                       <Stack spacing={4}>
                         <Box>
-                          Valor informado: {props.value.replace("*", "")}
+                          Valor informado: {props.value.replaceAll("*", "")}
                         </Box>
                         <HStack justifyContent="space-between">
                           <Text>Alterar para:</Text>
@@ -633,11 +685,13 @@ export default function Importar({ entity, ...props }) {
   const checkTableErrors = () => {
     setCheckingTableErrors.on();
     axios
-      .patch(getBackendRoute(entity, "validar-pendencias"), [
-        ...tableData,
-        ...tableDataUpdate,
-        ...tableDataIgnore,
-      ])
+      .patch(
+        getBackendRoute(
+          entity,
+          "beneficiarios/files/sheets/validar-pendencias"
+        ),
+        [...tableData, ...tableDataUpdate, ...tableDataIgnore]
+      )
       .then(({ data }) => {
         setRowsData(data.filter(({ update, found }) => !found && !update));
         setRowsDataUpdate(data.filter(({ update, found }) => found && update));
@@ -651,7 +705,10 @@ export default function Importar({ entity, ...props }) {
               .filter(({ matricula }) => matricula === "").length
         );
       })
-      .catch((err) => console.log(err))
+      // .catch((err) => console.log(err))
+      .catch((error) => {
+        toast(exceptionHandler(error));
+      })
       .finally(() => {
         setCheckingTableErrors.off();
       });
@@ -681,18 +738,19 @@ export default function Importar({ entity, ...props }) {
         router.push(`/${entity}/beneficiarios`);
       }
     } catch (error) {
-      toast({
-        title: (
+      const exception = exceptionHandler(error);
+      if (exception.code == 400) {
+        exception.title = (
           <Stack spacing={0} alignItems="flex-end">
             <Text>Ocorreu um erro na importação</Text>
             <Text fontSize="sm">Tente novamente mais tarde</Text>
           </Stack>
-        ),
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-        position,
-      });
+        );
+        exception.description = "";
+        exception.containerStyle = "";
+        exception.duration = 5000;
+      }
+      toast(exception);
     } finally {
       setSendingData.off();
     }
@@ -733,13 +791,21 @@ export default function Importar({ entity, ...props }) {
             <Button
               colorScheme="brand1"
               shadow="md"
-              leftIcon={<FiFileText />}
+              //leftIcon={<FiFileText />}
+              leftIcon={
+                !columns.length ? <BsFillArrowLeftCircleFill /> : <FiFileText />
+              }
               as={Box}
               _focus={{ boxShadow: "none" }}
               _hover={{ boxShadow: "none" }}
               _active={{ boxShadow: "none" }}
+              onClick={() => {
+                if (!columns.length) {
+                  router.push(`/${entity}/beneficiarios`);
+                }
+              }}
             >
-              {fileDetails.originalName}
+              {!columns.length ? "Voltar" : fileDetails.originalName}
             </Button>
             <Button
               colorScheme={tableError ? "red" : "brand1"}

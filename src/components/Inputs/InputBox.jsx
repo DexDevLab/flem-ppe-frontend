@@ -1,9 +1,9 @@
 import {
   Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
   Skeleton,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
@@ -60,7 +60,6 @@ export function InputBox({
       setValue(id, defaultValue);
       trigger(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
 
   return (

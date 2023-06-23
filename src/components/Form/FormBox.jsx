@@ -1,4 +1,3 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   FormControl,
   FormErrorMessage,
@@ -10,10 +9,29 @@ import {
   Select,
   Textarea,
 } from "@chakra-ui/react";
+import _ from "lodash";
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
-import _ from "lodash";
 
+/**
+ * Componente de Caixa de Formulário
+ * @method FormBox
+ * @memberof module:Form
+ * @param {Object} id define o id do componente
+ * @param {Object} label define a label do componente
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Object} type tipo de input do objeto de formulário
+ * @param {Object} options options do seletor
+ * @param {Object} mask máscara de validação
+ * @param {Object} defaultValue valor default do objeto
+ * @param {Object} inputLeftElement valor do elemento de entrada da esquerda
+ * @param {Object} inputRightElement valor do elemento de entrada da direita
+ * @param {Object} customInputProps valores de input customizados
+ * @param {Object} inlineForm parâmetros internos de formulário
+ * @param {Function} onChange handler da mudança de dados do objeto
+ * @param {Boolean} disabled define se o componente está visualmente desativado
+ * @returns {Component} componente de objeto de Formulário
+ */
 export const FormBox = ({
   id,
   label,
@@ -37,12 +55,13 @@ export const FormBox = ({
   inlineForm,
   readOnly = false,
   onChange,
+  disabled,
   ...rest
 }) => {
   id = readOnly ? `${id}_readOnly` : id;
   const [newId, idx] = id.split(".");
   const [invalid, setInvalid] = useState(false);
-  
+
   const handleOnChange = (e) => {
     if (mask) {
       setValue(id, mask(e.target.value));
@@ -57,12 +76,13 @@ export const FormBox = ({
   };
 
   useEffect(() => {
-    if (type === "date") {
+    if (defaultValue && type === "date") {
       setValue(id, DateTime.fromISO(defaultValue).toFormat("yyyy-MM-dd"));
-    } else {
+      trigger(id);
+    } else if (defaultValue) {
       setValue(id, defaultValue);
+      trigger(id);
     }
-    trigger(id);
   }, [defaultValue, unlockEdit]);
 
   useEffect(() => {
@@ -75,7 +95,10 @@ export const FormBox = ({
 
   return (
     <FormControl
-      display={inlineForm && { base: "block", md: "flex" }}
+      display={
+        (inlineForm && { base: "block", md: "flex" }) ||
+        (type === "hidden" && "none")
+      }
       alignItems="center"
       py={{ base: 2, md: 1 }}
       isReadOnly={!unlockEdit}
@@ -103,7 +126,7 @@ export const FormBox = ({
             {...register(id, {
               validate,
               required,
-              disabled: readOnly,
+              disabled: readOnly || disabled,
             })}
             {...(customInputProps && customInputProps())}
             {...rest}
@@ -118,22 +141,23 @@ export const FormBox = ({
             {...rest}
           />
         )}
-
         {type === "select" && options && (
           <Select
             variant={inlineForm && "flushed"}
             placeholder={placeholder}
             type={type}
             {...register(id, { validate, required })}
-            isDisabled={!unlockEdit}
+            isDisabled={disabled ? true : !unlockEdit}
             // icon={<ChevronDownIcon me={errors[id]?.message && 32} />}
             defaultValue={defaultValue}
+            {...rest}
           >
             {options &&
-              options.map(({ value, label }, idx) => (
+              options.map(({ value, label, disabled }, idx) => (
                 <option
                   key={`select-option-${idx}-label-${label}`}
                   value={value}
+                  disabled={disabled}
                 >
                   {label}
                 </option>
@@ -141,7 +165,11 @@ export const FormBox = ({
           </Select>
         )}
         {type === "select" && !options && (
-          <Select variant={inlineForm && "flushed"} placeholder={placeholder}>
+          <Select
+            variant={inlineForm && "flushed"}
+            placeholder={placeholder}
+            {...rest}
+          >
             <option value="carregando">Carregando...</option>
           </Select>
         )}
@@ -149,13 +177,18 @@ export const FormBox = ({
           <InputRightElement
             // w={!inlineForm && invalid?.message ? 230 : 100}
             justifyContent="flex-end"
+            w="auto"
             // zIndex="hide"
           >
-            {!inlineForm && invalid?.message && (
-              <FormErrorMessage alignSelf="flex-start" pt={1} pe={4}>
+            {/* {!inlineForm && invalid?.message && (
+              <FormErrorMessage
+                alignSelf="flex-start"
+                pt={2.8}
+                pe={type === "select" ? 8 : 4}
+              >
                 {invalid?.message}
               </FormErrorMessage>
-            )}
+            )} */}
             {inputRightElement && inputRightElement}
           </InputRightElement>
         )}
@@ -163,6 +196,7 @@ export const FormBox = ({
           <FormErrorMessage zIndex="hide">{invalid?.message}</FormErrorMessage>
         )}
       </InputGroup>
+      <FormErrorMessage zIndex="hide">{invalid?.message}</FormErrorMessage>
     </FormControl>
   );
 };

@@ -1,3 +1,8 @@
+/**
+ * Componentes de página de gerenciamento dos comunicados.
+ * @module comunicados
+ */
+
 import {
   Box,
   Button,
@@ -46,8 +51,16 @@ import {
   FiTrash2,
 } from "react-icons/fi";
 import { axios, filesAPIUpload, getBackendRoute } from "services";
-import { maskCapitalize } from "utils"; 
+import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de comunicados aos beneficiários
+ * @method Comunicados
+ * @memberof module:comunicados
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function Comunicados({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -190,7 +203,7 @@ export default function Comunicados({ entity, ...props }) {
         Footer: false,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     []
   );
 
@@ -253,7 +266,7 @@ export default function Comunicados({ entity, ...props }) {
                       params: {
                         id: selectedRow.id,
                       },
-                    },
+                    }
                   );
                   comunicadoFormSubmit.onClose();
                   addComunicado.onClose();
@@ -271,18 +284,7 @@ export default function Comunicados({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
-              comunicadoFormSubmit.onClose();
-              toast({
-                title: "Comunicado já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
-            }
+            toast(exceptionHandler(error));
           })
       );
     }
@@ -316,18 +318,14 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           comunicadoFormSubmit.onClose();
-          toast({
-            title: "Comunicado já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Comunicado já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
   };
 
@@ -353,19 +351,29 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           emailRemetenteFormSubmit.onClose();
-          toast({
-            title: "Remetente já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Ação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
+    // .catch((error) => {
+    //   if (error.response.status === 409) {
+    //     emailRemetenteFormSubmit.onClose();
+    //     toast({
+    //       title: "Remetente já existe",
+    //       status: "error",
+    //       duration: 5000,
+    //       isClosable: false,
+    //       position,
+    //     });
+    //   } else {
+    //     throw new Error(error.response.data);
+    //   }
+    // });
   };
 
   const deleteComunicado = (formData) => {
@@ -396,9 +404,12 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   };
 
   const onSubmitEnviarComunicado = (formData) => {
@@ -420,9 +431,12 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(() => enviarComunicadoFormSubmit.onClose());
   };
 
@@ -434,7 +448,6 @@ export default function Comunicados({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -453,9 +466,12 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
     axios
       //.get(`/api/${entity}/editor-parametros`)
       .get(getBackendRoute(entity, "editor-parametros"))
@@ -470,11 +486,13 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addComunicado.isOpen, excluirComunicado.isOpen, enviarComunicado.isOpen]);
 
   useEffect(() => {
@@ -493,10 +511,12 @@ export default function Comunicados({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // .catch((error) => {
+    //   console.log(error.response.data);
+    //   throw new Error(error.response.data);
+    // });
   }, [addEmailRemetente.isOpen]);
 
   useEffect(() => {
@@ -624,6 +644,7 @@ export default function Comunicados({ entity, ...props }) {
                 formControl={formComunicado}
                 label="Beneficiários"
                 placeholder="Matrículas ou CPFs separados por vírgula"
+                required="Digite e pressione ENTER para adicionar"
                 mask={cpfMask}
                 defaultValues={selectedRow?.benefAssoc.map(
                   ({ matriculaFlem }) => ({
@@ -842,5 +863,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-Comunicados.auth = true;
 Comunicados.dashboard = true;

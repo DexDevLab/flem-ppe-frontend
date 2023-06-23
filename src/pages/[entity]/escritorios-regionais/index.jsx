@@ -1,3 +1,8 @@
+/**
+ * Animação de transição entre componentes
+ * @module escritorios-regionais
+ */
+
 import {
   Box,
   Button,
@@ -46,7 +51,15 @@ import {
 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
 import { dynamicSort } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de Escritórios Regionais e o seu gerenciamento
+ * @method EscritoriosRegionais
+ * @memberof module:escritorios-regionais
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function EscritoriosRegionais({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -187,18 +200,26 @@ export default function EscritoriosRegionais({ entity, ...props }) {
             }
           })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               formSubmit.onClose();
-              toast({
-                title: "Escritório já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Escritório Regional já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   formSubmit.onClose();
+            //   toast({
+            //     title: "Escritório já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //     position,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
           })
       );
     }
@@ -221,18 +242,26 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           formSubmit.onClose();
-          toast({
-            title: "Escritório já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Escritório Regional já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   formSubmit.onClose();
+        //   toast({
+        //     title: "Escritório já existe",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   throw new Error(error.response.data);
+        // }
       });
   };
 
@@ -258,19 +287,27 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        if (error.response.status === 409) {
-          console.log(error.response.data);
-          toast({
-            title: "Não foi possível completar a operação",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          console.log(error);
-          throw new Error(error.response.data);
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          exception.title =
+            "Não foi possível completar a operação. Verifique as informações e tente novamente.";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
+        // if (error.response.status === 409) {
+        //   console.log(error.response.data);
+        //   toast({
+        //     title: "Não foi possível completar a operação",
+        //     status: "error",
+        //     duration: 5000,
+        //     isClosable: false,
+        //     position,
+        //   });
+        // } else {
+        //   console.log(error);
+        //   throw new Error(error.response.data);
+        // }
       })
       .finally(() => gerenciarEscritorioFormSubmit.onClose());
   };
@@ -294,7 +331,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
           formSubmit.onClose();
           setSelectedRow(null);
           toast({
-            title: "Escritrório excluída com sucesso",
+            title: "Escritório excluído com sucesso",
             status: "success",
             duration: 5000,
             isClosable: false,
@@ -303,8 +340,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -314,7 +350,6 @@ export default function EscritoriosRegionais({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -328,7 +363,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
     axios
@@ -340,10 +375,8 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     addEscritorioRegional.isOpen,
     gerenciarEscritorio.isOpen,
@@ -376,17 +409,15 @@ export default function EscritoriosRegionais({ entity, ...props }) {
       formAddEscritorio.reset({
         cep,
       });
-      toast({
-        title: "Endereço não localizado",
-        description: "Verifique o CEP ou preencha o endereço manualmente",
-        status: "warning",
-        duration: 5000,
-        isClosable: false,
-        position,
-        containerStyle: {
-          width: "300px",
-        },
-      });
+      const exception = exceptionHandler(error);
+      if (exception.code == 404) {
+        exception.title = "Endereço não localizado";
+        exception.description =
+          "Verifique o CEP ou preencha o endereço manualmente.";
+        exception.status = "warning";
+        exception.duration = 5000;
+      }
+      toast(exception);
     } finally {
       buscaCep.onClose();
     }
@@ -400,14 +431,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
     ) {
       consultaEndereco();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addEscritorioRegional.isOpen, cepInput]);
-
-  const options = [
-    { value: "1212", label: "Monitor 1" },
-    { value: "3434", label: "Monitor 2" },
-    { value: "5656", label: "Monitor 3" },
-  ];
 
   useEffect(() => {
     axios
@@ -424,9 +448,8 @@ export default function EscritoriosRegionais({ entity, ...props }) {
         )
       )
       .catch((error) => {
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const municipFiltered = useMemo(
@@ -459,7 +482,7 @@ export default function EscritoriosRegionais({ entity, ...props }) {
           };
         })
         .sort(dynamicSort("label")),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     [selectedRow]
   );
 

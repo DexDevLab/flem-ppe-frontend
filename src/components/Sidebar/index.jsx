@@ -16,16 +16,16 @@ import {
 import NoSSR from "react-no-ssr";
 
 /**
-   * Monta a Sidebar
-   * @method Sidebar
-   * @memberof module:Sidebar
-   * @param {Object} appName define o texto do nome do Portal (padrão: "[App Name]")
-   * @param {Object} isOpen ação quando aberto
-   * @param {Object} onClose ação quando fechado
-   * @param {Object} children componente-filho do objeto
-   * @returns {Component} sidebar estilizada.
-   * 
-   */
+ * Monta a Sidebar
+ * @method Sidebar
+ * @memberof module:Sidebar
+ * @param {Object} appName define o texto do nome do Portal (padrão: "[App Name]")
+ * @param {Object} isOpen ação quando aberto
+ * @param {Object} onClose ação quando fechado
+ * @param {Object} children componente-filho do objeto
+ * @returns {Component} sidebar estilizada.
+ *
+ */
 export function Sidebar({
   isOpen,
   onClose,

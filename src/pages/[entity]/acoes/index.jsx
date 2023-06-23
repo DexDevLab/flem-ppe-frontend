@@ -1,3 +1,8 @@
+/**
+ * Componente de página de Ações
+ * @module acoes
+ */
+
 import {
   Box,
   Button,
@@ -42,7 +47,15 @@ import { useForm, useFormState } from "react-hook-form";
 import { FiEdit, FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
 import { axios, getBackendRoute } from "services";
 import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a Página de Ações da CR
+ * @method AcoesCR
+ * @memberof module:acoes
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function AcoesCR({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -146,14 +159,15 @@ export default function AcoesCR({ entity, ...props }) {
           const contatosConcluidos = value.filter(
             (contato) => contato.concluido === true
           );
-          const status = (100 / benefAssoc.length) * contatosConcluidos.length;
+          const status =
+            (100 / benefAssoc.length) * contatosConcluidos.length || 0;
           return (
             <Box w={150}>
               <Progress
                 isAnimated={status !== 100}
                 hasStripe={status !== 100}
                 colorScheme={status !== 100 ? "brand1" : "green"}
-                value={status >=0 ? status : 0}
+                value={status >= 0 ? status : 0}
                 shadow="inner"
                 rounded="md"
                 h={6}
@@ -164,8 +178,7 @@ export default function AcoesCR({ entity, ...props }) {
                     (status < 40 && "gray.400") || (status <= 100 && "gray.100")
                   }
                 >
-                  {status >=0 ? status : 0}%
-                  {/* {status}% */}
+                  {status >= 0 ? status : 0}%{/* {status}% */}
                 </ProgressLabel>
               </Progress>
             </Box>
@@ -251,19 +264,29 @@ export default function AcoesCR({ entity, ...props }) {
               });
             }
           })
+          // .catch((error) => {
+          //   if (error.response.status === 409) {
+          //     acaoFormSubmit.onClose();
+          //     toast({
+          //       title: "Ação já existe",
+          //       status: "error",
+          //       duration: 5000,
+          //       isClosable: false,
+          //       position,
+          //     });
+          //   } else {
+          //     throw new Error(error.response.data);
+          //   }
+          // })
           .catch((error) => {
-            if (error.response.status === 409) {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
               acaoFormSubmit.onClose();
-              toast({
-                title: "Ação já existe",
-                status: "error",
-                duration: 5000,
-                isClosable: false,
-                position,
-              });
-            } else {
-              throw new Error(error.response.data);
+              exception.title = "Ação já existe";
+              exception.description = "";
+              exception.duration = 5000;
             }
+            toast(exception);
           })
       );
     }
@@ -286,19 +309,29 @@ export default function AcoesCR({ entity, ...props }) {
         }
         acaoFormSubmit.onClose();
       })
+      // .catch((error) => {
+      //   if (error.response.status === 409) {
+      //     acaoFormSubmit.onClose();
+      //     toast({
+      //       title: "Ação já existe",
+      //       status: "error",
+      //       duration: 5000,
+      //       isClosable: false,
+      //       position,
+      //     });
+      //   } else {
+      //     throw new Error(error.response.data);
+      //   }
+      // });
       .catch((error) => {
-        if (error.response.status === 409) {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           acaoFormSubmit.onClose();
-          toast({
-            title: "Ação já existe",
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Ação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
   };
 
@@ -322,20 +355,30 @@ export default function AcoesCR({ entity, ...props }) {
           });
         }
       })
+      // .catch((error) => {
+      //   if (error.response.status === 409) {
+      //     console.log(error.response.data);
+      //     tipoAcaoFormSubmit.onClose();
+      //     toast({
+      //       title: `Tipo de ação já existe`,
+      //       status: "error",
+      //       duration: 5000,
+      //       isClosable: false,
+      //       position,
+      //     });
+      //   } else {
+      //     throw new Error(error.response.data);
+      //   }
+      // });
       .catch((error) => {
-        if (error.response.status === 409) {
-          console.log(error.response.data);
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
           tipoAcaoFormSubmit.onClose();
-          toast({
-            title: `Tipo de ação já existe`,
-            status: "error",
-            duration: 5000,
-            isClosable: false,
-            position,
-          });
-        } else {
-          throw new Error(error.response.data);
+          exception.title = "Ação já existe";
+          exception.description = "";
+          exception.duration = 5000;
         }
+        toast(exception);
       });
   };
 
@@ -366,9 +409,12 @@ export default function AcoesCR({ entity, ...props }) {
           });
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // });
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -378,7 +424,6 @@ export default function AcoesCR({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -391,12 +436,14 @@ export default function AcoesCR({ entity, ...props }) {
           setAcoesCRFromBd(res.data);
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addAcao.isOpen, excluir.isOpen]);
 
   useEffect(() => {
@@ -414,11 +461,13 @@ export default function AcoesCR({ entity, ...props }) {
           );
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // });
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addAcao.isOpen, addTipoAcao.isOpen]);
 
   useEffect(() => {
@@ -435,11 +484,13 @@ export default function AcoesCR({ entity, ...props }) {
           );
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // });
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -449,19 +500,23 @@ export default function AcoesCR({ entity, ...props }) {
       .then((res) => {
         if (res.status === 200) {
           setBeneficiariosFromBd(
-            res.data.map(({ matriculaFlem, nome, cpf }) => ({
-              value: matriculaFlem,
-              label: `${matriculaFlem} - ` + maskCapitalize(nome),
-              cpf: cpf,
-            }))
+            res.data
+              .map(({ matriculaFlem, nome, cpf }) => ({
+                value: matriculaFlem,
+                label: `${matriculaFlem} - ` + maskCapitalize(nome),
+                cpf: cpf,
+              }))
+              .filter((item) => !_.isNull(item.value))
           );
         }
       })
+      // .catch((error) => {
+      //   console.log(error.response.data);
+      //   throw new Error(error.response.data);
+      // });
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const benefLoteInput = formAcao.watch("benefType");
@@ -589,6 +644,11 @@ export default function AcoesCR({ entity, ...props }) {
                   formControl={formAcao}
                   options={beneficiariosFromRh}
                   isMulti
+                  required={
+                    !benefLoteInput
+                      ? "Obrigatório"
+                      : "Digite e pressione ENTER para adicionar"
+                  }
                   defaultValue={
                     selectedRow &&
                     beneficiariosFromRh.filter((benef) =>

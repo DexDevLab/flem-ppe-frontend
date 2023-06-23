@@ -1,16 +1,30 @@
+/**
+ * Componentes de Inputs
+ * @module Inputs
+ */
+
 import {
   Box,
   Button,
-  useRadioGroup,
-  useRadio,
-  useToken,
   Flex,
-  FormErrorMessage,
   FormControl,
+  FormErrorMessage,
   FormLabel,
+  useRadio,
+  useRadioGroup,
+  useToken,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 
+/**
+ * Componente de Card com item de Radio
+ * @method RadioCard
+ * @memberof module:Inputs
+ * @param {Object} colorScheme esquema de cores do tema
+ * @param {Object} children componente-filho a ser renderizado
+ * @param {Object} size tamanho do componente
+ * @returns {Component} componente de Card
+ */
 function RadioCard({ colorScheme, children, size, ...props }) {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
@@ -46,6 +60,19 @@ function RadioCard({ colorScheme, children, size, ...props }) {
   );
 }
 
+/**
+ * Checkbox Customizado
+ * @method CheckboxInput
+ * @memberof module:Inputs
+ * @param {Object} defaultValue valor default do objeto
+ * @param {Object} formControl os dados do FormControl para interação
+ * @param {Object} label define a label do componente
+ * @param {Object} id define o id do componente
+ * @param {Object} options options do seletor
+ * @param {Object} size tamanho do componente
+ * @param {Object} w largura
+ * @returns {Component} componente de Checkbox
+ */
 export function CheckboxInput({
   colorScheme = "brand1",
   defaultValue,
@@ -96,7 +123,7 @@ export function CheckboxInput({
           {...group}
           spacing={1}
           flexWrap={true}
-          w={w ||"100%"}
+          w={w || "100%"}
         >
           {options.map(({ id, label }) => {
             const radio = getRadioProps({ value: id });

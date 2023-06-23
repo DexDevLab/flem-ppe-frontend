@@ -1,5 +1,9 @@
+/**
+ * Componente de objetos de Menu
+ *  @module Menus
+ */
+
 import {
-  Icon,
   IconButton,
   Menu,
   MenuButton,
@@ -7,8 +11,16 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { FiMoreHorizontal, FiUnlock } from "react-icons/fi";
+import _ from "lodash";
 
+/**
+ * Componente de Botão de Menu
+ * @method MultipleSelectInput
+ * @memberof module:Inputs
+ * @param {Object} icon ícone para o Menu
+ * @param {Object} menuItems itens listados no Menu
+ * @returns {Component} componente de Botão de Menu
+ */
 export function MenuIconButton({ icon, menuItems, ...props }) {
   return (
     <Menu>
@@ -34,17 +46,22 @@ export function MenuIconButton({ icon, menuItems, ...props }) {
                 title={menuGroup.menuGroupLabel}
                 textAlign="left"
               >
-                {menuGroup.menuGroupButtons.map((menuButton, idx) => (
-                  <MenuItem
-                  key={menuButton.text + idx}
-                  onClick={menuButton.onClick}
-                  isDisabled={menuButton.disabled}
-                  icon={icon}
-                  {...menuButton}
-                  >
-                    {menuButton.text}
-                  </MenuItem>
-                ))}
+                {menuGroup.menuGroupButtons
+                  .filter(
+                    (menuButton) =>
+                      !_.isEmpty(menuButton) && _.isObject(menuButton)
+                  )
+                  .map((menuButton, idx) => (
+                    <MenuItem
+                      key={menuButton.text + idx}
+                      onClick={menuButton.onClick}
+                      isDisabled={menuButton.disabled}
+                      icon={icon}
+                      {...menuButton}
+                    >
+                      {menuButton.text}
+                    </MenuItem>
+                  ))}
               </MenuGroup>
             ))}
         </MenuList>

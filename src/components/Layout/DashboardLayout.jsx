@@ -13,16 +13,14 @@ import { sidebarData } from "data/sidebarData";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 
-
-
- /**
-   * Cria um layout padrão de dashboard para a plataforma
-   * @method DashboardLayout
-   * @memberof module:Layout
-   * @param {Object} appName nome do portal
-   * @param {Component} children componentes-filho do layout
-   * @returns {Component} componente que monta o layout.
-   */
+/**
+ * Cria um layout padrão de dashboard para a plataforma
+ * @method DashboardLayout
+ * @memberof module:Layout
+ * @param {Object} appName nome do portal
+ * @param {Component} children componentes-filho do layout
+ * @returns {Component} componente que monta o layout.
+ */
 export function DashboardLayout({ appName, children, ...props }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const entities = [
@@ -58,7 +56,7 @@ export function DashboardLayout({ appName, children, ...props }) {
             </Fragment>
           ))}
       </Sidebar>
-        {children}
+      {children}
     </>
   );
 }

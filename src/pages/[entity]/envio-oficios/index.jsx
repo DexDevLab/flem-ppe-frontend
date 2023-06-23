@@ -1,3 +1,8 @@
+/**
+ * Componentes de página de envio de ofícios
+ * @module envio-oficios
+ */
+
 import {
   Box,
   Button,
@@ -49,7 +54,15 @@ import {
 } from "react-icons/fi";
 import { axios, filesAPIUpload, getBackendRoute } from "services";
 import { maskCapitalize } from "utils";
+import { exceptionHandler } from "utils/exceptionHandler";
 
+/**
+ * Renderiza a tela de ofícios enviados e seu gerenciamento
+ * @method EnvioOficios
+ * @memberof module:envio-oficios
+ * @param {Object} entity a "entidade" ou "localização" do Projeto Primeiro Emprego
+ * @returns {Component} página renderizada
+ */
 export default function EnvioOficios({ entity, ...props }) {
   const { isOpen: isLoaded, onOpen: onLoad, onClose } = useDisclosure();
   const router = useRouter();
@@ -193,7 +206,7 @@ export default function EnvioOficios({ entity, ...props }) {
         Footer: false,
       },
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
     []
   );
 
@@ -219,83 +232,35 @@ export default function EnvioOficios({ entity, ...props }) {
     };
 
     if (selectedRow) {
-      return axios
-      // .put(`/api/${entity}/oficios/gerenciar`, formData, {
-      //   params: { id: selectedRow.id },
-      // })
-        .put(getBackendRoute(entity, "oficios/gerenciar"), formData, {
-          params: { id: selectedRow.id },
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            if (formData.anexos.length) {
-              fileUpload(anexos, { referenceObjId: res.data.id }).then(
-                async (res) => {
-                  // await axios.put(
-                  //   `/api/${entity}/oficios/anexos`,
-                  //   { anexosId: res.data },
-                  //   { params: { id: selectedRow.id } }
-                  // );
-                  await axios.put(
-                    getBackendRoute(entity, "oficios/anexos"),
-                    { anexosId: res.data },
-                    { params: { id: selectedRow.id } }
-                  );
-                }
-              );
-            }
-            setSelectedRow(null);
-            formAddOficio.setLoaded();
-            formAddOficio.closeOverlay();
-            toast({
-              title: "Ofício adicionado com sucesso",
-              status: "success",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          }
-        })
-        .catch((error) => {
-          if (error.response.status === 409) {
-            formAddOficio.setLoaded();
-            toast({
-              title: "Ofício já existe",
-              status: "error",
-              duration: 5000,
-              isClosable: false,
-              position,
-            });
-          } else {
-            throw new Error(error.response.data);
-          }
-        });
-    }
-
-    axios
-      //.post(`/api/${entity}/oficios/gerenciar`, formData)
-      .post(getBackendRoute(entity, "oficios/gerenciar"), formData)
-      .then((res) => {
-        if (res.status === 200) {
-          fileUpload(anexos, { referenceObjId: res.data.id }).then(
-            async (res) => {
-              // await axios.put(
-              //   `/api/${entity}/oficios/anexos`,
-              //   { anexosId: res.data },
-              //   { params: { id: res.data[0].referenceObjId } }
-              // );
-              await axios.put(
-                getBackendRoute(entity, "oficios/anexos"),
-                {
-                  params: {
-                    id: res.data[0].referenceObjId,
-                  },
-                },
-                { anexosId: res.data }
-              );
+      return (
+        axios
+          // .put(`/api/${entity}/oficios/gerenciar`, formData, {
+          //   params: { id: selectedRow.id },
+          // })
+          .put(getBackendRoute(entity, "oficios/gerenciar"), formData, {
+            params: { id: selectedRow.id },
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              if (formData.anexos.length) {
+                fileUpload(anexos, { referenceObjId: res.data.id }).then(
+                  async (res) => {
+                    // await axios.put(
+                    //   `/api/${entity}/oficios/anexos`,
+                    //   { anexosId: res.data },
+                    //   { params: { id: selectedRow.id } }
+                    // );
+                    await axios.put(
+                      getBackendRoute(entity, "oficios/anexos"),
+                      { anexosId: res.data },
+                      { params: { id: selectedRow.id } }
+                    );
+                  }
+                );
+              }
+              setSelectedRow(null);
               formAddOficio.setLoaded();
               formAddOficio.closeOverlay();
-              setSelectedRow(null);
               toast({
                 title: "Ofício adicionado com sucesso",
                 status: "success",
@@ -304,22 +269,78 @@ export default function EnvioOficios({ entity, ...props }) {
                 position,
               });
             }
-          );
-        }
-      })
-      .catch((error) => {
-        if (error.response.status === 409) {
+          })
+          .catch((error) => {
+            const exception = exceptionHandler(error);
+            if (exception.code == 409) {
+              formAddOficio.setLoaded();
+              exception.title = "Ofício já existe";
+              exception.description = "";
+              exception.duration = 5000;
+            }
+            toast(exception);
+            // if (error.response.status === 409) {
+            //   formAddOficio.setLoaded();
+            //   toast({
+            //     title: "Ofício já existe",
+            //     status: "error",
+            //     duration: 5000,
+            //     isClosable: false,
+            //     position,
+            //   });
+            // } else {
+            //   throw new Error(error.response.data);
+            // }
+          })
+      );
+    }
+
+    axios
+      //.post(`/api/${entity}/oficios/gerenciar`, formData)
+      .post(getBackendRoute(entity, "oficios/gerenciar"), formData)
+      .then((res) => {
+        if (res.status === 200) {
+          if (formData.anexos.length) {
+            fileUpload(anexos, { referenceObjId: res.data.id }).then(
+              async (res) => {
+                // await axios.put(
+                //   `/api/${entity}/oficios/anexos`,
+                //   { anexosId: res.data },
+                //   { params: { id: res.data[0].referenceObjId } }
+                // );
+                await axios.put(
+                  getBackendRoute(entity, "oficios/anexos"),
+                  {
+                    params: {
+                      id: res.data[0].referenceObjId,
+                    },
+                  },
+                  { anexosId: res.data }
+                );
+              }
+            );
+          }
           formAddOficio.setLoaded();
+          formAddOficio.closeOverlay();
+          setSelectedRow(null);
           toast({
-            title: "Ofício já existe",
-            status: "error",
+            title: "Ofício adicionado com sucesso",
+            status: "success",
             duration: 5000,
             isClosable: false,
             position,
           });
-        } else {
-          throw new Error(error.response.data);
         }
+      })
+      .catch((error) => {
+        const exception = exceptionHandler(error);
+        if (exception.code == 409) {
+          formAddOficio.setLoaded();
+          exception.title = "Ofício já existe";
+          exception.description = "";
+          exception.duration = 5000;
+        }
+        toast(exception);
       });
   };
 
@@ -331,25 +352,27 @@ export default function EnvioOficios({ entity, ...props }) {
       //     id: formData.id,
       //   },
       // })
-      .delete(
-        getBackendRoute(entity, "oficios/gerenciar"),
-        {
-          params: {
-            id: formData.id,
-          },
+      .delete(getBackendRoute(entity, "oficios/gerenciar"), {
+        params: {
+          dadosOficio: formData,
         },
-        { anexosId: res.data }
-      )
+      })
       .then((res) => {
         if (res.status === 200) {
           excluirOficioModal.onClose();
           excluirOficioSubmit.onClose();
           setSelectedRow(null);
+          toast({
+            title: "Ofício excluído com sucesso",
+            status: "success",
+            duration: 5000,
+            isClosable: false,
+            position,
+          });
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
   };
 
@@ -373,7 +396,7 @@ export default function EnvioOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(() => enviarOficioSubmit.onClose());
   };
@@ -384,7 +407,6 @@ export default function EnvioOficios({ entity, ...props }) {
     } else {
       setTimeout(onLoad, 1000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asPath]);
 
   useEffect(() => {
@@ -403,8 +425,7 @@ export default function EnvioOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
     axios
       //.get(`/api/${entity}/editor-parametros`)
@@ -420,11 +441,9 @@ export default function EnvioOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       })
       .finally(fetchTableData.onClose);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     formAddOficio.overlayIsOpen,
     enviarOficioModal.isOpen,
@@ -447,10 +466,8 @@ export default function EnvioOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -469,10 +486,8 @@ export default function EnvioOficios({ entity, ...props }) {
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
-        throw new Error(error.response.data);
+        toast(exceptionHandler(error));
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formWatchAssunto = formAddOficio.control.watch("assunto");
@@ -614,6 +629,7 @@ export default function EnvioOficios({ entity, ...props }) {
                 formControl={formAddOficio.control}
                 label="Beneficiários"
                 placeholder="Matrículas ou CPFs separados por vírgula"
+                required="Digite e pressione ENTER para adicionar"
                 mask={cpfMask}
                 defaultValues={selectedRow?.benefAssoc.map(
                   ({ matriculaFlem }) => ({
@@ -816,5 +832,4 @@ export async function getServerSideProps(context) {
   };
 }
 
-EnvioOficios.auth = true;
 EnvioOficios.dashboard = true;

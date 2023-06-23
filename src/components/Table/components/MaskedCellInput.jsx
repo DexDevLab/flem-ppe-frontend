@@ -1,7 +1,15 @@
-import { useEffect, useState } from "react";
 import { Input } from "@chakra-ui/react";
 import { cleanMask } from "masks-br";
+import { useEffect, useState } from "react";
 
+/**
+ * Componente de checkbox customizado com entrada para máscara customizada.
+ * @method MaskedCellInput
+ * @memberof module:components
+ * @param {Object} mask máscara de validação
+ * @param {Function} updateMyData função handler para atualizar
+ * @returns {Component} componente estilizado.
+ */
 export function MaskedCellInput({
   mask,
   value: initialValue,

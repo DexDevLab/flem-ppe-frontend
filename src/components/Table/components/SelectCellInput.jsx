@@ -1,6 +1,17 @@
-import { useEffect, useState } from "react";
 import { Select } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
+/**
+ * Componente de input para select customizado
+ * @method SelectCellInput
+ * @memberof module:components
+ * @param {Function} updateMyData função handler para atualizar
+ * @param {Object} placeholder label de dica de placeholder
+ * @param {Boolean} isInvalid define se o objeto é tratado como inválido
+ * @param {Object} children componente-filho do objeto
+ * @param {Object} defaultValue define o valor padrão do objeto
+ * @returns {Component} componente estilizado.
+ */
 export function SelectCellInput({
   value: initialValue,
   row: { index },
@@ -9,7 +20,7 @@ export function SelectCellInput({
   placeholder,
   isInvalid,
   children,
-  defaultValue
+  defaultValue,
 }) {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
@@ -28,10 +39,10 @@ export function SelectCellInput({
     setValue(initialValue);
   }, [initialValue]);
 
-  
   return (
     <Select
       bg={(value.includes("*") || value === "") && "red.200"}
+      _hover={(value.includes("*") || value === "") && { cursor: "pointer" }}
       rounded="lg"
       value={value}
       onChange={onChange}

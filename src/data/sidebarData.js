@@ -1,11 +1,13 @@
 import {
   FiArchive,
+  FiBarChart2,
   FiCalendar,
   FiFileText,
   FiHome,
   FiList,
   FiMapPin,
   FiPackage,
+  FiSliders,
   FiUsers,
 } from "react-icons/fi";
 import {
@@ -16,10 +18,8 @@ import {
 import {
   TbBrandTelegram,
   TbBuildingCommunity,
-  TbPerspective,
 } from "react-icons/tb";
 import { MdWorkOutline } from "react-icons/md";
-import { BiBuildings } from "react-icons/bi";
 
 export const sidebarData = [
   {
@@ -44,18 +44,6 @@ export const sidebarData = [
         icon: TbBuildingCommunity,
         href: "/demandantes",
       },
-      // {
-      //   title: "Cadastros",
-      //   icon: FiArchive,
-      //   href: "/cadastros",
-      //   subItems: [
-      //     {
-      //       title: "Beneficiários",
-      //       icon: FiUserPlus,
-      //       href: "/beneficiarios"
-      //     },
-      //   ]
-      // },
       {
         title: "Unidades de Lotação",
         icon: FiMapPin,
@@ -66,11 +54,11 @@ export const sidebarData = [
         icon: HiOutlineOfficeBuilding,
         href: "/escritorios-regionais",
       },
-      // {
-      //   title: "Monitores",
-      //   icon: HiOutlineUserGroup,
-      //   href: "/monitores",
-      // },
+      {
+        title: "Monitores",
+        icon: HiOutlineUserGroup,
+        href: "/monitores",
+      },
       {
         title: "Materiais",
         icon: FiPackage,
@@ -116,18 +104,6 @@ export const sidebarData = [
   {
     label: "gerenciamento",
     items: [
-      // {
-      //   title: "Cadastros",
-      //   icon: FiArchive,
-      //   href: "/cadastros",
-      //   subItems: [
-      //     {
-      //       title: "Beneficiários",
-      //       icon: FiUserPlus,
-      //       href: "/beneficiarios"
-      //     },
-      //   ]
-      // },
       {
         title: "Comunicados",
         icon: TbBrandTelegram,
@@ -142,6 +118,21 @@ export const sidebarData = [
         title: "Fila de Ações CR",
         icon: FiCalendar,
         href: "/fila-acoes",
+      },
+      {
+        title: "Monitoramento",
+        icon: FiSliders,
+        href: "/monitoramento",
+      },
+    ],
+  },
+  {
+    label: "relatorios",
+    items: [
+      {
+        title: "Relatório Monitoramentos",
+        icon: FiSliders,
+        href: "/relatorios-monitoramentos",
       },
     ],
   },

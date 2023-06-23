@@ -1,11 +1,11 @@
 import {
   Box,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  FormErrorMessage,
-  Skeleton,
   InputGroup,
+  Skeleton,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 
@@ -58,15 +58,13 @@ export function MaskedInputBox({
   colorScheme = "brand1",
   ...props
 }) {
-
   useEffect(() => {
     if (defaultValue) {
       setValue(id, defaultValue);
       trigger(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValue]);
-  
+
   return (
     <Box px={0.5}>
       <FormControl id={id} isInvalid={errors[id]}>

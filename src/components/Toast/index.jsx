@@ -1,5 +1,16 @@
-import { Flex } from "@chakra-ui/react";
+/**
+ *  Componentes de Notificação
+ *  @module Toast
+ */
 
+import { Box, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+
+/**
+ * Componente de notificação tipo Toast
+ * @method Toast
+ * @memberof module:Toast
+ * @returns {Component} componente estilizado
+ */
 export const Toast = () => {
   return (
     <Flex

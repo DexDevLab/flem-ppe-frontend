@@ -1,13 +1,14 @@
 import {
   Box,
   FormControl,
-  FormLabel,
   FormErrorMessage,
-  Skeleton,
-  InputRightElement,
+  FormLabel,
   InputGroup,
+  InputRightElement,
+  Skeleton,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
+import _ from "lodash";
 import { useEffect } from "react";
 
 /**
@@ -56,6 +57,7 @@ export function SelectInputBox({
   bg,
   defaultValue,
   inputRightElement,
+  w = "full",
   ...props
 }) {
   const chakraStyles = {
@@ -63,7 +65,7 @@ export function SelectInputBox({
       ...provided,
       shadow: state.isFocused ? "inner" : shadow,
       bg: bg,
-      w: "full",
+      w,
       _focus: {
         boxShadow: state.isFocused
           ? `0 0 0 1px var(--chakra-colors-${colorScheme}-500)`
@@ -79,13 +81,17 @@ export function SelectInputBox({
     }),
     container: (provided) => ({
       ...provided,
-      w: "100%",
+      w,
     }),
   };
   useEffect(() => {
-    if (Array.isArray(defaultValue))
+    if (Array.isArray(defaultValue)) {
       setValue(id, isMulti ? defaultValue : defaultValue[0]?.value);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      trigger(id);
+    } else if (_.isObject(defaultValue)) {
+      setValue(id, defaultValue.value);
+      trigger(id);
+    }
   }, []);
 
   return (
@@ -112,13 +118,15 @@ export function SelectInputBox({
               options={options}
               onChange={(e) => {
                 setValue(id, isMulti ? e : e.value);
+                onChange && onChange(e);
                 trigger(id);
               }}
               isMulti={isMulti}
               noOptionsMessage={() => "Sem opções"}
               closeMenuOnSelect={!isMulti}
+              menuPortalTarget={document.body}
+              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               chakraStyles={chakraStyles}
-              
             />
 
             {inputRightElement && (

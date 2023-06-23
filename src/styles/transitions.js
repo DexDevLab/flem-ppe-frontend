@@ -1,7 +1,6 @@
 /**
  * Especificações das transições.
  */
-
 export const variants = {
   pageInitial: {
     opacity: 0,
