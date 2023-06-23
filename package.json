@@ -2,7 +2,7 @@
   "name": "flem-ppe-frontend",
   "description": "Aplicação Frontend para o Projeto Primeiro Emprego, da FLEM",
   "private": true,
-  "version": "v1.1.1-230623",
+  "version": "v1.1.2-230623",
   "license": "MIT",
   "scripts": {
     "dev": "next dev -p 3000",
